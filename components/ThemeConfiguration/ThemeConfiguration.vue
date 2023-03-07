@@ -1,17 +1,16 @@
 <template>
   <Head v-if="cssText">
-    <Style data-name="ThemeConfiguration" type="text/css" :children="cssText" />
+    <Style type="text/css" :children="cssText" />
   </Head>
   <slot></slot>
 </template>
 
 <script>
 import deepmerge from 'deepmerge';
-import cloneDeep from "clone-deep";
 
 /* The main theme should be configured (and always exists) at ~/assets/js/theme-configuration.default.js */
 import { default as defaultConfig } from '~/assets/js/theme-configuration.default.js';
-import { sanitizeKey, restructureFontSizeObject } from './helpers.js';
+import { sanitizeKey, restructureFontSizeObject, cloneDeep } from './helpers.js';
 
 const { minify } = defaultConfig;
 

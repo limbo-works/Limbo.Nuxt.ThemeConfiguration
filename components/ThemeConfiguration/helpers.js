@@ -1,8 +1,12 @@
-// Last modified: 2023/03/07 09:27:10
+// Last modified: 2023/03/07 09:44:08
 import { default as defaultConfig } from "~/assets/js/theme-configuration.default.js";
-import cloneDeep from "clone-deep";
 
-export { sanitizeKey, makeThemeUtilities, restructureFontSizeObject };
+export {
+  sanitizeKey,
+  makeThemeUtilities,
+  restructureFontSizeObject,
+  cloneDeep,
+};
 
 function sanitizeKey(key) {
   return String(key).replace(/[^a-zA-Z0-9]/g, "-");
@@ -156,4 +160,8 @@ function restructureFontSizeObject(object) {
     },
     {}
   );
+}
+
+function cloneDeep(object) {
+  return JSON.parse(JSON.stringify(object));
 }
