@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import deepmerge from 'deepmerge';
+import { default as deepmerge } from 'deepmerge';
 
 /* The main theme should be configured (and always exists) at ~/assets/js/theme-configuration.default.js */
 import { default as defaultConfig } from '~/assets/js/theme-configuration.default.js';
