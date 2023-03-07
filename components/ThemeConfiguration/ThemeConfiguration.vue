@@ -25,15 +25,13 @@ const { minify } = defaultConfig;
 	The component does also also allow for a configuration to be
 	passed in through a prop, but this shouldn't be the way, and
 	is mainly done for future demo site.
-
-	*The handling of getting-from-the-site-object is not developed yet
-	Also colors aren't currently handled.
 */
 
 const observedData = ref({
 	config: {},
 });
 
+export const _defaultConfig = defaultConfig;
 export const config = observedData.value.config;
 export default defineNuxtComponent({
 	name: 'ThemeConfiguration',

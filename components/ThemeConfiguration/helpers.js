@@ -1,5 +1,5 @@
-// Last modified: 2023/03/07 09:44:08
-import { default as defaultConfig } from "~/assets/js/theme-configuration.default.js";
+// Last modified: 2023/03/07 11:18:43
+import { _defaultConfig as defaultConfig } from "./ThemeConfiguration.vue";
 
 export {
   sanitizeKey,
