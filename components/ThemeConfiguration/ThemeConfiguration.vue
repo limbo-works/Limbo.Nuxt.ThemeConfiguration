@@ -10,7 +10,7 @@ import deepmerge from 'deepmerge';
 import { default as cloneDeep } from 'clone-deep';
 
 /* The main theme should be configured (and always exists) at ~/assets/js/theme-configuration.default.js */
-import { defaultConfig } from '~/assets/js/theme-configuration.default.js';
+import { default as defaultConfig } from '~/assets/js/theme-configuration.default.js';
 import { sanitizeKey, restructureFontSizeObject } from './helpers.js';
 
 const { minify } = defaultConfig;
