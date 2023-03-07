@@ -1,5 +1,5 @@
-// Last modified: 2023/03/06 19:48:57
-import * as defaultConfig from "~/assets/js/theme-configuration.default.js";
+// Last modified: 2023/03/07 08:39:31
+import { defaultConfig } from "~/assets/js/theme-configuration.default.js";
 import { default as cloneDeep } from "clone-deep";
 
 export { sanitizeKey, makeThemeUtilities, restructureFontSizeObject };

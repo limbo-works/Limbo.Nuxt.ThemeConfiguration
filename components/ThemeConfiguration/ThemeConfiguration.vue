@@ -1,12 +1,16 @@
-<!--
-	Last modified: 2023/03/06 20:05:08
--->
+<template>
+  <Head v-if="cssText">
+    <Style type="text/css" :children="cssText" />
+  </Head>
+  <slot></slot>
+</template>
+
 <script>
 import deepmerge from 'deepmerge';
 import { default as cloneDeep } from 'clone-deep';
 
 /* The main theme should be configured (and always exists) at ~/assets/js/theme-configuration.default.js */
-import * as defaultConfig from '~/assets/js/theme-configuration.default.js';
+import { defaultConfig } from '~/assets/js/theme-configuration.default.js';
 import { sanitizeKey, restructureFontSizeObject } from './helpers.js';
 
 const { minify } = defaultConfig;
@@ -31,7 +35,7 @@ const observedData = ref({
 });
 
 export const config = observedData.value.config;
-export default {
+export default defineNuxtComponent({
 	name: 'ThemeConfiguration',
 	key: 'ThemeConfiguration',
 
@@ -40,18 +44,10 @@ export default {
 			type: Object,
 			default: () => ({}),
 		},
-	},
-
-	head() {
-		return {
-			style: [
-				this.cssText && {
-					hid: 'theme-configuration',
-					cssText: this.cssText,
-					type: 'text/css',
-				},
-			].filter(Boolean),
-		};
+    cssLayer: {
+      type: String,
+      default: '',
+    },
 	},
 
 	computed: {
@@ -230,21 +226,29 @@ export default {
 				lgScreenRules.push('}');
 			}
 
+            // Wrap in a CSS layer
+            const layer = this.cssLayer ? [`@layer ${this.cssLayer} {`] : [];
+            const layerEnd = this.cssLayer ? ['}'] : [];
+
 			if (minify) {
 				return [
+                    ...layer,
 					...rules,
 					...smToMdScreenRules,
 					...mdScreenRules,
 					...mdToLgScreenRules,
 					...lgScreenRules,
+                    ...layerEnd,
 				].join('');
 			}
 			return [
+                ...layer,
 				...rules,
 				...smToMdScreenRules,
 				...mdScreenRules,
 				...mdToLgScreenRules,
 				...lgScreenRules,
+                ...layerEnd,
 			].join('\n');
 		},
 	},
@@ -672,20 +676,5 @@ export default {
 			};
 		},
 	},
-
-	// The ThemeConfiguration doesn't insert anything new to the DOM itself, other than the styles in head()
-	render() {
-    const slots = this.$slots.default?.();
-		if (!slots?.length) {
-			return null;
-		}
-		try {
-			return slots[0];
-		} catch (e) {
-			throw new Error(
-				'ThemeConfiguration.vue can only render one child component.'
-			);
-		}
-	},
-};
+});
 </script>
