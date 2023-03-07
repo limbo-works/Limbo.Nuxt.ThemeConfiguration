@@ -31,7 +31,6 @@ const observedData = ref({
 	config: {},
 });
 
-export const _defaultConfig = defaultConfig;
 export const config = observedData.value.config;
 export default defineNuxtComponent({
 	name: 'ThemeConfiguration',

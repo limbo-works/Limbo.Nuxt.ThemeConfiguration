@@ -1,6 +1,4 @@
-// Last modified: 2023/03/07 11:18:43
-import { _defaultConfig as defaultConfig } from "./ThemeConfiguration.vue";
-
+// Last modified: 2023/03/07 11:30:25
 export {
   sanitizeKey,
   makeThemeUtilities,
@@ -14,8 +12,8 @@ function sanitizeKey(key) {
 
 // Down here we have some practical functions (shouldn't be altered)
 // Function to generate the tailwind utility values.
-function makeThemeUtilities() {
-  const config = cloneDeep(defaultConfig);
+function makeThemeUtilities(config) {
+  config = cloneDeep(config);
   if (config.fontSize) {
     const fontSizeUtils = restructureFontSizeObject(config.fontSize);
     delete config.fontSize;
