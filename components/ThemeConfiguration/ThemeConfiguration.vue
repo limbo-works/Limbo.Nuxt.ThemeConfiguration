@@ -58,16 +58,6 @@ export default defineNuxtComponent({
       // Seek out solution config
       let solutionConfig = null;
 
-      try {
-        solutionConfig = require(`./../../../assets/js/theme-configuration.${this.$store.getters.solution}.js`);
-      } catch (e) {
-        console.error(e);
-      }
-
-      if (Object.keys(solutionConfig || {}).length) {
-        clone = deepmerge(clone, cloneDeep(solutionConfig));
-      }
-
       // Overwrite by property
       if (Object.keys(this.config || {}).length) {
         clone = deepmerge(clone, cloneDeep(this.config));
