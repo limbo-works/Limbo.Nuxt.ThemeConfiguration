@@ -8,6 +8,4 @@
 </template>
 
 <script>
-import { makeThemeUtilities, } from '../components/ThemeConfiguration/helpers';
-console.log(makeThemeUtilities);
 </script>
