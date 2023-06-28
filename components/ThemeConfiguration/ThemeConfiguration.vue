@@ -1,8 +1,8 @@
 <template>
-  <Head v-if="cssText">
-    <Style type="text/css" :children="cssText" />
-  </Head>
-  <slot></slot>
+	<Head v-if="cssText">
+		<Style type="text/css" :children="cssText" />
+	</Head>
+	<slot></slot>
 </template>
 
 <script>
@@ -77,13 +77,17 @@ export default defineNuxtComponent({
 			let rules = [
 				extractColorRules(config?.colors),
 				// Find variants ending with colors, like backgroundColors
-				...findAltRuleKeys('colors').map(({ configKey, prefix }) => extractColorRules(config[configKey], prefix)),
+				...findAltRuleKeys('colors').map(({ configKey, prefix }) =>
+					extractColorRules(config[configKey], prefix)
+				),
 				extractLayoutRules(config?.layout),
 				extractFontRules(config?.fontSize),
 				extractFontRules(config?.fontStyles),
 				extract('spacing', config?.spacing),
 				// Find variants ending with spacing, like horizontalSpacing
-				...findAltRuleKeys('spacing').map(({ configKey }) => extract(configKey, config[configKey])),
+				...findAltRuleKeys('spacing').map(({ configKey }) =>
+					extract(configKey, config[configKey])
+				),
 				extract('borderRadius', config?.borderRadius),
 			];
 
@@ -131,19 +135,25 @@ export default defineNuxtComponent({
 			if (smToMdScreenRules.length) {
 				// Root
 				if (!minify) {
-					smToMdScreenRules = smToMdScreenRules.map((rule) => `  ${rule}`);
+					smToMdScreenRules = smToMdScreenRules.map(
+						(rule) => `  ${rule}`
+					);
 				}
 				smToMdScreenRules.unshift(':root {');
 				smToMdScreenRules.push('}');
 
 				// Media query
 				if (!minify) {
-					smToMdScreenRules = smToMdScreenRules.map((rule) => `  ${rule}`);
+					smToMdScreenRules = smToMdScreenRules.map(
+						(rule) => `  ${rule}`
+					);
 				}
 				smToMdScreenRules.unshift(
 					`@media screen and (min-width: ${
-						Math.round(((smViewport + mdViewport) / 2 / baseFontSize) * 1000) /
-            1000
+						Math.round(
+							((smViewport + mdViewport) / 2 / baseFontSize) *
+								1000
+						) / 1000
 					}em) {`
 				);
 				smToMdScreenRules.push('}');
@@ -172,19 +182,25 @@ export default defineNuxtComponent({
 			if (mdToLgScreenRules.length) {
 				// Root
 				if (!minify) {
-					mdToLgScreenRules = mdToLgScreenRules.map((rule) => `  ${rule}`);
+					mdToLgScreenRules = mdToLgScreenRules.map(
+						(rule) => `  ${rule}`
+					);
 				}
 				mdToLgScreenRules.unshift(':root {');
 				mdToLgScreenRules.push('}');
 
 				// Media query
 				if (!minify) {
-					mdToLgScreenRules = mdToLgScreenRules.map((rule) => `  ${rule}`);
+					mdToLgScreenRules = mdToLgScreenRules.map(
+						(rule) => `  ${rule}`
+					);
 				}
 				mdToLgScreenRules.unshift(
 					`@media screen and (min-width: ${
-						Math.round(((mdViewport + lgViewport) / 2 / baseFontSize) * 1000) /
-            1000
+						Math.round(
+							((mdViewport + lgViewport) / 2 / baseFontSize) *
+								1000
+						) / 1000
 					}em) {`
 				);
 				mdToLgScreenRules.push('}');
@@ -314,10 +330,10 @@ export default defineNuxtComponent({
 					return `--theme-layout-column--${sizeDesignation}: ${
 						Math.round(
 							((viewport[sizeDesignation] -
-                margin[sizeDesignation] * 2 -
-                gutter[sizeDesignation] * (columnCount - 1)) /
-                columnCount) *
-                1000
+								margin[sizeDesignation] * 2 -
+								gutter[sizeDesignation] * (columnCount - 1)) /
+								columnCount) *
+								1000
 						) / 1000
 					}px;`;
 				};
@@ -349,7 +365,9 @@ export default defineNuxtComponent({
 
 			// Setup layout max
 			if (typeof maxRuleValue === 'undefined') {
-				rules.push('--theme-layout-max: var(--visual-viewport-width, 100vw);');
+				rules.push(
+					'--theme-layout-max: var(--visual-viewport-width, 100vw);'
+				);
 			} else {
 				rules.push(`--theme-layout-max: ${maxRuleValue}px;`);
 			}
@@ -392,7 +410,11 @@ export default defineNuxtComponent({
 						object[key],
 						'rem',
 						(value) => {
-							return Math.round((Number(value) / baseFontSize) * 1000) / 1000;
+							return (
+								Math.round(
+									(Number(value) / baseFontSize) * 1000
+								) / 1000
+							);
 						}
 					);
 					returnObject.rules.push(...extracted.rules);
@@ -409,7 +431,7 @@ export default defineNuxtComponent({
 
 					const convertFromPercentage = (value) => {
 						if (typeof value === 'string' && value.endsWith('%')) {
-							return (+value.substring(0, value.length - 1) / 100);
+							return +value.substring(0, value.length - 1) / 100;
 						}
 						return value;
 					};
@@ -418,32 +440,38 @@ export default defineNuxtComponent({
 						const subObject = object[key][name];
 
 						rules.push(
-							`--theme-${key}-${sanitizeKey(name)}--sm: ${
-								convertFromPercentage(subObject.sm)
-							}em;`
+							`--theme-${key}-${sanitizeKey(
+								name
+							)}--sm: ${convertFromPercentage(subObject.sm)}em;`
 						);
 						rules.push(
-							`--theme-${key}-${sanitizeKey(name)}--md: ${
-								convertFromPercentage(subObject.md)
-							}em;`
+							`--theme-${key}-${sanitizeKey(
+								name
+							)}--md: ${convertFromPercentage(subObject.md)}em;`
 						);
 						rules.push(
-							`--theme-${key}-${sanitizeKey(name)}--lg: ${
-								convertFromPercentage(subObject.lg)
-							}em;`
+							`--theme-${key}-${sanitizeKey(
+								name
+							)}--lg: ${convertFromPercentage(subObject.lg)}em;`
 						);
 
 						rules.push(
-							`--theme-${key}-${sanitizeKey(name)}: ${convertFromPercentage(subObject.sm)}em;`
+							`--theme-${key}-${sanitizeKey(
+								name
+							)}: ${convertFromPercentage(subObject.sm)}em;`
 						);
 						if (subObject.md !== subObject.sm) {
 							smToMdScreenRules.push(
-								`--theme-${key}-${sanitizeKey(name)}: ${convertFromPercentage(subObject.md)}em;`
+								`--theme-${key}-${sanitizeKey(
+									name
+								)}: ${convertFromPercentage(subObject.md)}em;`
 							);
 						}
 						if (subObject.lg !== subObject.md) {
 							mdToLgScreenRules.push(
-								`--theme-${key}-${sanitizeKey(name)}: ${convertFromPercentage(subObject.lg)}em;`
+								`--theme-${key}-${sanitizeKey(
+									name
+								)}: ${convertFromPercentage(subObject.lg)}em;`
 							);
 						}
 					}
@@ -452,9 +480,9 @@ export default defineNuxtComponent({
 					if (!minify) {
 						rules.length && rules.unshift(`/* ${key} */`);
 						smToMdScreenRules.length &&
-              smToMdScreenRules.unshift(`/* ${key} */`);
+							smToMdScreenRules.unshift(`/* ${key} */`);
 						mdToLgScreenRules.length &&
-              mdToLgScreenRules.unshift(`/* ${key} */`);
+							mdToLgScreenRules.unshift(`/* ${key} */`);
 					}
 
 					returnObject.rules.push(...rules);
@@ -464,7 +492,15 @@ export default defineNuxtComponent({
 			});
 
 			// Extract as whatever it is
-			['fontFamily', 'fontWeight', 'fontStyle', 'lineHeight', 'textCase', 'textDecoration', 'paragraphIndent'].forEach((key) => {
+			[
+				'fontFamily',
+				'fontWeight',
+				'fontStyle',
+				'lineHeight',
+				'textCase',
+				'textDecoration',
+				'paragraphIndent',
+			].forEach((key) => {
 				if (object[key]) {
 					const rules = [];
 					const smToMdScreenRules = [];
@@ -474,26 +510,38 @@ export default defineNuxtComponent({
 						const subObject = object[key][name];
 
 						rules.push(
-							`--theme-${key}-${sanitizeKey(name)}--sm: ${subObject.sm};`
+							`--theme-${key}-${sanitizeKey(name)}--sm: ${
+								subObject.sm
+							};`
 						);
 						rules.push(
-							`--theme-${key}-${sanitizeKey(name)}--md: ${subObject.md};`
+							`--theme-${key}-${sanitizeKey(name)}--md: ${
+								subObject.md
+							};`
 						);
 						rules.push(
-							`--theme-${key}-${sanitizeKey(name)}--lg: ${subObject.lg};`
+							`--theme-${key}-${sanitizeKey(name)}--lg: ${
+								subObject.lg
+							};`
 						);
 
 						rules.push(
-							`--theme-${key}-${sanitizeKey(name)}: ${subObject.sm};`
+							`--theme-${key}-${sanitizeKey(name)}: ${
+								subObject.sm
+							};`
 						);
 						if (subObject.md !== subObject.sm) {
 							smToMdScreenRules.push(
-								`--theme-${key}-${sanitizeKey(name)}: ${subObject.md};`
+								`--theme-${key}-${sanitizeKey(name)}: ${
+									subObject.md
+								};`
 							);
 						}
 						if (subObject.lg !== subObject.md) {
 							mdToLgScreenRules.push(
-								`--theme-${key}-${sanitizeKey(name)}: ${subObject.lg};`
+								`--theme-${key}-${sanitizeKey(name)}: ${
+									subObject.lg
+								};`
 							);
 						}
 					}
@@ -502,9 +550,9 @@ export default defineNuxtComponent({
 					if (!minify) {
 						rules.length && rules.unshift(`/* ${key} */`);
 						smToMdScreenRules.length &&
-              smToMdScreenRules.unshift(`/* ${key} */`);
+							smToMdScreenRules.unshift(`/* ${key} */`);
 						mdToLgScreenRules.length &&
-              mdToLgScreenRules.unshift(`/* ${key} */`);
+							mdToLgScreenRules.unshift(`/* ${key} */`);
 					}
 
 					returnObject.rules.push(...rules);
@@ -568,12 +616,18 @@ export default defineNuxtComponent({
 						rules.push(
 							`--theme-${sanitizeKey(prefix)}-${sanitizeKey(
 								name
-							)}: clamp(${transformation(min)}${unit}, ${transformation(
+							)}: clamp(${transformation(
+								min
+							)}${unit}, ${transformation(
 								f1(0) + (unit === 'rem' ? mid : 0)
 							)}${unit} + ${
-								Math.round(((max - min) / (mdViewport - smViewport)) * 100000) /
-                1000
-							}vw - ${unit === 'rem' ? mid : 0}px, ${transformation(
+								Math.round(
+									((max - min) / (mdViewport - smViewport)) *
+										100000
+								) / 1000
+							}vw - ${
+								unit === 'rem' ? mid : 0
+							}px, ${transformation(
 								max + (unit === 'rem' ? mid : 0)
 							)}${unit} - ${unit === 'rem' ? mid : 0}px);`
 								.split(' - 0px')
@@ -604,15 +658,19 @@ export default defineNuxtComponent({
 									name
 								)}: clamp(${transformation(
 									min + (unit === 'rem' ? mid : 0)
-								)}${unit} - ${unit === 'rem' ? mid : 0}px, ${transformation(
+								)}${unit} - ${
+									unit === 'rem' ? mid : 0
+								}px, ${transformation(
 									f2(0) + (unit === 'rem' ? mid : 0)
 								)}${unit} + ${
 									Math.round(
-										((max - min) / (lgViewport - mdViewport)) * 100000
+										((max - min) /
+											(lgViewport - mdViewport)) *
+											100000
 									) / 1000
-								}vw - ${unit === 'rem' ? mid : 0}px, ${transformation(
-									max
-								)}${unit});`
+								}vw - ${
+									unit === 'rem' ? mid : 0
+								}px, ${transformation(max)}${unit});`
 									.split(' - 0px')
 									.join('')
 							);

@@ -15,13 +15,15 @@ const numberWithUnitRE =
 // https://unocss.dev/config/rules
 // https://unocss.dev/config/theme
 // https://unocss.dev/tools/autocomplete
+// https://github.com/unocss/unocss/blob/f4954d2a2b2a3dc4ad32d1ea098aab07596c55b1/packages/core/src/types.ts#L153
 
+// Bienvenido al uno infierno
 export { makeThemeUtilities, makeRules };
 
 // Utility map used for mapping the utility names to the CSS property names
 const utilityMap = {
 	// Colors
-	text: 'color',
+	text: 'color', // text as text is handled separately
 	border: 'border-color',
 	bg: 'background-color',
 	// Spacings
@@ -49,18 +51,36 @@ const utilityMap = {
 	'inset-y': 'inset-block',
 	'translate-x': '--un-translate-x',
 	'translate-y': '--un-translate-y',
+	gap: 'gap',
+	'gap-x': 'column-gap',
+	'gap-y': 'row-gap',
+	// Border radius
+	rounded: 'border-radius',
+	'rounded-s': ['border-start-start-radius', 'border-end-start-radius'],
+	'rounded-e': ['border-end-start-radius', 'border-end-end-radius'],
+	'rounded-t': ['border-top-left-radius', 'border-top-right-radius'],
+	'rounded-r': ['border-top-right-radius', 'border-bottom-right-radius'],
+	'rounded-b': ['border-bottom-left-radius', 'border-bottom-right-radius'],
+	'rounded-l': ['border-top-left-radius', 'border-bottom-left-radius'],
+	'rounded-tl': 'border-top-left-radius',
+	'rounded-tr': 'border-top-right-radius',
+	'rounded-br': 'border-bottom-right-radius',
+	'rounded-bl': 'border-bottom-left-radius',
 };
+// Map used for mapping the theme config names to unoCSS theme keys
 const themeKeyMap = {
 	textColors: 'textColor',
 	backgroundColors: 'backgroundColor',
 	borderColors: 'borderColor',
 };
+// Map for mapping the theme config names to partial CSS variable names
 const colorVariablePrefixMap = {
 	textColors: 'colors-text',
 	backgroundColors: 'colors-background',
 	borderColors: 'colors-border',
 };
-const themeKeyPropertyMap = {
+// Map for mapping the theme config names to CSS property names
+const textPropertyMap = {
 	// WE DON*T INCLUDE FONTSIZE HERE ON PURPOSE
 	fontFamily: 'font-family',
 	fontWeight: 'font-weight',
@@ -89,7 +109,7 @@ function makeThemeUtilities(config, options) {
 		Object.assign(config, fontSizeUtils);
 
 		// Manual overrides in config
-		Object.keys(themeKeyPropertyMap).forEach((key) => {
+		Object.keys(textPropertyMap).forEach((key) => {
 			if (originalConfig[key]) {
 				deepmerge(config[key], originalConfig[key]);
 			}
@@ -185,6 +205,7 @@ function makeRules(config, options) {
 		delete config.fontSize;
 		Object.assign(config, fontSizeUtils);
 	}
+	const textPropertyMap = filterTextPropertyMap(config);
 	const rules = [];
 
 	// RegExp-string sections for the different utility types
@@ -204,7 +225,13 @@ function makeRules(config, options) {
 		TRANSLATIONS: 'translate-x|translate-y',
 		TRANSLATIONSX: 'translate-x',
 		TRANSLATIONSY: 'translate-y',
+		GAPS: 'gap|gap-x|gap-y',
+		GAPSX: 'gap-x',
+		GAPSY: 'gap-y',
 		TEXT: 'text',
+		BORDERRADIUS:
+			'rounded|rounded-s|rounded-e|rounded-t|rounded-r|rounded-b|rounded-l|rounded-tl|rounded-tr|rounded-br|rounded-bl',
+		DROPSHADOW: 'drop-shadow',
 	};
 
 	// Selectors to be used for the rules
@@ -214,7 +241,8 @@ function makeRules(config, options) {
 			R.MARGINS,
 			R.PADDINGS,
 			R.INSETS,
-			R.TRANSLATIONS
+			R.TRANSLATIONS,
+			R.GAPS
 		),
 		'layout-gutter|layout-margin'
 	);
@@ -225,7 +253,8 @@ function makeRules(config, options) {
 			R.MARGINS,
 			R.PADDINGS,
 			R.INSETS,
-			R.TRANSLATIONS
+			R.TRANSLATIONS,
+			R.GAPS
 		),
 		`<number>/(${[
 			config.layout?.columns?.sm,
@@ -241,7 +270,8 @@ function makeRules(config, options) {
 			R.MARGINS,
 			R.PADDINGS,
 			R.INSETS,
-			R.TRANSLATIONS
+			R.TRANSLATIONS,
+			R.GAPS
 		),
 		(() => {
 			const keys = Object.keys(config.spacing || {});
@@ -254,7 +284,8 @@ function makeRules(config, options) {
 			R.MARGINSX,
 			R.PADDINGSX,
 			R.INSETSX,
-			R.TRANSLATIONSX
+			R.TRANSLATIONSX,
+			R.GAPSX
 		),
 		(() => {
 			const keys = Object.keys(config.horizontalSpacing || {}).map(
@@ -269,7 +300,8 @@ function makeRules(config, options) {
 			R.MARGINSY,
 			R.PADDINGSY,
 			R.INSETSY,
-			R.TRANSLATIONSY
+			R.TRANSLATIONSY,
+			R.GAPSY
 		),
 		(() => {
 			const keys = Object.keys(config.verticalSpacing || {}).map(
@@ -282,6 +314,20 @@ function makeRules(config, options) {
 		R.TEXT,
 		(() => {
 			const keys = Object.keys(config.fontSize || {});
+			return joinPropertyStrings(...keys);
+		})()
+	);
+	const SELECTOR_BORDER_RADIUS = joinSelectorStrings(
+		R.BORDERRADIUS,
+		(() => {
+			const keys = Object.keys(config.borderRadius || {});
+			return joinPropertyStrings(...keys);
+		})()
+	);
+	const SELECTOR_DROP_SHADOW = joinSelectorStrings(
+		R.DROPSHADOW,
+		(() => {
+			const keys = Object.keys(config.dropShadow || {});
 			return joinPropertyStrings(...keys);
 		})()
 	);
@@ -299,82 +345,77 @@ function makeRules(config, options) {
 	});
 
 	// Rules for adding specific color utilities
-	Object.keys(config.textColors || {}).length &&
-		rules.push(
-			// Rule for text and border color
-			// Derived from https://github.com/unocss/unocss/blob/main/packages/preset-mini/src/_rules/color.ts
-			// We do a switcheroo on the colors and textColors to force colorResolver to use the textColors – we need to do that on each "special" property
-			...['text', 'border'].map((key) => {
-				return [
-					new RegExp(`^${key}-(.+)$`),
-					(match, meta) => {
-						meta = { ...meta };
-						meta.theme = {
-							...meta.theme,
-							colors: meta.theme[`${key}Color`],
-						};
-						return colorResolver(
-							utilityMap[key],
-							key,
-							(css) =>
-								!css.color?.toString().match(numberWithUnitRE)
-						)(match, meta);
-					},
-					{ autocomplete: `${key}-$${key}Color` },
-				];
-			}),
+	rules.push(
+		// Rule for text and border color
+		// Derived from https://github.com/unocss/unocss/blob/main/packages/preset-mini/src/_rules/color.ts
+		// We do a switcheroo on the colors and textColors to force colorResolver to use the textColors – we need to do that on each "special" property
+		...['text', 'border'].map((key) => {
+			return [
+				new RegExp(`^${key}-(.+)$`),
+				(match, meta) => {
+					meta = { ...meta };
+					meta.theme = {
+						...meta.theme,
+						colors: {
+							...(meta.theme.colors || {}),
+							...(meta.theme[`${key}Color`] || {}),
+						},
+					};
+					return colorResolver(
+						utilityMap[key],
+						key,
+						(css) => !css.color?.toString().match(numberWithUnitRE)
+					)(match, meta);
+				},
+				{ autocomplete: `${key}-$${key}Color` },
+			];
+		}),
 
-			// Rule for background color and for setting variable scope as well
-			// Important the bg-scope rule is placed after the bg rule
-			...['bg', 'bg-scope'].map((utility) => {
-				return [
-					new RegExp(`^${utility}-(.+)$`),
-					(match, meta) => {
-						meta = { ...meta };
-						meta.theme = {
-							...meta.theme,
-							colors: meta.theme.backgroundColor,
-						};
+		// Rule for background color and for setting variable scope as well
+		// Important the bg-scope rule is placed after the bg rule
+		...['bg', 'bg-scope'].map((utility) => {
+			return [
+				new RegExp(`^${utility}-(.+)$`),
+				(match, meta) => {
+					meta = { ...meta };
+					meta.theme = {
+						...meta.theme,
+						colors: meta.theme.backgroundColor,
+					};
 
-						/* eslint-disable */
-						const _return =
-							utility === 'bg-scope'
-								? {}
-								: colorResolver('background-color', 'bg')(
-										match,
-										meta
-								  );
-						/* eslint-enable */
+					/* eslint-disable */
+					const _return =
+						utility === 'bg-scope'
+							? {}
+							: colorResolver('background-color', 'bg')(
+									match,
+									meta
+							  );
+					/* eslint-enable */
 
-						// Set variables that are dependent on the background color
-						colorKeysWithOnRules.forEach((key) => {
-							Object.keys(config[key] || {}).forEach(
-								(fullName) => {
-									const name = fullName
-										.split(
-											`on-${match[1]
-												.split('-scope')
-												.pop()}-`
-										)
-										.pop();
-									if (name !== fullName) {
-										const prefix =
-											colorVariablePrefixMap[key] || key;
-										const newVar = {
-											[`--theme-${prefix}-${name}-on-X`]: `var(--theme-${prefix}-${fullName})`,
-										};
-										Object.assign(_return, newVar, _return);
-									}
-								}
-							);
+					// Set variables that are dependent on the background color
+					colorKeysWithOnRules.forEach((key) => {
+						Object.keys(config[key] || {}).forEach((fullName) => {
+							const name = fullName
+								.split(`on-${match[1].split('-scope').pop()}-`)
+								.pop();
+							if (name !== fullName) {
+								const prefix =
+									colorVariablePrefixMap[key] || key;
+								const newVar = {
+									[`--theme-${prefix}-${name}-on-X`]: `var(--theme-${prefix}-${fullName})`,
+								};
+								Object.assign(_return, newVar, _return);
+							}
 						});
+					});
 
-						return _return;
-					},
-					{ autocomplete: `${utility}-$backgroundColor` },
-				];
-			})
-		);
+					return _return;
+				},
+				{ autocomplete: `${utility}-$backgroundColor` },
+			];
+		})
+	);
 
 	// Rules for adding the layout utilities
 	Object.keys(config.layout || {}).length &&
@@ -406,6 +447,7 @@ function makeRules(config, options) {
 				},
 				{
 					autocomplete: SELECTOR_LAYOUT_MARGIN_GUTTER,
+					sortBefore: /^ma?()-?(-?.+)$/,
 				},
 			],
 
@@ -604,19 +646,25 @@ function makeRules(config, options) {
 							value
 						)})`,
 					};
-					Object.keys(themeKeyPropertyMap).forEach((key) => {
-						const property = themeKeyPropertyMap[key];
+					Object.keys(textPropertyMap).forEach((key) => {
+						const property = textPropertyMap[key];
 						if (config[key]?.[value]) {
 							if (key === 'paragraphSpacing') {
 								_return[
 									property
 								] = `var(--theme-${key}-${sanitizeKey(
 									value
-								)}, 1em)`;
+								)}, 0)`;
 							} else {
 								_return[
 									property
 								] = `var(--theme-${key}-${sanitizeKey(value)})`;
+							}
+						} else {
+							if (key === 'paragraphSpacing') {
+								_return[property] = '0';
+							} else {
+								_return[property] = 'initial';
 							}
 						}
 					});
@@ -628,6 +676,56 @@ function makeRules(config, options) {
 				},
 			]
 		);
+
+	// Rules for border radius utilities
+	Object.keys(config.borderRadius || {}).length &&
+		rules.push(
+			// Rule for border radius
+			[
+				makeRegExp(SELECTOR_BORDER_RADIUS),
+				(match, { currentSelector }) => {
+					const property = utilityMap[match[1]] || match[1];
+					const value = currentSelector.split(`${match[1]}-`).pop();
+					if (!property || !value) return;
+
+					return {
+						[property]: `var(--theme-borderRadius-${sanitizeKey(
+							value
+						)}, var(--theme-borderRadius-${sanitizeKey(
+							value
+						)}--sm))`,
+					};
+				},
+				{
+					autocomplete: SELECTOR_BORDER_RADIUS,
+				},
+			]
+		);
+
+	// Rules for drop shadow utilities
+	// Need to figure some stuff out with design
+	// Object.keys(config.dropShadow || {}).length &&
+	// 	rules.push(
+	// 		// Rule for drop shadows
+	// 		[
+	// 			makeRegExp(SELECTOR_DROP_SHADOW),
+	// 			(match, { currentSelector }) => {
+	// 				console.log(match, currentSelector);
+	// 				const property = utilityMap[match[1]] || match[1];
+	// 				const value = currentSelector.split(`${match[1]}-`).pop();
+	// 				if (!property || !value) return;
+
+	// 				return {
+	// 					[property]: `var(--theme-dropShadow-${sanitizeKey(
+	// 						value
+	// 					)}, var(--theme-dropShadow-${sanitizeKey(value)}--sm))`,
+	// 				};
+	// 			},
+	// 			{
+	// 				autocomplete: SELECTOR_BORDER_RADIUS,
+	// 			},
+	// 		]
+	// 	);
 
 	// Return the compiled rules
 	return rules;
@@ -713,4 +811,16 @@ function getRightColorValue(configKey, configSubKey, colorValue) {
 		)}))`;
 	}
 	return colorValue;
+}
+
+// Filter the theme key property map to only include the keys that are in the config
+function filterTextPropertyMap(config) {
+	const newMap = { ...textPropertyMap };
+	Object.keys(textPropertyMap).forEach((key) => {
+		if (key in config) {
+			return;
+		}
+		delete newMap[key];
+	});
+	return newMap;
 }
