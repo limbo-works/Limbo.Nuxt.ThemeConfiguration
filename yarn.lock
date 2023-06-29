@@ -1138,6 +1138,17 @@
   dependencies:
     "@nuxt/image-edge" "^1.0.0-27968280.9739e4d"
 
+"@limbo-works/lint-configs@^1.0.0":
+  version "1.0.0"
+  resolved "https://npm.pkg.github.com/download/@limbo-works/lint-configs/1.0.0/869a94a245362ab7525c6ba951b70b1170d186b0#869a94a245362ab7525c6ba951b70b1170d186b0"
+  integrity sha512-FbPH/AJa7g/8Bu68z4hKVpuXJXhi/1DXS38bgGc2Kdr71DOK83y+jgk2qwQYF7ryG1YQVaU4KQQiCZRnBoGuVw==
+  dependencies:
+    "@unocss/eslint-config" "^0.53.4"
+    eslint "^8.20.0"
+    eslint-config-prettier "^8.5.0"
+    eslint-plugin-vue "^9.9.0"
+    prettier "^2.7.1"
+
 "@limbo-works/nuxt-core@^1.0.9":
   version "1.0.9"
   resolved "https://npm.pkg.github.com/download/@limbo-works/nuxt-core/1.0.9/d8beef1d999b63ed372ab9d1e815613ef3a11baf#d8beef1d999b63ed372ab9d1e815613ef3a11baf"

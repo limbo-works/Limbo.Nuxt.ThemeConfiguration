@@ -1,1 +1,1 @@
-module.exports = require('@limbo-works/nuxt-core/.prettierrc.cjs');
+module.exports = require('@limbo-works/lint-configs/.prettierrc.cjs');
