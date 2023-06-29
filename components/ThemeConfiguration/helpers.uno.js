@@ -131,7 +131,9 @@ function makeThemeUtilities(config, options) {
 
 	// Adding the color utilities
 	if (config.colors) {
-		themeUtilities.colors = {};
+		themeUtilities.colors = {
+			bgCurrent: 'var(--bgCurrent, transparent)',
+		};
 
 		// Add the color rules
 		Object.keys(config.colors || {}).forEach((key) => {
@@ -380,18 +382,36 @@ function makeRules(config, options) {
 					meta = { ...meta };
 					meta.theme = {
 						...meta.theme,
-						colors: meta.theme.backgroundColor,
+						colors: {
+							...(meta.theme.colors || {}),
+							...(meta.theme.backgroundColor || {}),
+						},
 					};
 
-					/* eslint-disable */
-					const _return =
-						utility === 'bg-scope'
-							? {}
-							: colorResolver('background-color', 'bg')(
-									match,
-									meta
-							  );
-					/* eslint-enable */
+					const resolvedColor = colorResolver(
+						'background-color',
+						utility
+					)(match, meta);
+					const _return = { ...resolvedColor };
+					if (utility === 'bg-scope') {
+						delete _return['background-color'];
+					}
+
+					// Add currently set background as a variable
+					if (Object.keys(resolvedColor).length) {
+						if (
+							!['bg-bgCurrent', 'bg-scope-bgCurrent'].includes(
+								match[0]
+							)
+						) {
+							const addedStyles = {
+								'--bgCurrent':
+									resolvedColor['background-color'],
+							};
+
+							Object.assign(_return, addedStyles, _return);
+						}
+					}
 
 					// Set variables that are dependent on the background color
 					colorKeysWithOnRules.forEach((key) => {
@@ -727,6 +747,9 @@ function makeRules(config, options) {
 	// 		]
 	// 	);
 
+	// Opacity rules are pullet from core presets and added to the end of the rules to allow for overwrite
+	rules.push(...getOpacityRules());
+
 	// Return the compiled rules
 	return rules;
 }
@@ -823,4 +846,44 @@ function filterTextPropertyMap(config) {
 		delete newMap[key];
 	});
 	return newMap;
+}
+
+// Get opacity rules
+function getOpacityRules() {
+	const presetNuxtCore = tryRequire(
+		'@limbo-works/nuxt-core/assets/js/unocss/preset-core.js'
+	);
+	const presetCitiCore = tryRequire(
+		'@limbo-works/citi-core/assets/js/unocss/preset-citi-core.js'
+	);
+
+	let opacityRules = [];
+	[presetNuxtCore, presetCitiCore].forEach((preset) => {
+		opacityRules.push(
+			...(preset?.()?.rules?.filter?.((rule) => {
+				return (
+					String(rule[0]).indexOf('op(?:acity)?') >= 0 ||
+					String(rule[0]).indexOf('opacity') >= 0
+				);
+			}) || [])
+		);
+	});
+
+	opacityRules = [...new Set(opacityRules)].map((rule) => {
+		const [...newRule] = rule;
+		return newRule;
+	});
+
+	return opacityRules;
+}
+
+// Try import
+function tryRequire(path, fallback) {
+	let output = fallback;
+	try {
+		output = require(path);
+	} catch (e) {
+		// Nothing
+	}
+	return output;
 }
