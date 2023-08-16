@@ -1,4 +1,3 @@
-// Last modified: 2023/06/20 13:39:03
 import {
 	sanitizeKey,
 	restructureFontSizeObject,

@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<ThemeConfiguration> Yes it is loaded </ThemeConfiguration>
+		<ThemeConfiguration config="default"> Yes it is loaded </ThemeConfiguration>
 		<div>Test?</div>
 	</div>
 </template>

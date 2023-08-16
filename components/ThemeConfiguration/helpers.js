@@ -1,4 +1,3 @@
-// Last modified: 2023/08/16 15:26:21
 export {
 	sanitizeKey,
 	restructureFontSizeObject,
@@ -75,12 +74,11 @@ function cloneDeep(object) {
 	return JSON.parse(JSON.stringify(object));
 }
 
+const globs = await import.meta.glob(
+	'~/assets/js/theme-configuration.*.(js|cjs|mjs)',
+	{ as: 'json' }
+);
 async function getThemeConfigurations() {
-	const globs = await import.meta.glob(
-		'~/assets/js/theme-configuration.*.(js|cjs|mjs)',
-		{ as: 'json' }
-	);
-
 	const themeConfigurations = {};
 	for (const key in globs) {
 		const themeName = key.match(/theme-configuration\.([a-z]+)\./)[1];
