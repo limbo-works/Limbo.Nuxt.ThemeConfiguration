@@ -1,9 +1,4 @@
-export {
-	sanitizeKey,
-	restructureFontSizeObject,
-	cloneDeep,
-	getThemeConfigurations,
-};
+export { sanitizeKey, restructureFontSizeObject, cloneDeep };
 
 function sanitizeKey(key) {
 	return String(key).replace(/[^a-zA-Z0-9]/g, '-');
@@ -72,18 +67,4 @@ function restructureFontSizeObject(object) {
 
 function cloneDeep(object) {
 	return JSON.parse(JSON.stringify(object));
-}
-
-const globs = import.meta.glob(
-	'~/assets/js/theme-configuration.*.(js|cjs|mjs)',
-	{ as: 'json' }
-);
-async function getThemeConfigurations() {
-	const themeConfigurations = {};
-	for (const key in globs) {
-		const themeName = key.match(/theme-configuration\.([a-z]+)\./)[1];
-		themeConfigurations[themeName] = (await globs[key]())?.default;
-	}
-
-	return themeConfigurations;
 }

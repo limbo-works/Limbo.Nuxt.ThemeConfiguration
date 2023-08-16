@@ -2,7 +2,7 @@ import {
 	sanitizeKey,
 	restructureFontSizeObject,
 	cloneDeep,
-} from './helpers.mjs';
+} from './helpers.js';
 
 export { makeThemeUtilities, makeThemePlugins };
 

@@ -13,8 +13,7 @@ import {
 	sanitizeKey,
 	restructureFontSizeObject,
 	cloneDeep,
-	getThemeConfigurations,
-} from './helpers.mjs';
+} from './helpers.js';
 
 /*
 	This is the component responsible for configuring the theme
@@ -735,4 +734,20 @@ export default defineNuxtComponent({
 		},
 	},
 });
+
+
+const globs = import.meta.glob(
+	'~/assets/js/theme-configuration.*.(js|cjs|mjs)',
+	{ as: 'json' }
+);
+async function getThemeConfigurations() {
+	const themeConfigurations = {};
+	for (const key in globs) {
+		const themeName = key.match(/theme-configuration\.([a-z]+)\./)[1];
+		themeConfigurations[themeName] = (await globs[key]())?.default;
+	}
+
+	return themeConfigurations;
+}
+
 </script>
