@@ -13,17 +13,12 @@ import {
 	sanitizeKey,
 	restructureFontSizeObject,
 	cloneDeep,
+	getThemeConfigurations,
 } from './helpers.js';
 
 // We load the default config if it exists
-let defaultConfig = null;
-try {
-	defaultConfig = (await import(
-		'~/assets/js/theme-configuration.default.js'
-	))?.default;
-} catch (e) {
-	defaultConfig = {};
-}
+const availableConfigurations = await getThemeConfigurations();
+let defaultConfig = availableConfigurations.default;
 
 const { minify } = defaultConfig;
 
@@ -50,7 +45,7 @@ export default defineNuxtComponent({
 
 	props: {
 		config: {
-			type: Object,
+			type: [String,Object],
 			default: () => ({}),
 		},
 		cssLayer: {
@@ -63,9 +58,15 @@ export default defineNuxtComponent({
 		compConfig() {
 			let clone = cloneDeep(defaultConfig);
 
+			let usedConfig = this.config;
+			if (typeof usedConfig === 'string') {
+				usedConfig = availableConfigurations[usedConfig];
+			}
+			usedConfig = usedConfig || {};
+
 			// Overwrite by property
-			if (Object.keys(this.config || {}).length) {
-				clone = deepmerge(clone, cloneDeep(this.config));
+			if (Object.keys(usedConfig).length) {
+				clone = deepmerge(clone, cloneDeep(usedConfig));
 			}
 
 			// Default to the defaultConfig
