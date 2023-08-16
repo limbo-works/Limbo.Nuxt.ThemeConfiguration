@@ -9,13 +9,21 @@
 import * as deepmergeSrc from 'deepmerge';
 const deepmerge = deepmergeSrc.default || deepmergeSrc;
 
-/* The main theme should be configured (and always exists) at ~/assets/js/theme-configuration.default.js */
-import { default as defaultConfig } from '~/assets/js/theme-configuration.default.js';
 import {
 	sanitizeKey,
 	restructureFontSizeObject,
 	cloneDeep,
 } from './helpers.js';
+
+// We load the default config if it exists
+let defaultConfig = null;
+try {
+	defaultConfig = (await import(
+		'~/assets/js/theme-configuration.default.js'
+	))?.default;
+} catch (e) {
+	defaultConfig = {};
+}
 
 const { minify } = defaultConfig;
 
