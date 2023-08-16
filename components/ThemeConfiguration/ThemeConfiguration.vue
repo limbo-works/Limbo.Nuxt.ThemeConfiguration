@@ -16,12 +16,6 @@ import {
 	getThemeConfigurations,
 } from './helpers.js';
 
-// We load the default config if it exists
-const availableConfigurations = await getThemeConfigurations();
-let defaultConfig = availableConfigurations.default;
-
-const { minify } = defaultConfig;
-
 /*
 	This is the component responsible for configuring the theme
 	of the solution. The component takes basis in a default theme,
@@ -54,13 +48,22 @@ export default defineNuxtComponent({
 		},
 	},
 
+	data() {
+		return {
+			availableConfigurations: {},
+		};
+	},
+
 	computed: {
+		defaultConfig() {
+			return this.availableConfigurations.default || {};
+		},
 		compConfig() {
-			let clone = cloneDeep(defaultConfig);
+			let clone = cloneDeep(this.defaultConfig);
 
 			let usedConfig = this.config;
 			if (typeof usedConfig === 'string') {
-				usedConfig = availableConfigurations[usedConfig];
+				usedConfig = this.availableConfigurations[usedConfig];
 			}
 			usedConfig = usedConfig || {};
 
@@ -71,6 +74,9 @@ export default defineNuxtComponent({
 
 			// Default to the defaultConfig
 			return clone;
+		},
+		minify() {
+			return this.compConfig.minify;
 		},
 
 		cssText() {
@@ -133,7 +139,7 @@ export default defineNuxtComponent({
 
 			// Apply root around rules and indent
 			if (rules.length) {
-				if (!minify) {
+				if (!this.minify) {
 					rules = rules.map((rule) => `  ${rule}`);
 				}
 				rules.unshift(':root {');
@@ -143,7 +149,7 @@ export default defineNuxtComponent({
 			// Apply media query and root around rules and indent
 			if (smToMdScreenRules.length) {
 				// Root
-				if (!minify) {
+				if (!this.minify) {
 					smToMdScreenRules = smToMdScreenRules.map(
 						(rule) => `  ${rule}`
 					);
@@ -152,7 +158,7 @@ export default defineNuxtComponent({
 				smToMdScreenRules.push('}');
 
 				// Media query
-				if (!minify) {
+				if (!this.minify) {
 					smToMdScreenRules = smToMdScreenRules.map(
 						(rule) => `  ${rule}`
 					);
@@ -170,14 +176,14 @@ export default defineNuxtComponent({
 
 			if (mdScreenRules.length) {
 				// Root
-				if (!minify) {
+				if (!this.minify) {
 					mdScreenRules = mdScreenRules.map((rule) => `  ${rule}`);
 				}
 				mdScreenRules.unshift(':root {');
 				mdScreenRules.push('}');
 
 				// Media query
-				if (!minify) {
+				if (!this.minify) {
 					mdScreenRules = mdScreenRules.map((rule) => `  ${rule}`);
 				}
 				mdScreenRules.unshift(
@@ -190,7 +196,7 @@ export default defineNuxtComponent({
 
 			if (mdToLgScreenRules.length) {
 				// Root
-				if (!minify) {
+				if (!this.minify) {
 					mdToLgScreenRules = mdToLgScreenRules.map(
 						(rule) => `  ${rule}`
 					);
@@ -199,7 +205,7 @@ export default defineNuxtComponent({
 				mdToLgScreenRules.push('}');
 
 				// Media query
-				if (!minify) {
+				if (!this.minify) {
 					mdToLgScreenRules = mdToLgScreenRules.map(
 						(rule) => `  ${rule}`
 					);
@@ -217,14 +223,14 @@ export default defineNuxtComponent({
 
 			if (lgScreenRules.length) {
 				// Root
-				if (!minify) {
+				if (!this.minify) {
 					lgScreenRules = lgScreenRules.map((rule) => `  ${rule}`);
 				}
 				lgScreenRules.unshift(':root {');
 				lgScreenRules.push('}');
 
 				// Media query
-				if (!minify) {
+				if (!this.minify) {
 					lgScreenRules = lgScreenRules.map((rule) => `  ${rule}`);
 				}
 				lgScreenRules.unshift(
@@ -239,7 +245,7 @@ export default defineNuxtComponent({
 			const layer = this.cssLayer ? [`@layer ${this.cssLayer} {`] : [];
 			const layerEnd = this.cssLayer ? ['}'] : [];
 
-			if (minify) {
+			if (this.minify) {
 				return [
 					...layer,
 					...rules,
@@ -272,6 +278,10 @@ export default defineNuxtComponent({
 		},
 	},
 
+	async created() {
+		this.availableConfigurations = await getThemeConfigurations();
+	},
+
 	methods: {
 		// Extracting colors from the config
 		extractColorRules(object, prefix) {
@@ -279,7 +289,7 @@ export default defineNuxtComponent({
 
 			const rules = [];
 			Object.entries(object).forEach(([key, value]) => {
-				if (!minify && !rules.length) {
+				if (!this.minify && !rules.length) {
 					rules.push(`/* colors ${prefix ? `- ${prefix} ` : ''}*/`);
 				}
 
@@ -317,7 +327,7 @@ export default defineNuxtComponent({
 				mdScreenRules = [],
 				lgScreenRules = [],
 			} = this.extractRules('layout', object);
-			if (!minify) {
+			if (!this.minify) {
 				!rules.length && rules.push('/* layout */');
 				!mdScreenRules.length && mdScreenRules.push('/* layout */');
 				!lgScreenRules.length && lgScreenRules.push('/* layout */');
@@ -381,7 +391,7 @@ export default defineNuxtComponent({
 				rules.push(`--theme-layout-max: ${maxRuleValue}px;`);
 			}
 
-			if (!minify) {
+			if (!this.minify) {
 				rules.length === 1 && rules.pop();
 				mdScreenRules.length === 1 && mdScreenRules.pop();
 				lgScreenRules.length === 1 && lgScreenRules.pop();
@@ -486,7 +496,7 @@ export default defineNuxtComponent({
 					}
 
 					// Return rules
-					if (!minify) {
+					if (!this.minify) {
 						rules.length && rules.unshift(`/* ${key} */`);
 						smToMdScreenRules.length &&
 							smToMdScreenRules.unshift(`/* ${key} */`);
@@ -556,7 +566,7 @@ export default defineNuxtComponent({
 					}
 
 					// Return rules
-					if (!minify) {
+					if (!this.minify) {
 						rules.length && rules.unshift(`/* ${key} */`);
 						smToMdScreenRules.length &&
 							smToMdScreenRules.unshift(`/* ${key} */`);
@@ -689,7 +699,7 @@ export default defineNuxtComponent({
 			}
 
 			// Return rules
-			if (minify) {
+			if (this.minify) {
 				return {
 					rules,
 					mdScreenRules,
