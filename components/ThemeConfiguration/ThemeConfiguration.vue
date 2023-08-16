@@ -14,7 +14,7 @@ import {
 	restructureFontSizeObject,
 	cloneDeep,
 	getThemeConfigurations,
-} from './helpers.js';
+} from './helpers.mjs';
 
 /*
 	This is the component responsible for configuring the theme

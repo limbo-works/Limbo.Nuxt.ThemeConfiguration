@@ -3,7 +3,7 @@ import {
 	sanitizeKey,
 	restructureFontSizeObject,
 	cloneDeep,
-} from './helpers.js';
+} from './helpers.mjs';
 import * as deepmergeSrc from 'deepmerge';
 const deepmerge = deepmergeSrc.default || deepmergeSrc;
 
