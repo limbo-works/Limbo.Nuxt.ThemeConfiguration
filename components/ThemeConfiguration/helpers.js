@@ -75,7 +75,7 @@ function cloneDeep(object) {
 }
 
 async function getThemeConfigurations() {
-	const globs = await import.meta.glob(
+	const globs = import.meta.glob(
 		'~/assets/js/theme-configuration.*.(js|cjs|mjs)',
 		{ as: 'json' }
 	);
@@ -85,5 +85,6 @@ async function getThemeConfigurations() {
 		themeConfigurations[themeName] = (await globs[key]())?.default;
 	}
 
+	console.log(themeConfigurations);
 	return themeConfigurations;
 }
