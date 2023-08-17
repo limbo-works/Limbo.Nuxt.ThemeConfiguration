@@ -1,7 +1,7 @@
 {
 	"name": "@limbo-works/theme-configuration",
 	"type": "module",
-	"version": "0.4.6",
+	"version": "0.4.7",
 	"main": "./nuxt.config.js",
 	"scripts": {
 		"dev": "nuxi prepare & nuxi dev .playground",
@@ -17,5 +17,8 @@
 	"devDependencies": {
 		"@limbo-works/lint-configs": "^1.0.0",
 		"nuxt": "^3.0.0"
+	},
+	"dependencies": {
+		"deepmerge": "^4.3.1"
 	}
 }
