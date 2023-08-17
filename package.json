@@ -1,7 +1,7 @@
 {
 	"name": "@limbo-works/theme-configuration",
 	"type": "module",
-	"version": "0.4.7",
+	"version": "0.4.8",
 	"main": "./nuxt.config.js",
 	"scripts": {
 		"dev": "nuxi prepare & nuxi dev .playground",
