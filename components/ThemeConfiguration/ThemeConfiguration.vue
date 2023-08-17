@@ -6,14 +6,11 @@
 </template>
 
 <script>
-import * as deepmergeSrc from 'deepmerge';
-const deepmerge = deepmergeSrc.default || deepmergeSrc;
-console.log(deepmerge);
-
 import {
 	sanitizeKey,
 	restructureFontSizeObject,
 	cloneDeep,
+	deepmerge,
 } from './helpers.js';
 
 /*

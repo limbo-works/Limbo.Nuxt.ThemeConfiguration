@@ -3,9 +3,8 @@ import {
 	sanitizeKey,
 	restructureFontSizeObject,
 	cloneDeep,
+	deepmerge,
 } from './helpers.js';
-import * as deepmergeSrc from 'deepmerge';
-const deepmerge = deepmergeSrc.default || deepmergeSrc;
 
 // From https://github.com/unocss/unocss/blob/main/packages/preset-mini/src/_utils/handlers/regex.ts
 const numberWithUnitRE =

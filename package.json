@@ -17,8 +17,5 @@
 	"devDependencies": {
 		"@limbo-works/lint-configs": "^1.0.0",
 		"nuxt": "^3.0.0"
-	},
-	"dependencies": {
-		"deepmerge": "^4.3.1"
 	}
 }

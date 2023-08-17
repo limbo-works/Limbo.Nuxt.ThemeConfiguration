@@ -1,4 +1,4 @@
-export { sanitizeKey, restructureFontSizeObject, cloneDeep };
+export { sanitizeKey, restructureFontSizeObject, cloneDeep, deepmerge };
 
 function sanitizeKey(key) {
 	return String(key).replace(/[^a-zA-Z0-9]/g, '-');
@@ -67,4 +67,24 @@ function restructureFontSizeObject(object) {
 
 function cloneDeep(object) {
 	return JSON.parse(JSON.stringify(object));
+}
+
+const isObject = (item) =>
+	item && typeof item === 'object' && !Array.isArray(item);
+function deepmerge(target, ...sources) {
+	if (!sources.length) return target;
+	const source = sources.shift();
+
+	if (isObject(target) && isObject(source)) {
+		for (const key in source) {
+			if (isObject(source[key])) {
+				if (!target[key]) Object.assign(target, { [key]: {} });
+				deepmerge(target[key], source[key]);
+			} else {
+				Object.assign(target, { [key]: source[key] });
+			}
+		}
+	}
+
+	return deepmerge(target, ...sources);
 }
