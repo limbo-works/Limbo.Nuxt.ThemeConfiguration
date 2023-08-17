@@ -47,7 +47,7 @@ export default defineNuxtComponent({
 
 	data() {
 		return {
-			availableConfigurations: {},
+			availableConfigurations: this.$.setupState?.initiallyAvailableConfigurations || {},
 		};
 	},
 
@@ -747,5 +747,9 @@ async function getThemeConfigurations() {
 
 	return themeConfigurations;
 }
+</script>
 
+<script setup>
+// To make sure configs are loaded from SSR
+const initiallyAvailableConfigurations = await getThemeConfigurations();
 </script>
