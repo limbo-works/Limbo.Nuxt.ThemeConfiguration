@@ -119,12 +119,21 @@ function makeThemeUtilities(config, options) {
 	// Pick out keys to transform
 	const colorKeys = getColorRuleKeys(config);
 	const colorKeysWithOnRules = colorKeys.filter((key) => {
-		const regExp = new RegExp(
-			`on-(${Object.keys(config.backgroundColors || {}).join('|')})`
-		);
+		const kebabPartial = `(on-(${Object.keys(
+			config.backgroundColors || {}
+		).join('|')}))`;
+		const camelPartial = `(on(${Object.keys(config.backgroundColors || {})
+			.map((key) => {
+				return key.charAt(0).toUpperCase() + key.slice(1);
+			})
+			.join('|')}))`;
+
+		const regExpKebab = new RegExp(kebabPartial);
+		const regExpCamel = new RegExp(camelPartial);
+
 		const obj = config[key] || {};
 		return Object.keys(obj).some((subKey) => {
-			return regExp.test(subKey);
+			return regExpKebab.test(subKey) || regExpCamel.test(subKey);
 		});
 	});
 
@@ -147,12 +156,45 @@ function makeThemeUtilities(config, options) {
 		colorKeysWithOnRules.forEach((key) => {
 			const obj = config[key] || {};
 			Object.keys(obj).forEach((subKey) => {
+				let name, background;
 				const value = obj[subKey];
-				const [background, ...remainderArray] = subKey
-					.split('on-')
-					.pop()
-					.split('-');
-				const name = remainderArray.join('-');
+
+				if (subKey.indexOf('on-') === 0) {
+					// Kebab syntax check
+					const str = subKey.replace('on-', '');
+					const backgroundKeys = Object.keys(config.backgroundColors);
+					backgroundKeys.sort((a, b) => b.length - a.length);
+					backgroundKeys.find((backgroundKey) => {
+						if (
+							str.indexOf(backgroundKey) === 0 &&
+							backgroundKey.length !== str.length
+						) {
+							name = str.replace(backgroundKey, '').substring(1);
+							name = name.charAt(0).toLowerCase() + name.slice(1);
+							background = backgroundKey;
+							return true;
+						}
+					});
+				} else if (
+					subKey.indexOf('on') === 0 &&
+					subKey.charAt(2) === subKey.charAt(2).toUpperCase()
+				) {
+					// Camel syntax check
+					const str = subKey.replace('on', '');
+					const backgroundKeys = Object.keys(config.backgroundColors);
+					backgroundKeys.sort((a, b) => b.length - a.length);
+					backgroundKeys.find((backgroundKey) => {
+						const bg =
+							backgroundKey.charAt(0).toUpperCase() +
+							backgroundKey.slice(1);
+						if (str.indexOf(bg) === 0 && bg.length !== str.length) {
+							name = str.replace(bg, '');
+							name = name.charAt(0).toLowerCase() + name.slice(1);
+							background = backgroundKey;
+							return true;
+						}
+					});
+				}
 
 				if (background && name) {
 					const themeKey = themeKeyMap[key] ?? 'colors';
@@ -336,12 +378,21 @@ function makeRules(config, options) {
 	// Pick out keys to transform
 	const colorKeys = getColorRuleKeys(config);
 	const colorKeysWithOnRules = colorKeys.filter((key) => {
-		const regExp = new RegExp(
-			`on-(${Object.keys(config.backgroundColors || {}).join('|')})`
-		);
+		const kebabPartial = `(on-(${Object.keys(
+			config.backgroundColors || {}
+		).join('|')}))`;
+		const camelPartial = `(on(${Object.keys(config.backgroundColors || {})
+			.map((key) => {
+				return key.charAt(0).toUpperCase() + key.slice(1);
+			})
+			.join('|')}))`;
+
+		const regExpKebab = new RegExp(kebabPartial);
+		const regExpCamel = new RegExp(camelPartial);
+
 		const obj = config[key] || {};
 		return Object.keys(obj).some((subKey) => {
-			return regExp.test(subKey);
+			return regExpKebab.test(subKey) || regExpCamel.test(subKey);
 		});
 	});
 
@@ -415,10 +466,62 @@ function makeRules(config, options) {
 					// Set variables that are dependent on the background color
 					colorKeysWithOnRules.forEach((key) => {
 						Object.keys(config[key] || {}).forEach((fullName) => {
-							const name = fullName
-								.split(`on-${match[1].split('-scope').pop()}-`)
-								.pop();
-							if (name !== fullName) {
+							let name, background;
+							if (fullName.indexOf('on-') === 0) {
+								// Kebab syntax check
+								const str = fullName.replace('on-', '');
+								const backgroundKeys = Object.keys(
+									config.backgroundColors
+								);
+								backgroundKeys.sort(
+									(a, b) => b.length - a.length
+								);
+								backgroundKeys.find((backgroundKey) => {
+									if (
+										str.indexOf(backgroundKey) === 0 &&
+										backgroundKey.length !== str.length
+									) {
+										name = str
+											.replace(backgroundKey, '')
+											.substring(1);
+										name =
+											name.charAt(0).toLowerCase() +
+											name.slice(1);
+										background = backgroundKey;
+										return true;
+									}
+								});
+							} else if (
+								fullName.indexOf('on') === 0 &&
+								fullName.charAt(2) ===
+									fullName.charAt(2).toUpperCase()
+							) {
+								// Camel syntax check
+								const str = fullName.replace('on', '');
+								const backgroundKeys = Object.keys(
+									config.backgroundColors
+								);
+								backgroundKeys.sort(
+									(a, b) => b.length - a.length
+								);
+								backgroundKeys.find((backgroundKey) => {
+									const bg =
+										backgroundKey.charAt(0).toUpperCase() +
+										backgroundKey.slice(1);
+									if (
+										str.indexOf(bg) === 0 &&
+										bg.length !== str.length
+									) {
+										name = str.replace(bg, '');
+										name =
+											name.charAt(0).toLowerCase() +
+											name.slice(1);
+										background = backgroundKey;
+										return true;
+									}
+								});
+							}
+							if (name !== fullName && background === match[1]) {
 								const prefix =
 									colorVariablePrefixMap[key] || key;
 								const newVar = {

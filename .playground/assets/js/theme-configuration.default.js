@@ -34,7 +34,20 @@ export default {
 			rules.
 		*/
 		text: '#000000',
+		onPrimaryStrong: [251, 251, 254],
+		onPrimaryMedium: [209, 214, 250],
+		'on-primary-medium': [209, 214, 250],
+		onFishStickStrong: [0, 0, 0],
+		onFishStickMediumFried: [0, 0, 0],
+		'on-fishStick-oldAndMusky': [0, 0, 0],
+		'on-test-test-another-test': [0, 0, 0],
 		// ...other colors here
+	},
+
+	backgroundColors: {
+		primary: [75, 67, 190],
+		fishStick: [255, 255, 255],
+		'test-test': [255, 255, 255],
 	},
 
 	layout: {
