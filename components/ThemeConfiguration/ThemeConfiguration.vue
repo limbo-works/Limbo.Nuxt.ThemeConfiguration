@@ -741,7 +741,7 @@ const globs = import.meta.glob(
 async function getThemeConfigurations() {
 	const themeConfigurations = {};
 	for (const key in globs) {
-		const themeName = key.match(/theme-configuration\.([a-z]+)\./)[1];
+		const themeName = key.match(/theme-configuration\.([a-zA-Z0-9_-]+)\./)[1];
 		themeConfigurations[themeName] = (await globs[key]())?.default;
 	}
 
