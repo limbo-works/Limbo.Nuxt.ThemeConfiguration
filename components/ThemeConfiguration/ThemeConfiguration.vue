@@ -37,11 +37,15 @@ export default defineNuxtComponent({
 	props: {
 		config: {
 			type: [String,Object],
-			default: () => ({}),
+			default: null,
 		},
 		cssLayer: {
 			type: String,
 			default: '',
+		},
+		useThemeClasses: {
+			type: [Boolean,Array],
+			default: false,
 		},
 	},
 
@@ -72,196 +76,39 @@ export default defineNuxtComponent({
 			// Default to the defaultConfig
 			return clone;
 		},
+		// Config used to limit the needed styles for theme classes
+		classBaseConfig() {
+			if (this.useThemeClasses && Array.isArray(this.useThemeClasses)) {
+				return this.deepMergeExisting(
+					this.useThemeClasses.reduce((obj, key) => {
+						Object.assign(obj, this.availableConfigurations[key]);
+					}, {}),
+					this.compConfig
+				);
+			}
+			return this.compConfig;
+		},
 		minify() {
 			return this.compConfig.minify;
 		},
 
 		cssText() {
-			const {
-				compConfig: config,
-				extractColorRules,
-				extractLayoutRules,
-				extractFontRules,
-				extractRules: extract,
-				findAltRuleKeys,
-			} = this;
-			const { baseFontSize, smViewport, mdViewport, lgViewport } = config;
-			let rules = [
-				extractColorRules(config?.colors),
-				// Find variants ending with colors, like backgroundColors
-				...findAltRuleKeys('colors').map(({ configKey, prefix }) =>
-					extractColorRules(config[configKey], prefix)
-				),
-				extractLayoutRules(config?.layout),
-				extractFontRules(config?.fontSize),
-				extractFontRules(config?.fontStyles),
-				extract('spacing', config?.spacing),
-				// Find variants ending with spacing, like horizontalSpacing
-				...findAltRuleKeys('spacing').map(({ configKey }) =>
-					extract(configKey, config[configKey])
-				),
-				extract('borderRadius', config?.borderRadius),
-			];
+			const rules = [this.makeCssText()];
+			if (this.useThemeClasses) {
+				for (const [key, value] of Object.entries(this.availableConfigurations)) {
+					if (this.config === key) continue;
+					if (!this.config && key === 'default') continue;
+					if (Array.isArray(this.useThemeClasses) && !this.useThemeClasses.includes(key)) continue;
 
-			let smToMdScreenRules = rules
-				.reduce((arr, obj) => {
-					arr.push(...(obj.smToMdScreenRules || []));
-					return arr;
-				}, [])
-				.filter(Boolean);
-			let mdScreenRules = rules
-				.reduce((arr, obj) => {
-					arr.push(...(obj.mdScreenRules || []));
-					return arr;
-				}, [])
-				.filter(Boolean);
-			let mdToLgScreenRules = rules
-				.reduce((arr, obj) => {
-					arr.push(...(obj.mdToLgScreenRules || []));
-					return arr;
-				}, [])
-				.filter(Boolean);
-			let lgScreenRules = rules
-				.reduce((arr, obj) => {
-					arr.push(...(obj.lgScreenRules || []));
-					return arr;
-				}, [])
-				.filter(Boolean);
-			rules = rules
-				.reduce((arr, obj) => {
-					arr.push(...(obj.rules || []));
-					return arr;
-				}, [])
-				.filter(Boolean);
-
-			// Apply root around rules and indent
-			if (rules.length) {
-				if (!this.minify) {
-					rules = rules.map((rule) => `  ${rule}`);
-				}
-				rules.unshift(':root {');
-				rules.push('}');
-			}
-
-			// Apply media query and root around rules and indent
-			if (smToMdScreenRules.length) {
-				// Root
-				if (!this.minify) {
-					smToMdScreenRules = smToMdScreenRules.map(
-						(rule) => `  ${rule}`
+					rules.push(
+						this.makeCssText(
+							`.u-theme-${key}`,
+							deepMergeExisting({ ...this.classBaseConfig }, value)
+						)
 					);
 				}
-				smToMdScreenRules.unshift(':root {');
-				smToMdScreenRules.push('}');
-
-				// Media query
-				if (!this.minify) {
-					smToMdScreenRules = smToMdScreenRules.map(
-						(rule) => `  ${rule}`
-					);
-				}
-				smToMdScreenRules.unshift(
-					`@media screen and (min-width: ${
-						Math.round(
-							((smViewport + mdViewport) / 2 / baseFontSize) *
-								1000
-						) / 1000
-					}em) {`
-				);
-				smToMdScreenRules.push('}');
 			}
-
-			if (mdScreenRules.length) {
-				// Root
-				if (!this.minify) {
-					mdScreenRules = mdScreenRules.map((rule) => `  ${rule}`);
-				}
-				mdScreenRules.unshift(':root {');
-				mdScreenRules.push('}');
-
-				// Media query
-				if (!this.minify) {
-					mdScreenRules = mdScreenRules.map((rule) => `  ${rule}`);
-				}
-				mdScreenRules.unshift(
-					`@media screen and (min-width: ${
-						Math.round((mdViewport / baseFontSize) * 1000) / 1000
-					}em) {`
-				);
-				mdScreenRules.push('}');
-			}
-
-			if (mdToLgScreenRules.length) {
-				// Root
-				if (!this.minify) {
-					mdToLgScreenRules = mdToLgScreenRules.map(
-						(rule) => `  ${rule}`
-					);
-				}
-				mdToLgScreenRules.unshift(':root {');
-				mdToLgScreenRules.push('}');
-
-				// Media query
-				if (!this.minify) {
-					mdToLgScreenRules = mdToLgScreenRules.map(
-						(rule) => `  ${rule}`
-					);
-				}
-				mdToLgScreenRules.unshift(
-					`@media screen and (min-width: ${
-						Math.round(
-							((mdViewport + lgViewport) / 2 / baseFontSize) *
-								1000
-						) / 1000
-					}em) {`
-				);
-				mdToLgScreenRules.push('}');
-			}
-
-			if (lgScreenRules.length) {
-				// Root
-				if (!this.minify) {
-					lgScreenRules = lgScreenRules.map((rule) => `  ${rule}`);
-				}
-				lgScreenRules.unshift(':root {');
-				lgScreenRules.push('}');
-
-				// Media query
-				if (!this.minify) {
-					lgScreenRules = lgScreenRules.map((rule) => `  ${rule}`);
-				}
-				lgScreenRules.unshift(
-					`@media screen and (min-width: ${
-						Math.round((lgViewport / baseFontSize) * 1000) / 1000
-					}em) {`
-				);
-				lgScreenRules.push('}');
-			}
-
-			// Wrap in a CSS layer
-			const layer = this.cssLayer ? [`@layer ${this.cssLayer} {`] : [];
-			const layerEnd = this.cssLayer ? ['}'] : [];
-
-			if (this.minify) {
-				return [
-					...layer,
-					...rules,
-					...smToMdScreenRules,
-					...mdScreenRules,
-					...mdToLgScreenRules,
-					...lgScreenRules,
-					...layerEnd,
-				].join('');
-			}
-			return [
-				...layer,
-				...rules,
-				...smToMdScreenRules,
-				...mdScreenRules,
-				...mdToLgScreenRules,
-				...lgScreenRules,
-				...layerEnd,
-			].join('\n');
+			return rules.join('\n');
 		},
 	},
 
@@ -714,6 +561,211 @@ export default defineNuxtComponent({
 			};
 		},
 
+		// Make css text
+		makeCssText(
+			selector,
+			config = this.compConfig
+		) {
+			if (!selector) {
+				const selectors = [':root'];
+				if (this.useThemeClasses) {
+					selectors.push('.u-theme');
+
+					if (typeof this.config === 'string') {
+						selectors.push(`.u-theme-${this.config}`);
+					} else if (!this.config) {
+						selectors.push(`.u-theme-default`);
+					}
+				}
+				selector = selectors.join(', ');
+			}
+
+			const {
+				extractColorRules,
+				extractLayoutRules,
+				extractFontRules,
+				extractRules: extract,
+				findAltRuleKeys,
+			} = this;
+			const { baseFontSize, smViewport, mdViewport, lgViewport } = config;
+			let rules = [
+				extractColorRules(config?.colors),
+				// Find variants ending with colors, like backgroundColors
+				...findAltRuleKeys('colors').map(({ configKey, prefix }) =>
+					extractColorRules(config[configKey], prefix)
+				),
+				extractLayoutRules(config?.layout),
+				extractFontRules(config?.fontSize),
+				extractFontRules(config?.fontStyles),
+				extract('spacing', config?.spacing),
+				// Find variants ending with spacing, like horizontalSpacing
+				...findAltRuleKeys('spacing').map(({ configKey }) =>
+					extract(configKey, config[configKey])
+				),
+				extract('borderRadius', config?.borderRadius),
+			];
+
+			let smToMdScreenRules = rules
+				.reduce((arr, obj) => {
+					arr.push(...(obj.smToMdScreenRules || []));
+					return arr;
+				}, [])
+				.filter(Boolean);
+			let mdScreenRules = rules
+				.reduce((arr, obj) => {
+					arr.push(...(obj.mdScreenRules || []));
+					return arr;
+				}, [])
+				.filter(Boolean);
+			let mdToLgScreenRules = rules
+				.reduce((arr, obj) => {
+					arr.push(...(obj.mdToLgScreenRules || []));
+					return arr;
+				}, [])
+				.filter(Boolean);
+			let lgScreenRules = rules
+				.reduce((arr, obj) => {
+					arr.push(...(obj.lgScreenRules || []));
+					return arr;
+				}, [])
+				.filter(Boolean);
+			rules = rules
+				.reduce((arr, obj) => {
+					arr.push(...(obj.rules || []));
+					return arr;
+				}, [])
+				.filter(Boolean);
+
+			// Apply selector around rules and indent
+			if (rules.length) {
+				if (!this.minify) {
+					rules = rules.map((rule) => `  ${rule}`);
+				}
+				rules.unshift(`${selector} {`);
+				rules.push('}');
+			}
+
+			// Apply media query and selector around rules and indent
+			if (smToMdScreenRules.length) {
+				// Selector
+				if (!this.minify) {
+					smToMdScreenRules = smToMdScreenRules.map(
+						(rule) => `  ${rule}`
+					);
+				}
+				smToMdScreenRules.unshift(`${selector} {`);
+				smToMdScreenRules.push('}');
+
+				// Media query
+				if (!this.minify) {
+					smToMdScreenRules = smToMdScreenRules.map(
+						(rule) => `  ${rule}`
+					);
+				}
+				smToMdScreenRules.unshift(
+					`@media screen and (min-width: ${
+						Math.round(
+							((smViewport + mdViewport) / 2 / baseFontSize) *
+								1000
+						) / 1000
+					}em) {`
+				);
+				smToMdScreenRules.push('}');
+			}
+
+			if (mdScreenRules.length) {
+				// Selector
+				if (!this.minify) {
+					mdScreenRules = mdScreenRules.map((rule) => `  ${rule}`);
+				}
+				mdScreenRules.unshift(`${selector} {`);
+				mdScreenRules.push('}');
+
+				// Media query
+				if (!this.minify) {
+					mdScreenRules = mdScreenRules.map((rule) => `  ${rule}`);
+				}
+				mdScreenRules.unshift(
+					`@media screen and (min-width: ${
+						Math.round((mdViewport / baseFontSize) * 1000) / 1000
+					}em) {`
+				);
+				mdScreenRules.push('}');
+			}
+
+			if (mdToLgScreenRules.length) {
+				// Selector
+				if (!this.minify) {
+					mdToLgScreenRules = mdToLgScreenRules.map(
+						(rule) => `  ${rule}`
+					);
+				}
+				mdToLgScreenRules.unshift(`${selector} {`);
+				mdToLgScreenRules.push('}');
+
+				// Media query
+				if (!this.minify) {
+					mdToLgScreenRules = mdToLgScreenRules.map(
+						(rule) => `  ${rule}`
+					);
+				}
+				mdToLgScreenRules.unshift(
+					`@media screen and (min-width: ${
+						Math.round(
+							((mdViewport + lgViewport) / 2 / baseFontSize) *
+								1000
+						) / 1000
+					}em) {`
+				);
+				mdToLgScreenRules.push('}');
+			}
+
+			if (lgScreenRules.length) {
+				// Selector
+				if (!this.minify) {
+					lgScreenRules = lgScreenRules.map((rule) => `  ${rule}`);
+				}
+				lgScreenRules.unshift(`${selector} {`);
+				lgScreenRules.push('}');
+
+				// Media query
+				if (!this.minify) {
+					lgScreenRules = lgScreenRules.map((rule) => `  ${rule}`);
+				}
+				lgScreenRules.unshift(
+					`@media screen and (min-width: ${
+						Math.round((lgViewport / baseFontSize) * 1000) / 1000
+					}em) {`
+				);
+				lgScreenRules.push('}');
+			}
+
+			// Wrap in a CSS layer
+			const layer = this.cssLayer ? [`@layer ${this.cssLayer} {`] : [];
+			const layerEnd = this.cssLayer ? ['}'] : [];
+
+			if (this.minify) {
+				return [
+					...layer,
+					...rules,
+					...smToMdScreenRules,
+					...mdScreenRules,
+					...mdToLgScreenRules,
+					...lgScreenRules,
+					...layerEnd,
+				].join('');
+			}
+			return [
+				...layer,
+				...rules,
+				...smToMdScreenRules,
+				...mdScreenRules,
+				...mdToLgScreenRules,
+				...lgScreenRules,
+				...layerEnd,
+			].join('\n');
+		},
+
 		// Find and generate alternate rulesets
 		findAltRuleKeys(key) {
 			const { compConfig: config } = this;
@@ -729,6 +781,19 @@ export default defineNuxtComponent({
 				}
 			});
 			return returnArray;
+		},
+
+		// Deep merge existing keys
+		deepMergeExisting(target, source) {
+			for (const key in source) {
+				if (key in target) {
+					if (typeof target[key] === 'object') {
+						this.deepMergeExisting(target[key], source[key]);
+					} else {
+						target[key] = source[key];
+					}
+				}
+			}
 		},
 	},
 });
