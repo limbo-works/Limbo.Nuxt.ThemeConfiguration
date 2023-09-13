@@ -201,7 +201,7 @@ export default defineNuxtComponent({
 					}px;`;
 				};
 				const generateResponsiveRule = (columnCount) => {
-					const widthCalculation = `(var(--visual-viewport-width, 100vw) - var(--theme-layout-margin, var(--theme-layout-margin--sm)) * 2 - var(--theme-layout-gutter, var(--theme-layout-gutter--sm)) * ${
+					const widthCalculation = `(var(--visual-viewport-width, 100dvw) - var(--theme-layout-margin, var(--theme-layout-margin--sm)) * 2 - var(--theme-layout-gutter, var(--theme-layout-gutter--sm)) * ${
 						columnCount - 1
 					}) / ${columnCount}`;
 
@@ -229,7 +229,7 @@ export default defineNuxtComponent({
 			// Setup layout max
 			if (typeof maxRuleValue === 'undefined') {
 				rules.push(
-					'--theme-layout-max: var(--visual-viewport-width, 100vw);'
+					'--theme-layout-max: var(--visual-viewport-width, 100dvw);'
 				);
 			} else {
 				rules.push(`--theme-layout-max: ${maxRuleValue}px;`);
