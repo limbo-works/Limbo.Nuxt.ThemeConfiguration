@@ -920,9 +920,14 @@ function getRightColorValue(configKey, configSubKey, colorValue) {
 	if (typeof colorValue === 'object' && !Array.isArray(colorValue)) {
 		colorValue = colorValue.value;
 	}
-	colorValue = String(colorValue);
+	colorValue = String(colorValue)
+		.split(',')
+		.join(' ')
+		.split('  ')
+		.join(' ')
+		.trim();
 	// // Use the build in opacity utilities if three comma-separated values are provided
-	const splitValue = colorValue.split(',');
+	const splitValue = colorValue.split(' ');
 	if (
 		obj.isListedRgb ||
 		(splitValue.length === 3 &&

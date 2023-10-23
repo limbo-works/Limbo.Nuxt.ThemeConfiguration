@@ -139,9 +139,9 @@ export default defineNuxtComponent({
 
 				// We make sure there's spaces between the commas
 				const composedValue = String(value?.value ?? value)
+					.split(' ')
+					.join('')
 					.split(',')
-					.join(', ')
-					.split('  ')
 					.join(' ');
 				rules.push(
 					`--theme-colors-${prefix ? `${prefix}-` : ''}${sanitizeKey(

@@ -80,7 +80,12 @@ function makeThemeUtilities(config) {
 					) {
 						colorValue = colorValue.value;
 					}
-					colorValue = String(colorValue);
+					colorValue = String(colorValue)
+						.split(',')
+						.join(' ')
+						.split('  ')
+						.join(' ')
+						.trim();
 
 					obj[key] = obj[key] || {};
 					obj[key][subKey] = `var(--theme-${
@@ -88,7 +93,7 @@ function makeThemeUtilities(config) {
 					}-${sanitizeKey(subKey)}, ${colorValue})`;
 
 					// Use the build in opacity utilities if three comma-separated values are provided
-					const splitValue = colorValue.split(',');
+					const splitValue = colorValue.split(' ');
 					if (
 						config[key][subKey].isListedRgb ||
 						(splitValue.length === 3 &&
