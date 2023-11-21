@@ -136,7 +136,6 @@ function makeThemeUtilities(config, options) {
 			return regExpKebab.test(subKey) || regExpCamel.test(subKey);
 		});
 	});
-
 	// Adding the color utilities
 	if (config.colors) {
 		themeUtilities.colors = {
@@ -231,7 +230,37 @@ function makeThemeUtilities(config, options) {
 			delete themeUtilities.backgroundColor;
 		}
 	}
+	if (config.borderColors) {
+		// Add the color rules
+		Object.keys(config.borderColors || {}).forEach((key) => {
+			themeUtilities.borderColor[key] = getRightColorValue(
+				colorVariablePrefixMap.borderColors,
+				key,
+				config.borderColors[key]
+			);
+		});
 
+		// Don't add if empty
+		if (Object.keys(themeUtilities.borderColor || {}).length === 0) {
+			delete themeUtilities.borderColor;
+		}
+	}
+	if (config.textColors) {
+		themeUtilities.textColor = {};
+		// Add the color rules
+		Object.keys(config.textColors || {}).forEach((key) => {
+			themeUtilities.textColor[key] = getRightColorValue(
+				colorVariablePrefixMap.textColors,
+				key,
+				config.textColors[key]
+			);
+		});
+
+		// Don't add if empty
+		if (Object.keys(themeUtilities.textColor || {}).length === 0) {
+			delete themeUtilities.textColor;
+		}
+	}
 	return themeUtilities;
 }
 
