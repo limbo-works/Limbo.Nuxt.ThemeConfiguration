@@ -214,7 +214,7 @@ function makeThemeUtilities(config, options) {
 		}
 	}
 	if (config.backgroundColors) {
-		themeUtilities.backgroundColor = {};
+		themeUtilities.backgroundColor ??= {};
 
 		// Add the color rules
 		Object.keys(config.backgroundColors || {}).forEach((key) => {
@@ -231,6 +231,8 @@ function makeThemeUtilities(config, options) {
 		}
 	}
 	if (config.borderColors) {
+		themeUtilities.borderColor ??= {};
+
 		// Add the color rules
 		Object.keys(config.borderColors || {}).forEach((key) => {
 			themeUtilities.borderColor[key] = getRightColorValue(
@@ -246,7 +248,8 @@ function makeThemeUtilities(config, options) {
 		}
 	}
 	if (config.textColors) {
-		themeUtilities.textColor = {};
+		themeUtilities.textColor ??= {};
+
 		// Add the color rules
 		Object.keys(config.textColors || {}).forEach((key) => {
 			themeUtilities.textColor[key] = getRightColorValue(
