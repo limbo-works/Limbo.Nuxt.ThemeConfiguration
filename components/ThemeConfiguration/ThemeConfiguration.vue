@@ -1,13 +1,14 @@
 <template>
 	<Head v-if="cssText">
 		<Style type="text/css" :children="cssText"></Style>
+		<Style v-if="printCssText" type="text/css" media="print" :children="printCssText"></Style>
 	</Head>
 	<slot></slot>
 </template>
 
 <script>
 const observedData = ref({});
-export const config = observedData;
+export { observedData as config };
 </script>
 
 <script setup>
@@ -20,14 +21,14 @@ import {
 
 const props = defineProps({
 	config: [String, Object],
+	printConfig: [String, Object],
 	useThemeClasses: [Boolean, Array],
 	cssLayer: String,
 });
 
-const globs = import.meta.glob(
-	'~/assets/js/theme-configuration.*.(js|cjs|mjs)',
-	{ as: 'json' }
-);
+defineExpose({
+	config: observedData,
+});
 
 const availableConfigs = await getThemeConfigurations();
 const defaultConfig = availableConfigs.default || {};
@@ -84,8 +85,42 @@ const cssText = computed(() => {
 			);
 		}
 	}
+
 	return rules.join('\n');
 });
+const printCssText = computed(() => {
+	const config = typeof props.printConfig === 'string'
+		? availableConfigs[props.printConfig]
+		: props.printConfig;
+
+	if (config) {
+		const rules = [makeCssText(undefined, config)];
+
+		if (props.useThemeClasses) {
+			for (const [key] of Object.entries(availableConfigs)) {
+				if (props.config === key) continue;
+				if (!props.config && key === 'default') continue;
+				if (
+					Array.isArray(props.useThemeClasses) &&
+					!props.useThemeClasses.includes(key)
+				)
+					continue;
+
+				rules.push(
+					makeCssText(
+						`.u-theme-${key}`,
+						config
+					)
+				);
+			}
+		}
+
+		return rules.join('\n');
+	}
+	return null;
+});
+// Add for https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme
+// Add for https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-contrast (can they be combined?)
 
 function extractColorRules(object, prefix) {
 	object = cloneDeep(typeof object === 'object' ? object : {});
@@ -700,24 +735,8 @@ function deepMergeExisting(target, source) {
 	}
 }
 
-async function getThemeConfigurations() {
-	const themeConfigurations = {};
-	for (const key in globs) {
-		const themeName = key.match(
-			/theme-configuration\.([a-zA-Z0-9_-]+)\./
-		)[1];
-		themeConfigurations[themeName] = (await globs[key]())?.default;
-	}
-
-	return themeConfigurations;
-}
-
 watch(compConfig, (value) => (observedData.value = value), {
 	immediate: true,
 	deep: true,
-});
-
-defineExpose({
-	config: compConfig,
 });
 </script>

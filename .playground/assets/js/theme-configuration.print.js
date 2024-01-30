@@ -11,7 +11,7 @@
 */
 export default {
 	// Testing only - set to false when done testing
-	minify: true, // Can be turned to false for a more readable output in the style tag
+	minify: false, // Can be turned to false for a more readable output in the style tag
 
 	// Setup
 	baseFontSize: 12, // For rem conversion
