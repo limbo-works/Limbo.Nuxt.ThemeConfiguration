@@ -1,6 +1,8 @@
 <template>
 	<div class="bg-fishStick bg-scope-fishStick">
-		<ThemeConfiguration use-theme-classes>
+		<ThemeConfiguration
+			use-theme-classes
+		>
 			Yes it is loaded
 		</ThemeConfiguration>
 		<div class="text-strong">Test?</div>
@@ -12,4 +14,6 @@
 	</div>
 </template>
 
-<script></script>
+<script setup>
+const themeConfigurations = await getThemeConfigurations();
+</script>
