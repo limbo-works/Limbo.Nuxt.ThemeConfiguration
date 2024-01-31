@@ -5,7 +5,7 @@ The `ThemeConfiguration` component and setup for Nuxt3+ allows you to configure 
 ## Installation
 
 \`\`\` bash
-yarn add @limbo-works/video-player
+yarn add @limbo-works/theme-configuration
 \`\`\`
 
 Make the component globally usable by extending the layer in \`nuxt.config.js\`.
@@ -13,7 +13,7 @@ Make the component globally usable by extending the layer in \`nuxt.config.js\`.
 \`\`\` js
 export default defineNuxtConfig({
     extends: [
-        '@limbo-works/video-player',
+        '@limbo-works/theme-configuration',
         ...
     ],
     ...
