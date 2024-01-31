@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/v2.1.0...v2.2.0) (2024-01-31)
+
+
+### Features
+
+* made configs per media query possible ([22c2d66](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/22c2d66a03e8139ebcacc67a4cc7ac53393d111e))
+
 ## [2.1.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/2.0.1...v2.1.0) (2024-01-30)
 
 
