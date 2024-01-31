@@ -64,6 +64,7 @@ const classBaseConfig = computed(() => {
 	return compConfig.value;
 });
 
+/* Compile css text */
 const cssText = computed(() => {
 	const rules = [makeCssText()];
 

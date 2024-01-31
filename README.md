@@ -1,73 +1,58 @@
-# Nuxt Layer Starter
+# Theme Configuration
 
-Create Nuxt extendable layer with this GitHub template.
+The `ThemeConfiguration` component and setup for Nuxt3+ allows you to configure the theme settings for your application.
 
-## Setup
+## Installation
 
-Make sure to install the dependencies:
+\`\`\` bash
+yarn add @limbo-works/video-player
+\`\`\`
 
-```bash
-pnpm install
-```
+Make the component globally usable by extending the layer in \`nuxt.config.js\`.
 
-## Working on your theme
-
-Your theme is at the root of this repository, it is exactly like a regular Nuxt project, except you can publish it on NPM.
-
-The `.playground` directory should help you on trying your theme during development.
-
-Running `pnpm dev` will prepare and boot `.playground` directory, which imports your theme itself.
-
-## Distributing your theme
-
-Your Nuxt layer is shaped exactly the same as any other Nuxt project, except you can publish it on NPM.
-
-To do so, you only have to check if `files` in `package.json` are valid, then run:
-
-```bash
-npm publish --access public
-```
-
-Once done, your users will only have to run:
-
-```bash
-npm install --save your-theme
-```
-
-Then add the dependency to their `extends` in `nuxt.config`:
-
-```ts
-defineNuxtConfig({
-	extends: 'your-theme',
+\`\`\` js
+export default defineNuxtConfig({
+    extends: [
+        '@limbo-works/video-player',
+        ...
+    ],
+    ...
 });
+\`\`\`
+
+## Using the Component
+
+``` html
+<ThemeConfiguration
+  :config="themeConfig"
+  :printConfig="printThemeConfig"
+  :useThemeClasses="true"
+  cssLayer="layer1"
+>
+  <!-- Your content here -->
+</ThemeConfiguration>
 ```
 
-## Development Server
+### Props:
 
-Start the development server on http://localhost:3000
+* config: The configuration object or key for the theme settings. Can be a string (matching \~/assets/js/theme-configuration.**this-name**.js) or an object.
+* printConfig: The configuration object or key for the print theme settings. Can be a string or an object. Is not required for things to work.
+* useThemeClasses: Whether to use theme classes for styling. Can be a boolean or an array of theme class keys (again, matching \~/assets/js/theme-configuration.**this-name**.js). Will result in classes like `.u-theme-default`, `.u-theme-this-name`, etc..
+* cssLayer: The CSS layer to apply the theme styles to. Can be a string.
 
-```bash
-pnpm dev
-```
+### Slots:
 
-## Production
+* Default: The content to be rendered inside the `ThemeConfiguration` component.
 
-Build the application for production:
+### Exposed Properties:
 
-```bash
-pnpm build
-```
+* config: The observed data object for the theme configuration.
 
-Or statically generate it with:
+## Other
 
-```bash
-pnpm generate
-```
+Other than the ThemeConfiguration component, the layer also introduce an async `getThemeConfigurations()` utility function to get all the available config files.
 
-Locally preview production build:
+## Notes and Further Work
 
-```bash
-pnpm preview
-```
-
-Checkout the [deployment documentation](https://v3.nuxtjs.org/docs/deployment) for more information.
+* The documentation needs expanding.
+* The "printConfig" addition could be expanded further to include prefered colors and contrast, however it needs a bit of consideration in terms of what-overwrites-what and why.
