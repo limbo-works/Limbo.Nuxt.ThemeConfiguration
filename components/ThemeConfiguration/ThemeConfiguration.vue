@@ -1,7 +1,16 @@
 <template>
 	<Head v-if="cssText">
-		<Style type="text/css" :children="cssText"></Style>
-		<Style v-if="printCssText" type="text/css" media="print" :children="printCssText"></Style>
+		<Style
+			type="text/css"
+			:children="cssText"
+		/>
+		<Style
+			v-for="mediaItem in media"
+			:key="mediaItem.query"
+			type="text/css"
+			:media="mediaItem.query"
+			:children="mediaItem.cssText"
+		/>
 	</Head>
 	<slot></slot>
 </template>
@@ -21,7 +30,7 @@ import {
 
 const props = defineProps({
 	config: [String, Object],
-	printConfig: [String, Object],
+	media: Object,
 	useThemeClasses: [Boolean, Array],
 	cssLayer: String,
 });
@@ -89,13 +98,12 @@ const cssText = computed(() => {
 
 	return rules.join('\n');
 });
-const printCssText = computed(() => {
-	const config = typeof props.printConfig === 'string'
-		? availableConfigs[props.printConfig]
-		: props.printConfig;
 
-	if (config) {
-		const rules = [makeCssText(undefined, config)];
+/* Compose media configs */
+const media = computed(() => {
+	const media = [];
+	for (const [key, config] of Object.entries(props.media || {})) {
+		const rules = [makeCssText(undefined, typeof config === 'string' ? availableConfigs[config] : config)];
 
 		if (props.useThemeClasses) {
 			for (const [key] of Object.entries(availableConfigs)) {
@@ -110,18 +118,19 @@ const printCssText = computed(() => {
 				rules.push(
 					makeCssText(
 						`.u-theme-${key}`,
-						config
+						typeof config === 'string' ? availableConfigs[config] : config,
 					)
 				);
 			}
 		}
 
-		return rules.join('\n');
+		media.push({
+			query: key,
+			cssText: rules.join('\n'),
+		});
 	}
-	return null;
+	return media;
 });
-// Add for https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme
-// Add for https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-contrast (can they be combined?)
 
 function extractColorRules(object, prefix) {
 	object = cloneDeep(typeof object === 'object' ? object : {});

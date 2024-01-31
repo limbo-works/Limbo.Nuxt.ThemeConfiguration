@@ -3,10 +3,10 @@
 		<ThemeConfiguration
 			ref="themeConfiguration"
 			use-theme-classes
-			print-config="print"
-		>
-			Yes it is loaded
-		</ThemeConfiguration>
+			:media="{
+				print: 'print',
+			}"
+		/>
 		<div class="text-strong">Test?</div>
 	</div>
 	<div class="bg-primary">

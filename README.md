@@ -25,9 +25,11 @@ export default defineNuxtConfig({
 ``` html
 <ThemeConfiguration
   :config="themeConfig"
-  :printConfig="printThemeConfig"
-  :useThemeClasses="true"
-  cssLayer="layer1"
+  :media="{
+	print: 'print',
+  }"
+  :use-theme-classes="true"
+  css-layer="layer1"
 >
   <!-- Your content here -->
 </ThemeConfiguration>
@@ -36,7 +38,7 @@ export default defineNuxtConfig({
 ### Props:
 
 * config: The configuration object or key for the theme settings. Can be a string (matching \~/assets/js/theme-configuration.**this-name**.js) or an object.
-* printConfig: The configuration object or key for the print theme settings. Can be a string or an object. Is not required for things to work.
+* media: An object of key-value pairs where the key is the media query to use and the value is the config to use for this media query.
 * useThemeClasses: Whether to use theme classes for styling. Can be a boolean or an array of theme class keys (again, matching \~/assets/js/theme-configuration.**this-name**.js). Will result in classes like `.u-theme-default`, `.u-theme-this-name`, etc..
 * cssLayer: The CSS layer to apply the theme styles to. Can be a string.
 
@@ -55,4 +57,3 @@ Other than the ThemeConfiguration component, the layer also introduce an async `
 ## Notes and Further Work
 
 * The documentation needs expanding.
-* The "printConfig" addition could be expanded further to include prefered colors and contrast, however it needs a bit of consideration in terms of what-overwrites-what and why.
