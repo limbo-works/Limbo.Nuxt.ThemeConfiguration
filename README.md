@@ -4,13 +4,13 @@ The `ThemeConfiguration` component and setup for Nuxt3+ allows you to configure 
 
 ## Installation
 
-\`\`\` bash
+``` bash
 yarn add @limbo-works/theme-configuration
-\`\`\`
+```
 
 Make the component globally usable by extending the layer in \`nuxt.config.js\`.
 
-\`\`\` js
+``` js
 export default defineNuxtConfig({
     extends: [
         '@limbo-works/theme-configuration',
@@ -18,7 +18,7 @@ export default defineNuxtConfig({
     ],
     ...
 });
-\`\`\`
+```
 
 ## Using the Component
 
@@ -34,6 +34,7 @@ export default defineNuxtConfig({
   <!-- Your content here -->
 </ThemeConfiguration>
 ```
+Note that the component doesn't have to wrap your content and you should ever only have one on the page.
 
 ### Props:
 
