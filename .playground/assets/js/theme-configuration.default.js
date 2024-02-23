@@ -129,6 +129,10 @@ export default {
 		max: undefined,
 	},
 
+	containers: {
+		fish: '1000px',
+	},
+
 	horizontalSpacing: {
 		'xs/h': {
 			sm: 8,

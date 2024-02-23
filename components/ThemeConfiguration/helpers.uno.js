@@ -264,6 +264,17 @@ function makeThemeUtilities(config, options) {
 			delete themeUtilities.textColor;
 		}
 	}
+	if (config.containers) {
+		themeUtilities.containers ??= {
+			'<layout-max': '(max-width: calc(var(--theme-layout-max) - 0.1px))',
+			'>=layout-max': '(min-width: var(--theme-layout-max))',
+		};
+
+		for (const key in config.containers) {
+			const value = config.containers[key];
+			themeUtilities.containers[key] = `(min-width: ${value})`;
+		}
+	}
 	return themeUtilities;
 }
 
