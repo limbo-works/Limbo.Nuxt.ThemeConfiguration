@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.3.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/v2.2.0...v2.3.0) (2024-03-07)
+
+
+### Features
+
+* handle quotes around font family ([7ae7663](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/7ae7663396323b8b666d17ab16dfbb514be7ccc3))
+* working on the query setup ([6440374](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/64403741e6730311be485c8d9e8b91e150819c4b))
+
 ## [2.2.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/v2.1.0...v2.2.0) (2024-01-31)
 
 
