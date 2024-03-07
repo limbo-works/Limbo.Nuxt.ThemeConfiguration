@@ -363,27 +363,52 @@ function extractFontRules(object) {
 			for (const name in object[key]) {
 				const subObject = object[key][name];
 
+				let { sm, md, lg } = subObject;
+				if (key === 'fontFamily') {
+					if (!sm.startsWith('"') && !sm.startsWith("'")) {
+						if (sm.includes("'")) {
+							sm = `"${sm}"`;
+						} else if (sm.includes('"')) {
+							sm = `'${sm}'`;
+						}
+					}
+					if (!md.startsWith('"') && !md.startsWith("'")) {
+						if (md.includes("'")) {
+							md = `"${md}"`;
+						} else if (md.includes('"')) {
+							md = `'${md}'`;
+						}
+					}
+					if (!lg.startsWith('"') && !lg.startsWith("'")) {
+						if (lg.includes("'")) {
+							lg = `"${lg}"`;
+						} else if (lg.includes('"')) {
+							lg = `'${lg}'`;
+						}
+					}
+				}
+
 				rules.push(
-					`--theme-${key}-${sanitizeKey(name)}--sm: ${subObject.sm};`
+					`--theme-${key}-${sanitizeKey(name)}--sm: ${sm};`
 				);
 				rules.push(
-					`--theme-${key}-${sanitizeKey(name)}--md: ${subObject.md};`
+					`--theme-${key}-${sanitizeKey(name)}--md: ${md};`
 				);
 				rules.push(
-					`--theme-${key}-${sanitizeKey(name)}--lg: ${subObject.lg};`
+					`--theme-${key}-${sanitizeKey(name)}--lg: ${lg};`
 				);
 
 				rules.push(
-					`--theme-${key}-${sanitizeKey(name)}: ${subObject.sm};`
+					`--theme-${key}-${sanitizeKey(name)}: ${sm};`
 				);
-				if (subObject.md !== subObject.sm) {
+				if (md !== sm) {
 					smToMdScreenRules.push(
-						`--theme-${key}-${sanitizeKey(name)}: ${subObject.md};`
+						`--theme-${key}-${sanitizeKey(name)}: ${md};`
 					);
 				}
-				if (subObject.lg !== subObject.md) {
+				if (lg !== md) {
 					mdToLgScreenRules.push(
-						`--theme-${key}-${sanitizeKey(name)}: ${subObject.lg};`
+						`--theme-${key}-${sanitizeKey(name)}: ${lg};`
 					);
 				}
 			}
