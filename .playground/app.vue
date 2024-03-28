@@ -18,7 +18,12 @@
 
 <script setup>
 const themeConfiguration = ref(null);
-const configurations = await getThemeConfigurations();
+
+// Get a subset with all color rules that start with 'on' from the default theme
+const testSubset = await getThemeConfiguration('default', {
+	[/colors/i]: /^on[A-Z]/,
+});
+console.log(testSubset);
 </script>
 
 <style>

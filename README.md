@@ -34,6 +34,7 @@ export default defineNuxtConfig({
   <!-- Your content here -->
 </ThemeConfiguration>
 ```
+
 Note that the component doesn't have to wrap your content and you should ever only have one on the page.
 
 ### Props:
@@ -51,9 +52,15 @@ Note that the component doesn't have to wrap your content and you should ever on
 
 * config: The observed data object for the theme configuration.
 
-## Other
+## Utility Functions
 
-Other than the ThemeConfiguration component, the layer also introduce an async `getThemeConfigurations()` utility function to get all the available config files.
+The package also contains a few utility functions (globally available), which can help handling theme configurations in the projects.
+
+**async getThemeConfigurations()**: Returns an object with all available configurations at `~/assets/js/` (as described previously, configurations should be named `theme-configuration.`**name**`.js`).
+
+**async getThemeConfiguration(name, [subset])**: Returns either the config of the given name or, if the `subset` argument is supplied, a subset of that config.
+The subset can be either a string, array, object or regexp. A string will return a config with only that one key (if it exists), an array will return a subset of all the keys it contains, an object allows for complex digging through the config, and regexp allow you to get a subset based of that regexp rule.
+Note that an array can include both strings, arrays, objects and regexp as well, and that an object can similarly include everything as the values for the keys. Also the keys of the objects can be regexp strings starting with a `/`.
 
 ## Notes and Further Work
 
