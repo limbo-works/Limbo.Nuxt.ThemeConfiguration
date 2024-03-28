@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.4.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/v2.3.0...v2.4.0) (2024-03-28)
+
+
+### Features
+
+* added getThemeConfiguration utility function ([6892a47](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/6892a47a889e59ec6078bb25ac4d1b71f62ab65b))
+
 ## [2.3.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/v2.2.0...v2.3.0) (2024-03-07)
 
 
