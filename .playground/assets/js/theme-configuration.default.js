@@ -12,6 +12,7 @@
 export default {
 	// Testing only - set to false when done testing
 	minify: true, // Can be turned to false for a more readable output in the style tag
+	round: '1px', // Round to nearest pixel
 
 	// Setup
 	baseFontSize: 16, // For rem conversion

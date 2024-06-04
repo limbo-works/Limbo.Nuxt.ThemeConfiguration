@@ -539,6 +539,29 @@ function extractRules(
 		}
 	}
 
+	// Apply roundings
+	if (compConfig.value.round) {
+		[rules, mdScreenRules, lgScreenRules].forEach((ruleSet) => {
+			if (ruleSet.length === 0) return;
+			const roundTo =
+				typeof compConfig.value.round === 'boolean'
+					? '1px'
+					: typeof compConfig.value.round === 'number'
+						? `${compConfig.value.round}px`
+						: compConfig.value.round;
+
+			const roundedRules = [`@supports (padding: round(1%, ${roundTo})) {`];
+			ruleSet.forEach((rule) => {
+				const ruleParts = rule.split(': ');
+				const property = ruleParts[0];
+				const value = ruleParts[1].substring(0, ruleParts[1].length - 1);
+				roundedRules.push(`${property}: round(${value}, ${roundTo});`);
+			});
+
+			ruleSet.push(...roundedRules, '}');
+		});
+	}
+
 	// Return rules
 	if (compConfig.value.minify) {
 		return {

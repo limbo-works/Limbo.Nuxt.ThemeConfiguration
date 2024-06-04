@@ -9,7 +9,7 @@
 		/>
 		<div class="text-strong @fish:bg-[red]">Test?</div>
 	</div>
-	<div class="bg-primary">
+	<div class="bg-primary px-layout-margin py-layout-gutter">
 		<div class="u-theme-default bg-primary border-3 border-danger">
 			<div class="text-onSurfaceDanger">Test?</div>
 		</div>
