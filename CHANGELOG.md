@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/v2.4.0...v2.5.0) (2024-06-04)
+
+
+### Features
+
+* added rounding to theme configuration capabilities ([35f4e43](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/35f4e43b699f12ce3d2f6f8e123aa66cc8cfc3e5))
+
 ## [2.4.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/v2.3.0...v2.4.0) (2024-03-28)
 
 
