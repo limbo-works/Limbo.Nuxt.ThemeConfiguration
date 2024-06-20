@@ -1,4 +1,7 @@
 export default async function getThemeConfiguration(theme, subset) {
+	const nuxtApp = useNuxtApp();
+	console.log(nuxtApp);
+
 	let config = undefined;
 	if (typeof theme === 'string') {
 		const configs = await getThemeConfigurations();
