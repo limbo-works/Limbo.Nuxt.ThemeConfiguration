@@ -1,0 +1,39 @@
+{
+  "name": "@limbo-works/theme-configuration",
+  "version": "3.0.0",
+  "description": "Theme configuration for Limbo projects",
+  "repository": "limbo-works/Limbo.Nuxt.ThemeConfiguration",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/module.mjs",
+      "require": "./dist/module.cjs"
+    }
+  },
+  "main": "./dist/module.cjs",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "nuxi dev playground",
+    "dev:build": "nuxi build playground",
+    "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxi prepare playground",
+    "prettier": "prettier \"**/*.{js,vue,md,yml,css,scss,json}\"",
+    "eslint": "eslint \"**/*.{js,vue}\"",
+    "lint": "yarn prettier --check . && yarn eslint --quiet .",
+    "lint:fix": "yarn prettier --write . && yarn eslint --fix --quiet .",
+    "test": "exit 0"
+  },
+  "dependencies": {
+    "@nuxt/kit": "^3.12.2"
+  },
+  "devDependencies": {
+    "@limbo-works/lint-configs": "^1.0.3",
+    "@nuxt/devtools": "^1.3.3",
+    "@nuxt/eslint-config": "^0.3.13",
+    "@nuxt/module-builder": "^0.8.0",
+    "@nuxt/schema": "^3.12.2",
+    "eslint": "^9.5.0",
+    "nuxt": "^3.12.2"
+  }
+}
