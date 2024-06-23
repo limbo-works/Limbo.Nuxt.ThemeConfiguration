@@ -1,16 +1,12 @@
 /* Note: This file is just to examplify structure for a future config file */
 export default defineThemeConfig({
 	options: {
-		minify: true,
-		round: '1px',
-
+		minify: false,
 		namedBreaks: {
 			sm: 375,
 			md: 1440,
 			lg: 1920,
 		},
-
-		baseFontSize: 16,
 
 		handlers: {
 			colors: myCustomColorsHandler,
