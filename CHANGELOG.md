@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.5.1](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/v2.5.0...v2.5.1) (2024-09-05)
+
+
+### Bug Fixes
+
+* surround font family with quotes when containing special characters ([8d6b1e0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/8d6b1e0c6b2dbcf60acb8f6d2018a8cb2a7af98b))
+* typo in `ThemeConfiguration` ([b6564e3](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/b6564e31c7b026d0e715fa496f66c676d0c808d4))
+
 ## [2.5.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/v2.4.0...v2.5.0) (2024-06-04)
 
 
