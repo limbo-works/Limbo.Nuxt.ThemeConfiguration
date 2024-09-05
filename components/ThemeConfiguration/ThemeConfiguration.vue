@@ -372,19 +372,19 @@ function extractFontRules(object) {
 					if (!sm.startsWith('"') && !sm.startsWith("'")) {
 						if (!sm.match(/^[a-zA-Z]*$/)) {
 							sm.includes("'") && (sm = `"${sm}"`);
-							!sm.includes("''") && (sm = `'${sm}'`);
+							!sm.includes("'") && (sm = `'${sm}'`);
 						}
 					}
 					if (!md.startsWith('"') && !md.startsWith("'")) {
 						if (!md.match(/^[a-zA-Z]*$/)) {
 							md.includes("'") && (md = `"${md}"`);
-							!md.includes("''") && (md = `'${md}'`);
+							!md.includes("'") && (md = `'${md}'`);
 						}
 					}
 					if (!lg.startsWith('"') && !lg.startsWith("'")) {
 						if (!lg.match(/^[a-zA-Z]*$/)) {
 							lg.includes("'") && (lg = `"${lg}"`);
-							!lg.includes("''") && (lg = `'${lg}'`);
+							!lg.includes("'") && (lg = `'${lg}'`);
 						}
 					}
 				}
