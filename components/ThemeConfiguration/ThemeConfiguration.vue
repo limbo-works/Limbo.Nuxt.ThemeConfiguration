@@ -1,9 +1,6 @@
 <template>
 	<Head v-if="cssText">
-		<Style
-			type="text/css"
-			:children="cssText"
-		/>
+		<Style type="text/css" :children="cssText" />
 		<Style
 			v-for="mediaItem in media"
 			:key="mediaItem.query"
@@ -103,7 +100,12 @@ const cssText = computed(() => {
 const media = computed(() => {
 	const media = [];
 	for (const [key, config] of Object.entries(props.media || {})) {
-		const rules = [makeCssText(undefined, typeof config === 'string' ? availableConfigs[config] : config)];
+		const rules = [
+			makeCssText(
+				undefined,
+				typeof config === 'string' ? availableConfigs[config] : config
+			),
+		];
 
 		if (props.useThemeClasses) {
 			for (const [key] of Object.entries(availableConfigs)) {
@@ -118,7 +120,9 @@ const media = computed(() => {
 				rules.push(
 					makeCssText(
 						`.u-theme-${key}`,
-						typeof config === 'string' ? availableConfigs[config] : config,
+						typeof config === 'string'
+							? availableConfigs[config]
+							: config
 					)
 				);
 			}
@@ -366,41 +370,30 @@ function extractFontRules(object) {
 				let { sm, md, lg } = subObject;
 				if (key === 'fontFamily') {
 					if (!sm.startsWith('"') && !sm.startsWith("'")) {
-						if (sm.includes("'")) {
-							sm = `"${sm}"`;
-						} else if (sm.includes('"')) {
-							sm = `'${sm}'`;
+						if (!sm.match(/^[a-zA-Z]*$/)) {
+							sm.includes("'") && (sm = `"${sm}"`);
+							!sm.includes("''") && (sm = `'${sm}'`);
 						}
 					}
 					if (!md.startsWith('"') && !md.startsWith("'")) {
-						if (md.includes("'")) {
-							md = `"${md}"`;
-						} else if (md.includes('"')) {
-							md = `'${md}'`;
+						if (!md.match(/^[a-zA-Z]*$/)) {
+							md.includes("'") && (md = `"${md}"`);
+							!md.includes("''") && (md = `'${md}'`);
 						}
 					}
 					if (!lg.startsWith('"') && !lg.startsWith("'")) {
-						if (lg.includes("'")) {
-							lg = `"${lg}"`;
-						} else if (lg.includes('"')) {
-							lg = `'${lg}'`;
+						if (!lg.match(/^[a-zA-Z]*$/)) {
+							lg.includes("'") && (lg = `"${lg}"`);
+							!lg.includes("''") && (lg = `'${lg}'`);
 						}
 					}
 				}
 
-				rules.push(
-					`--theme-${key}-${sanitizeKey(name)}--sm: ${sm};`
-				);
-				rules.push(
-					`--theme-${key}-${sanitizeKey(name)}--md: ${md};`
-				);
-				rules.push(
-					`--theme-${key}-${sanitizeKey(name)}--lg: ${lg};`
-				);
+				rules.push(`--theme-${key}-${sanitizeKey(name)}--sm: ${sm};`);
+				rules.push(`--theme-${key}-${sanitizeKey(name)}--md: ${md};`);
+				rules.push(`--theme-${key}-${sanitizeKey(name)}--lg: ${lg};`);
 
-				rules.push(
-					`--theme-${key}-${sanitizeKey(name)}: ${sm};`
-				);
+				rules.push(`--theme-${key}-${sanitizeKey(name)}: ${sm};`);
 				if (md !== sm) {
 					smToMdScreenRules.push(
 						`--theme-${key}-${sanitizeKey(name)}: ${md};`
@@ -547,14 +540,19 @@ function extractRules(
 				typeof compConfig.value.round === 'boolean'
 					? '1px'
 					: typeof compConfig.value.round === 'number'
-						? `${compConfig.value.round}px`
-						: compConfig.value.round;
+					? `${compConfig.value.round}px`
+					: compConfig.value.round;
 
-			const roundedRules = [`@supports (padding: round(1%, ${roundTo})) {`];
+			const roundedRules = [
+				`@supports (padding: round(1%, ${roundTo})) {`,
+			];
 			ruleSet.forEach((rule) => {
 				const ruleParts = rule.split(': ');
 				const property = ruleParts[0];
-				const value = ruleParts[1].substring(0, ruleParts[1].length - 1);
+				const value = ruleParts[1].substring(
+					0,
+					ruleParts[1].length - 1
+				);
 				roundedRules.push(`${property}: round(${value}, ${roundTo});`);
 			});
 
