@@ -1,8 +1,5 @@
 import { defineConfig } from 'unocss';
-import { presetCore } from '@limbo-works/nuxt-core/assets/js/unocss/preset-core.js';
-import { presetNoDefaultRem } from '@limbo-works/nuxt-core/assets/js/unocss/preset-no-default-rem.js';
-import transformerVariantGroup from '@unocss/transformer-variant-group';
-import transformerDirectives from '@unocss/transformer-directives';
+import { presetCore } from '@limbo-works/nuxt-core/assets/js/unocss/preset-core.mjs';
 import {
 	makeThemeUtilities,
 	makeRules,
@@ -10,8 +7,7 @@ import {
 import defaultConfig from './assets/js/theme-configuration.default.js';
 
 export default defineConfig({
-	presets: [presetCore(), presetNoDefaultRem()],
-	transformers: [transformerVariantGroup(), transformerDirectives()],
+	presets: [presetCore()],
 
 	theme: { ...makeThemeUtilities(defaultConfig) },
 	rules: [...makeRules(defaultConfig)],
