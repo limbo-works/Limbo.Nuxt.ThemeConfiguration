@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.6.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/v2.5.1...v2.6.0) (2024-09-23)
+
+
+### Features
+
+* upgrade to latest ([7c3ac30](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/7c3ac304693f018d0d007cd538a3aab71b605745))
+
+
+### Bug Fixes
+
+* linted everything ([06cec36](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/06cec36561b9117d23e9171ce39c265463e924ce))
+
 ## [2.5.1](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/v2.5.0...v2.5.1) (2024-09-05)
 
 ### Bug Fixes
