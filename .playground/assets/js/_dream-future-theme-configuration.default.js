@@ -370,9 +370,6 @@ export default defineThemeConfig({
 	},
 });
 
-
-
-
 //
 function defineThemeConfig(obj) {
 	return obj;

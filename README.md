@@ -4,13 +4,13 @@ The `ThemeConfiguration` component and setup for Nuxt3+ allows you to configure 
 
 ## Installation
 
-``` bash
+```bash
 yarn add @limbo-works/theme-configuration
 ```
 
 Make the component globally usable by extending the layer in \`nuxt.config.js\`.
 
-``` js
+```js
 export default defineNuxtConfig({
     extends: [
         '@limbo-works/theme-configuration',
@@ -22,16 +22,16 @@ export default defineNuxtConfig({
 
 ## Using the Component
 
-``` html
+```html
 <ThemeConfiguration
-  :config="themeConfig"
-  :media="{
+	:config="themeConfig"
+	:media="{
 	print: 'print',
   }"
-  :use-theme-classes="true"
-  css-layer="layer1"
+	:use-theme-classes="true"
+	css-layer="layer1"
 >
-  <!-- Your content here -->
+	<!-- Your content here -->
 </ThemeConfiguration>
 ```
 
@@ -39,18 +39,18 @@ Note that the component doesn't have to wrap your content and you should ever on
 
 ### Props:
 
-* config: The configuration object or key for the theme settings. Can be a string (matching \~/assets/js/theme-configuration.**this-name**.js) or an object.
-* media: An object of key-value pairs where the key is the media query to use and the value is the config to use for this media query.
-* useThemeClasses: Whether to use theme classes for styling. Can be a boolean or an array of theme class keys (again, matching \~/assets/js/theme-configuration.**this-name**.js). Will result in classes like `.u-theme-default`, `.u-theme-this-name`, etc..
-* cssLayer: The CSS layer to apply the theme styles to. Can be a string.
+-   config: The configuration object or key for the theme settings. Can be a string (matching \~/assets/js/theme-configuration.**this-name**.js) or an object.
+-   media: An object of key-value pairs where the key is the media query to use and the value is the config to use for this media query.
+-   useThemeClasses: Whether to use theme classes for styling. Can be a boolean or an array of theme class keys (again, matching \~/assets/js/theme-configuration.**this-name**.js). Will result in classes like `.u-theme-default`, `.u-theme-this-name`, etc..
+-   cssLayer: The CSS layer to apply the theme styles to. Can be a string.
 
 ### Slots:
 
-* Default: The content to be rendered inside the `ThemeConfiguration` component.
+-   Default: The content to be rendered inside the `ThemeConfiguration` component.
 
 ### Exposed Properties:
 
-* config: The observed data object for the theme configuration.
+-   config: The observed data object for the theme configuration.
 
 ## Utility Functions
 
@@ -64,4 +64,4 @@ Note that an array can include both strings, arrays, objects and regexp as well,
 
 ## Notes and Further Work
 
-* The documentation needs expanding.
+-   The documentation needs expanding.

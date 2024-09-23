@@ -602,10 +602,10 @@ function makeRules(config, options) {
 						)
 							? `calc(var(--theme-${sanitizeKey(
 									value
-							  )}, var(--theme-${sanitizeKey(value)}--sm)))`
+								)}, var(--theme-${sanitizeKey(value)}--sm)))`
 							: `var(--theme-${sanitizeKey(
 									value
-							  )}, var(--theme-${sanitizeKey(value)}--sm))`,
+								)}, var(--theme-${sanitizeKey(value)}--sm))`,
 						transform: transformValue(currentSelector),
 					};
 					/* eslint-enable */
@@ -697,14 +697,14 @@ function makeRules(config, options) {
 						)
 							? `calc(var(--theme-spacing-${sanitizeKey(
 									value
-							  )}, var(--theme-spacing-${sanitizeKey(
+								)}, var(--theme-spacing-${sanitizeKey(
 									value
-							  )}--sm)))`
+								)}--sm)))`
 							: `var(--theme-spacing-${sanitizeKey(
 									value
-							  )}, var(--theme-spacing-${sanitizeKey(
+								)}, var(--theme-spacing-${sanitizeKey(
 									value
-							  )}--sm))`,
+								)}--sm))`,
 						transform: transformValue(currentSelector),
 					};
 					/* eslint-enable */
@@ -737,14 +737,14 @@ function makeRules(config, options) {
 						)
 							? `calc(var(--theme-horizontalSpacing-${sanitizeKey(
 									value
-							  )}, var(--theme-horizontalSpacing-${sanitizeKey(
+								)}, var(--theme-horizontalSpacing-${sanitizeKey(
 									value
-							  )}--sm)))`
+								)}--sm)))`
 							: `var(--theme-horizontalSpacing-${sanitizeKey(
 									value
-							  )}, var(--theme-horizontalSpacing-${sanitizeKey(
+								)}, var(--theme-horizontalSpacing-${sanitizeKey(
 									value
-							  )}--sm))`,
+								)}--sm))`,
 						transform: transformValue(currentSelector),
 					};
 					/* eslint-enable */
@@ -777,14 +777,14 @@ function makeRules(config, options) {
 						)
 							? `calc(var(--theme-verticalSpacing-${sanitizeKey(
 									value
-							  )}, var(--theme-verticalSpacing-${sanitizeKey(
+								)}, var(--theme-verticalSpacing-${sanitizeKey(
 									value
-							  )}--sm)))`
+								)}--sm)))`
 							: `var(--theme-verticalSpacing-${sanitizeKey(
 									value
-							  )}, var(--theme-verticalSpacing-${sanitizeKey(
+								)}, var(--theme-verticalSpacing-${sanitizeKey(
 									value
-							  )}--sm))`,
+								)}--sm))`,
 						transform: transformValue(currentSelector),
 					};
 					/* eslint-enable */
@@ -815,15 +815,13 @@ function makeRules(config, options) {
 						const property = textPropertyMap[key];
 						if (config[key]?.[value]) {
 							if (key === 'paragraphSpacing') {
-								_return[
-									property
-								] = `var(--theme-${key}-${sanitizeKey(
-									value
-								)}, 0)`;
+								_return[property] =
+									`var(--theme-${key}-${sanitizeKey(
+										value
+									)}, 0)`;
 							} else {
-								_return[
-									property
-								] = `var(--theme-${key}-${sanitizeKey(value)})`;
+								_return[property] =
+									`var(--theme-${key}-${sanitizeKey(value)})`;
 							}
 						} else {
 							if (key === 'paragraphSpacing') {

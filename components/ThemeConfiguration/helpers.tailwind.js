@@ -28,15 +28,14 @@ function makeThemeUtilities(config) {
 
 					for (let i = 0; i < colCounts.length; i++) {
 						for (let j = 1; j <= colCounts[i]; j++) {
-							columns[
-								`${j}/${colCounts[i]}col`
-							] = `calc(var(--theme-${sanitizeKey(
-								key
-							)}-column-of-${
-								colCounts[i]
-							}) * ${j} + var(--theme-layout-gutter, var(--theme-layout-gutter--sm)) * ${
-								j - 1
-							})`;
+							columns[`${j}/${colCounts[i]}col`] =
+								`calc(var(--theme-${sanitizeKey(
+									key
+								)}-column-of-${
+									colCounts[i]
+								}) * ${j} + var(--theme-layout-gutter, var(--theme-layout-gutter--sm)) * ${
+									j - 1
+								})`;
 						}
 					}
 
@@ -192,17 +191,14 @@ function makeThemePlugins(config) {
 			utilities[`.text-${s}`]['text-decoration'] =
 				value.textDecoration || 'none';
 
-			utilities[`.text-${s}`][
-				'font-size'
-			] = `var(--theme-fontSize-${s}, var(--theme-fontSize-${s}--sm))`;
+			utilities[`.text-${s}`]['font-size'] =
+				`var(--theme-fontSize-${s}, var(--theme-fontSize-${s}--sm))`;
 
-			utilities[`.text-${s}`][
-				'line-height'
-			] = `var(--theme-lineHeight-${s}, var(--theme-lineHeight-${s}--sm))`;
+			utilities[`.text-${s}`]['line-height'] =
+				`var(--theme-lineHeight-${s}, var(--theme-lineHeight-${s}--sm))`;
 
-			utilities[`.text-${s}`][
-				'letter-spacing'
-			] = `var(--theme-letterSpacing-${s}, var(--theme-letterSpacing-${s}--sm))`;
+			utilities[`.text-${s}`]['letter-spacing'] =
+				`var(--theme-letterSpacing-${s}, var(--theme-letterSpacing-${s}--sm))`;
 		});
 
 		response.fontStyles = function ({ addUtilities }) {

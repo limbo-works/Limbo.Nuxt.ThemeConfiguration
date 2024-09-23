@@ -369,22 +369,22 @@ function extractFontRules(object) {
 
 				let { sm, md, lg } = subObject;
 				if (key === 'fontFamily') {
-					if (!sm.startsWith('"') && !sm.startsWith("'")) {
+					if (!sm.startsWith('"') && !sm.startsWith('\'')) {
 						if (!sm.match(/^[a-zA-Z]*$/)) {
-							sm.includes("'") && (sm = `"${sm}"`);
-							!sm.includes("'") && (sm = `'${sm}'`);
+							sm.includes('\'') && (sm = `"${sm}"`);
+							!sm.includes('\'') && (sm = `'${sm}'`);
 						}
 					}
-					if (!md.startsWith('"') && !md.startsWith("'")) {
+					if (!md.startsWith('"') && !md.startsWith('\'')) {
 						if (!md.match(/^[a-zA-Z]*$/)) {
-							md.includes("'") && (md = `"${md}"`);
-							!md.includes("'") && (md = `'${md}'`);
+							md.includes('\'') && (md = `"${md}"`);
+							!md.includes('\'') && (md = `'${md}'`);
 						}
 					}
-					if (!lg.startsWith('"') && !lg.startsWith("'")) {
+					if (!lg.startsWith('"') && !lg.startsWith('\'')) {
 						if (!lg.match(/^[a-zA-Z]*$/)) {
-							lg.includes("'") && (lg = `"${lg}"`);
-							!lg.includes("'") && (lg = `'${lg}'`);
+							lg.includes('\'') && (lg = `"${lg}"`);
+							!lg.includes('\'') && (lg = `'${lg}'`);
 						}
 					}
 				}
@@ -540,8 +540,8 @@ function extractRules(
 				typeof compConfig.value.round === 'boolean'
 					? '1px'
 					: typeof compConfig.value.round === 'number'
-					? `${compConfig.value.round}px`
-					: compConfig.value.round;
+						? `${compConfig.value.round}px`
+						: compConfig.value.round;
 
 			const roundedRules = [
 				`@supports (padding: round(1%, ${roundTo})) {`,
@@ -588,7 +588,7 @@ function makeCssText(selector, config = compConfig.value) {
 			if (typeof props.config === 'string') {
 				selectors.push(`.u-theme-${props.config}`);
 			} else if (!props.config) {
-				selectors.push(`.u-theme-default`);
+				selectors.push('.u-theme-default');
 			}
 		}
 		selector = selectors.join(', ');

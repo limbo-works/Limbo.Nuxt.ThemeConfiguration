@@ -47,7 +47,10 @@ function getSubsetOfObject(obj, subset) {
 					const isRegExp = new RegExp('^/(.*?)/([gimy]*)$');
 					if (isRegExp.test(key)) {
 						// The key is a regex
-						const regExp = new RegExp(isRegExp.exec(key)[1], isRegExp.exec(key)[2]);
+						const regExp = new RegExp(
+							isRegExp.exec(key)[1],
+							isRegExp.exec(key)[2]
+						);
 						for (const objKey in obj) {
 							if (regExp.test(objKey)) {
 								if (typeof value === 'boolean') {
@@ -55,7 +58,10 @@ function getSubsetOfObject(obj, subset) {
 									newObj[objKey] = obj[objKey];
 								} else {
 									// We have nested subsets!
-									newObj[objKey] = getSubsetOfObject(obj[objKey], value);
+									newObj[objKey] = getSubsetOfObject(
+										obj[objKey],
+										value
+									);
 								}
 							}
 						}
@@ -76,7 +82,11 @@ function getSubsetOfObject(obj, subset) {
 
 	// Remove undefined values and empty objects
 	for (const key in newObj) {
-		if (newObj[key] === undefined || (typeof newObj[key] === 'object' && Object.keys(newObj[key]).length === 0)) {
+		if (
+			newObj[key] === undefined ||
+			(typeof newObj[key] === 'object' &&
+				Object.keys(newObj[key]).length === 0)
+		) {
 			delete newObj[key];
 		}
 	}
