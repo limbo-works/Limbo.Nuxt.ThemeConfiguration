@@ -1,14 +1,4 @@
 <template>
-	<Head v-if="cssText">
-		<Style type="text/css" :children="cssText" />
-		<Style
-			v-for="mediaItem in media"
-			:key="mediaItem.query"
-			type="text/css"
-			:media="mediaItem.query"
-			:children="mediaItem.cssText"
-		/>
-	</Head>
 	<slot></slot>
 </template>
 
@@ -134,6 +124,18 @@ const media = computed(() => {
 		});
 	}
 	return media;
+});
+
+useHead({
+	style: [
+		cssText.value && { key: 'theme-configuration', type: 'text/css', textContent: cssText.value },
+		...(media.value?.map((mediaItem) => ({
+			key: 'theme-configuration-' + mediaItem.query,
+			type: 'text/css',
+			media: mediaItem.query,
+			textContent: mediaItem.cssText,
+		})) ?? []),
+	],
 });
 
 function extractColorRules(object, prefix) {

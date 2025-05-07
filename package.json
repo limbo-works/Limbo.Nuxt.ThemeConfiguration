@@ -15,9 +15,9 @@
 		"test": "exit 0"
 	},
 	"devDependencies": {
-		"@limbo-works/lint-configs": "^2.0.2",
-		"@limbo-works/nuxt-core": "^3.0.4",
-		"@unocss/nuxt": "^0.62.4",
-		"nuxt": "^3.13.2"
+		"@limbo-works/lint-configs": "^2.0.3",
+		"@limbo-works/nuxt-core": "^4.1.0",
+		"@unocss/nuxt": "^66.1.0",
+		"nuxt": "^3.17.2"
 	}
 }
