@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.7.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/v2.6.0...v2.7.0) (2025-05-07)
+
+
+### Features
+
+* moved styles to useHead ([b3e399e](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/b3e399ec5fde109adfe9898b79d4eef26ce3f99e))
+
 ## [2.6.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/v2.5.1...v2.6.0) (2024-09-23)
 
 
