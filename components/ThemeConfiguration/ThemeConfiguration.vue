@@ -126,17 +126,20 @@ const media = computed(() => {
 	return media;
 });
 
-useHead({
-	style: [
-		cssText.value && { key: 'theme-configuration', type: 'text/css', textContent: cssText.value },
-		...(media.value?.map((mediaItem) => ({
-			key: 'theme-configuration-' + mediaItem.query,
-			type: 'text/css',
-			media: mediaItem.query,
-			textContent: mediaItem.cssText,
-		})) ?? []),
-	],
+const headStyles = computed(() => {
+	return {
+		style: [
+			cssText.value && { key: 'theme-configuration', type: 'text/css', textContent: cssText.value },
+			...(media.value?.map((mediaItem) => ({
+				key: 'theme-configuration-' + mediaItem.query,
+				type: 'text/css',
+				media: mediaItem.query,
+				textContent: mediaItem.cssText,
+			})) ?? []),
+		],
+	};
 });
+useHead(() => headStyles);
 
 function extractColorRules(object, prefix) {
 	object = cloneDeep(typeof object === 'object' ? object : {});
