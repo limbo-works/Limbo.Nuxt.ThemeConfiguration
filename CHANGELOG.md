@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.7.1](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/v2.7.0...v2.7.1) (2025-05-14)
+
+
+### Bug Fixes
+
+* dynamic head styles ([b102dc7](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/b102dc7375b93b9185f8d450c9511b805469414e))
+
 ## [2.7.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/v2.6.0...v2.7.0) (2025-05-07)
 
 
