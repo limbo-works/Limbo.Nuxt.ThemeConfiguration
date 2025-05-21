@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.7.2](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/v2.7.1...v2.7.2) (2025-05-21)
+
+
+### Bug Fixes
+
+* made config keys count up on changes ([bad78bb](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/bad78bbed34ec5ec1a066cea8f2d5edf08bcdc51))
+
 ## [2.7.1](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/v2.7.0...v2.7.1) (2025-05-14)
 
 
