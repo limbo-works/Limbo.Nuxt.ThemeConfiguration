@@ -126,12 +126,13 @@ const media = computed(() => {
 	return media;
 });
 
+const iterationCounter = useState(() => 0);
 const headStyles = computed(() => {
 	return {
 		style: [
-			cssText.value && { key: 'theme-configuration', type: 'text/css', textContent: cssText.value },
+			cssText.value && { key: 'theme-configuration-' + iterationCounter.value, type: 'text/css', textContent: cssText.value },
 			...(media.value?.map((mediaItem) => ({
-				key: 'theme-configuration-' + mediaItem.query,
+				key: 'theme-configuration-' + mediaItem.query + '-'  + iterationCounter.value,
 				type: 'text/css',
 				media: mediaItem.query,
 				textContent: mediaItem.cssText,
@@ -140,6 +141,10 @@ const headStyles = computed(() => {
 	};
 });
 useHead(() => headStyles);
+
+watch(() => props, () => {
+	iterationCounter.value++;
+}, { deep: true });
 
 function extractColorRules(object, prefix) {
 	object = cloneDeep(typeof object === 'object' ? object : {});
