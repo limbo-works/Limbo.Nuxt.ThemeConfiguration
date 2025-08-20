@@ -41,10 +41,18 @@ export default defineNuxtModule({
     ])
 
     // Add UnoCSS module if not already present
-    if (!nuxt.options.modules.some(m => 
-      (typeof m === 'string' && m.includes('@unocss/nuxt')) ||
-      (Array.isArray(m) && m[0]?.includes('@unocss/nuxt'))
-    )) {
+    const hasUnoCSS = nuxt.options.modules?.some(m => {
+      if (typeof m === 'string') {
+        return m.includes('@unocss/nuxt') || m.includes('unocss')
+      }
+      if (Array.isArray(m) && m.length > 0) {
+        return m[0]?.includes('@unocss/nuxt') || m[0]?.includes('unocss')
+      }
+      return false
+    })
+
+    if (!hasUnoCSS) {
+      nuxt.options.modules = nuxt.options.modules || []
       nuxt.options.modules.push('@unocss/nuxt')
     }
   }

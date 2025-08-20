@@ -7,8 +7,10 @@
 		".": "./src/module.js",
 		"./helpers": "./components/ThemeConfiguration/helpers.uno.js",
 		"./component": "./components/ThemeConfiguration/index.js",
-		"./utils": "./utils/get-theme-configurations.js"
+		"./utils": "./utils/get-theme-configurations.js",
+		"./all": "./index.js"
 	},
+	"types": "./types.d.ts",
 	"scripts": {
 		"dev": "nuxi prepare & nuxi dev .playground",
 		"build": "nuxi build .playground",
