@@ -4,7 +4,7 @@
 	coming from backend or solution-specific files (handled in the
 	ThemeConfiguration.vue component).
 
-	Only the keys in this default file will be the grounds for tailwind
+	Only the keys in this default file will be the grounds for UnoCSS
 	rules - overwriting configurations should never introduce new keys,
 	unless they are added to this file too. Only the values of the keys
 	are overwritten.
@@ -24,14 +24,14 @@ export default {
 	colors: {
 		/*
 			CSS variables will be created and used for the colors,
-			which will in turn be used in the Tailwind config. Keys
-			will be directly transfered to the Tailwind config.
+			which will in turn be used in the UnoCSS config. Keys
+			will be directly transfered to the UnoCSS config.
 
-			"primary: '#000000'" will result in the Tailwind rule:
+			"primary: '#000000'" will result in the UnoCSS rule:
 			"primary: var(--theme-colors-primary, #000000)"
 
 			If configuring a color with three comma-separated numbers,
-			the built-in Tailwind color opacities will be used in the
+			the built-in UnoCSS color opacities will be used in the
 			rules.
 		*/
 		text: '#000000',

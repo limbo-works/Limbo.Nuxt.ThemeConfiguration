@@ -2,7 +2,13 @@
 	"name": "@limbo-works/theme-configuration",
 	"type": "module",
 	"version": "2.7.2",
-	"main": "./nuxt.config.js",
+	"main": "./src/module.js",
+	"exports": {
+		".": "./src/module.js",
+		"./helpers": "./components/ThemeConfiguration/helpers.uno.js",
+		"./component": "./components/ThemeConfiguration/index.js",
+		"./utils": "./utils/get-theme-configurations.js"
+	},
 	"scripts": {
 		"dev": "nuxi prepare & nuxi dev .playground",
 		"build": "nuxi build .playground",

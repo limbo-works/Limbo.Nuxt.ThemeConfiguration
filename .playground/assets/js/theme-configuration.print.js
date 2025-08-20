@@ -4,7 +4,7 @@
 	coming from backend or solution-specific files (handled in the
 	ThemeConfiguration.vue component).
 
-	Only the keys in this default file will be the grounds for tailwind
+	Only the keys in this default file will be the grounds for UnoCSS
 	rules - overwriting configurations should never introduce new keys,
 	unless they are added to this file too. Only the values of the keys
 	are overwritten.

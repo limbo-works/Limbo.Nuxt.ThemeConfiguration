@@ -8,11 +8,11 @@ The `ThemeConfiguration` component and setup for Nuxt3+ allows you to configure 
 yarn add @limbo-works/theme-configuration
 ```
 
-Make the component globally usable by extending the layer in \`nuxt.config.js\`.
+Make the component globally usable by adding the module to `nuxt.config.js`.
 
 ```js
 export default defineNuxtConfig({
-    extends: [
+    modules: [
         '@limbo-works/theme-configuration',
         ...
     ],
