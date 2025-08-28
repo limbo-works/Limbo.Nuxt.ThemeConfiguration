@@ -2,9 +2,9 @@
 
 The Theme Configuration system represents a significant evolution in how Limbo Works approaches design consistency and theming across projects. What started as a need for consistent styling has grown into a comprehensive design system that bridges the gap between design tools and development workflows.
 
-## The Beginning: A Need for Consistency
+## The Beginning: A Need for Consistency (Pre-2023)
 
-In the early days of web development at Limbo Works, maintaining consistent themes across multiple projects was a constant challenge. Each project would have its own approach to colors, typography, spacing, and responsive design, leading to:
+The concept of "Theme Configuration" at Limbo Works has its roots much earlier than the current Nuxt 3 implementation. In the early days of web development at Limbo Works, maintaining consistent themes across multiple projects was a constant challenge. Each project would have its own approach to colors, typography, spacing, and responsive design, leading to:
 
 - Duplicated CSS code across projects
 - Inconsistent design implementations
@@ -13,23 +13,33 @@ In the early days of web development at Limbo Works, maintaining consistent them
 
 The initial concept of "Theme Configuration" emerged from the need to centralize these design decisions and create a system that could be shared across projects while still allowing for customization.
 
-## Early Development and Foundation (2023-2024)
+## Early Implementations (Pre-Nuxt Era)
 
-The first iterations of the Theme Configuration system were built on the foundation of modern web development practices:
+Before the current Nuxt 3 implementation, theme configuration concepts were already being used in Limbo Works projects:
+
+- **Umbraco Projects**: Early versions of theme configuration concepts were implemented in Umbraco-based websites, including projects like the Odsherred Kommune Website (Umbraco 9), where the foundational ideas of centralized theming and design consistency were first explored
+- **Standalone Components**: Theme configuration was developed as standalone components and utilities that could be integrated into various project types
+- **Framework-Agnostic Approach**: The initial implementations focused on creating reusable theming solutions that weren't tied to specific frameworks
+
+These early implementations established the core principles that would later evolve into the sophisticated Nuxt 3 system we have today.
+
+## Transition to Modern Framework Integration (2023)
+
+The transition to a Nuxt 3-specific implementation marked a significant evolution, building on the lessons learned from earlier implementations:
 
 - **Nuxt 3+ Integration**: Built specifically for the Nuxt 3 ecosystem, taking advantage of its composables and component architecture
-- **CSS Custom Properties**: Leveraged CSS variables for dynamic theming and runtime customization
+- **CSS Custom Properties**: Enhanced use of CSS variables for dynamic theming and runtime customization
 - **Tailwind CSS Integration**: Seamlessly integrated with Tailwind CSS for utility-first styling
 
-The initial system focused on core design tokens:
+The system maintained focus on core design tokens established in earlier versions:
 - Color palettes and semantic color naming
 - Typography scales and font family management
 - Spacing and layout systems
 - Responsive breakpoint management
 
-## Version 2.0 Era: Establishing the Foundation (January 2024)
+## Nuxt 3 Package Era: Formalizing the System (2024)
 
-The formal versioning began with the 2.0 release series, establishing key architectural decisions:
+The formal Nuxt 3 package and versioning began with the 2.0 release series, building upon the earlier implementations and establishing key architectural decisions for the modern framework integration:
 
 ### Version 2.1.0 (January 30, 2024)
 - **Utility Functions**: Introduction of `getThemeConfigurations()` and related helper functions
@@ -102,7 +112,7 @@ Today, a typical project workflow looks like:
 
 ## Current State: A Complete Design System
 
-The Theme Configuration system has evolved into a comprehensive design system that handles:
+Building upon years of development and refinement across multiple project types and frameworks, the Theme Configuration system has evolved into a comprehensive design system that handles:
 
 ### Core Features
 - **Dynamic Theming**: Runtime theme switching and customization
@@ -127,7 +137,9 @@ The Theme Configuration system has evolved into a comprehensive design system th
 
 ## Looking Forward
 
-The Theme Configuration system represents more than just a technical solution—it embodies a philosophy of design-development collaboration. By creating a seamless bridge between design tools like Figma and development frameworks like Nuxt, it has fundamentally changed how Limbo Works approaches project development.
+The Theme Configuration system represents more than just a technical solution—it embodies years of evolution and a philosophy of design-development collaboration. Starting from early experiments in Umbraco projects and evolving through standalone implementations to its current sophisticated Nuxt 3 form, it has fundamentally changed how Limbo Works approaches project development.
+
+By creating a seamless bridge between design tools like Figma and development frameworks, it builds upon a foundation of lessons learned from multiple project types and framework implementations.
 
 The system continues to evolve, with ongoing improvements in:
 - Integration with new design tools and workflows
@@ -135,4 +147,4 @@ The system continues to evolve, with ongoing improvements in:
 - Enhanced developer experience and debugging tools
 - Expanded support for emerging CSS features and design patterns
 
-What began as a simple need for consistent theming has grown into a sophisticated design system that exemplifies modern web development best practices, proving that the right abstractions can transform entire workflows and improve both design quality and development efficiency.
+What began as a simple need for consistent theming across early projects has grown into a sophisticated design system that exemplifies modern web development best practices, proving that the right abstractions, refined over time and across multiple implementations, can transform entire workflows and improve both design quality and development efficiency.
