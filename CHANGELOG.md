@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.7.3](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/v2.7.2...v2.7.3) (2025-10-02)
+
+
+### Bug Fixes
+
+* memory leak problem ([b7bad40](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/b7bad4025bd65b57feb9900adf7b4bb6855045e6))
+
 ## [2.7.2](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/v2.7.1...v2.7.2) (2025-05-21)
 
 
