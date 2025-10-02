@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.8.2](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/v2.8.1...v2.8.2) (2025-10-02)
+
+
+### Bug Fixes
+
+* more versatile functions ([57fb4aa](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/57fb4aa89147150d1829066154e8ff376cb02fba))
+
 ## [2.8.1](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/v2.8.0...v2.8.1) (2025-10-02)
 
 
