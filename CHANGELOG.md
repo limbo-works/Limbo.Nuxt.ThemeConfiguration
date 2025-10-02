@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.8.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/v2.7.4...v2.8.0) (2025-10-02)
+
+
+### Features
+
+* added extra utility functions ([1732333](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/17323331d7d33ebcf5c90700a7e4c05cd5b69a0f))
+
+
+### Bug Fixes
+
+* naming should be right ([845a007](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/845a007a4c531d89d3abb09dd36cd33325b866ad))
+
 ## [2.7.4](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/v2.7.3...v2.7.4) (2025-10-02)
 
 
