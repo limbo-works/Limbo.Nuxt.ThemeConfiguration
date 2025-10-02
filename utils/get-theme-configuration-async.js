@@ -1,4 +1,4 @@
-export default async function getThemeConfiguration(theme, subset) {
+export default async function getThemeConfigurationAsync(theme, subset) {
 	let config = undefined;
 	if (typeof theme === 'string') {
 		const configs = await getThemeConfigurations();

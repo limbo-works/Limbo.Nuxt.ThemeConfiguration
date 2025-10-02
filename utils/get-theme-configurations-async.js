@@ -1,4 +1,4 @@
-export default async function getThemeConfigurations() {
+export default async function getThemeConfigurationsAsync() {
 	const configGlobs = import.meta.glob(
 		'~/assets/js/theme-configuration.*.(js|cjs|mjs)',
 		{ as: 'json' }
