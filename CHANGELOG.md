@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.7.4](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/v2.7.3...v2.7.4) (2025-10-02)
+
+
+### Bug Fixes
+
+* change nuxt config to ts ([35c4e4f](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/35c4e4f18a05e06a58f396c24d7e3422b6ade605))
+
 ## [2.7.3](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/v2.7.2...v2.7.3) (2025-10-02)
 
 
