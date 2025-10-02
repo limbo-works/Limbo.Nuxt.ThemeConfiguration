@@ -20,7 +20,7 @@
 const themeConfiguration = ref(null);
 
 // Get a subset with all color rules that start with 'on' from the default theme
-const testSubset = await getThemeConfiguration('default', {
+const testSubset = getThemeConfiguration('default', {
 	[/colors/i]: /^on[A-Z]/,
 });
 console.log(testSubset);
