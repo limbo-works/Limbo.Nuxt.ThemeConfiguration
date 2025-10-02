@@ -1,7 +1,10 @@
 export default function getThemeConfiguration(theme, subset) {
+	const nuxtApp = useNuxtApp();
+	const { provides } = nuxtApp.vueApp._context;
+
 	let config = undefined;
 	if (typeof theme === 'string') {
-		const configs = getThemeConfigurations();
+		const configs = provides['themeConfigurations'] || {};
 		if (configs[theme]) {
 			config = { ...configs[theme] };
 		}

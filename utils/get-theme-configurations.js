@@ -1,3 +1,5 @@
 export default function getThemeConfigurations() {
-	return inject('themeConfigurations', {});
+	const nuxtApp = useNuxtApp();
+	const { provides } = nuxtApp.vueApp._context;
+	return provides['themeConfigurations'] || {};
 }
