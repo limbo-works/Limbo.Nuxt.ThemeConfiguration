@@ -22,11 +22,21 @@ const props = defineProps({
 	cssLayer: String,
 });
 
+const serializedProps = computed(() => {
+	return JSON.stringify(props);
+});
+
 defineExpose({
 	config: observedData,
 });
 
-const availableConfigs = await getThemeConfigurations();
+const iterationCounter = useState(() => 0);
+
+watch(() => props, () => {
+	iterationCounter.value++;
+});
+
+const availableConfigs = getThemeConfigurations();
 const defaultConfig = availableConfigs.default || {};
 
 const compConfig = computed(() => {
@@ -126,7 +136,7 @@ const media = computed(() => {
 	return media;
 });
 
-const iterationCounter = useState(() => 0);
+
 const headStyles = computed(() => {
 	return {
 		style: [
@@ -142,9 +152,7 @@ const headStyles = computed(() => {
 });
 useHead(() => headStyles);
 
-watch(() => props, () => {
-	iterationCounter.value++;
-}, { deep: true });
+
 
 function extractColorRules(object, prefix) {
 	object = cloneDeep(typeof object === 'object' ? object : {});
