@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.8.1](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/v2.8.0...v2.8.1) (2025-10-02)
+
+
+### Bug Fixes
+
+* ts in package as well ([7e76468](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/7e764685db0501f72e480fa834b9d63d2df71d06))
+
 ## [2.8.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/v2.7.4...v2.8.0) (2025-10-02)
 
 
