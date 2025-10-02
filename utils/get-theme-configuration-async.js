@@ -1,7 +1,7 @@
-export default function getThemeConfiguration(theme, subset) {
+export default async function getThemeConfiguration(theme, subset) {
 	let config = undefined;
 	if (typeof theme === 'string') {
-		const configs = getThemeConfigurations();
+		const configs = await getThemeConfigurations();
 		if (configs[theme]) {
 			config = { ...configs[theme] };
 		}
