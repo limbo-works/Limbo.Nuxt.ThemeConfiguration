@@ -1,26 +1,8 @@
-export default function getThemeConfiguration(theme, subset) {
-	const nuxtApp = useNuxtApp();
-	const { provides } = nuxtApp.vueApp._context;
-
-	let config = undefined;
-	if (typeof theme === 'string') {
-		const configs = provides['themeConfigurations'] || {};
-		if (configs[theme]) {
-			config = { ...configs[theme] };
-		}
-	} else if (typeof theme === 'object') {
-		config = { ...theme };
+export default function getThemeConfigurationSubset(obj, subset) {
+	if (typeof obj === 'string') {
+		obj = getThemeConfiguration(obj);
 	}
 
-	if (subset) {
-		config = getSubsetOfObject(config, subset);
-	}
-
-	return config;
-}
-
-/* Helper function to get a subset of an object */
-function getSubsetOfObject(obj, subset) {
 	if (!obj || !subset) {
 		return undefined;
 	}
@@ -61,7 +43,7 @@ function getSubsetOfObject(obj, subset) {
 									newObj[objKey] = obj[objKey];
 								} else {
 									// We have nested subsets!
-									newObj[objKey] = getSubsetOfObject(
+									newObj[objKey] = getThemeConfigurationSubset(
 										obj[objKey],
 										value
 									);
@@ -75,7 +57,7 @@ function getSubsetOfObject(obj, subset) {
 							newObj[key] = obj[key];
 						} else {
 							// We have nested subsets!
-							newObj[key] = getSubsetOfObject(obj[key], value);
+							newObj[key] = getThemeConfigurationSubset(obj[key], value);
 						}
 					}
 				}
