@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.8.4](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/v2.8.3...v2.8.4) (2025-11-10)
+
+
+### Bug Fixes
+
+* added filter boolean to preset fetches ([ee631c2](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/ee631c2cabd5d9f0e1e8a1959b4f5461326c1c67))
+
 ## [2.8.3](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/v2.8.2...v2.8.3) (2025-10-21)
 
 
