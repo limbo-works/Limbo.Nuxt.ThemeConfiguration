@@ -1006,7 +1006,7 @@ function getOpacityRules() {
 	);
 
 	let opacityRules = [];
-	[presetNuxtCore, presetCitiCore].forEach((preset) => {
+	[presetNuxtCore, presetCitiCore].filter(Boolean).forEach((preset) => {
 		opacityRules.push(
 			...(preset?.()?.rules?.filter?.((rule) => {
 				return (
