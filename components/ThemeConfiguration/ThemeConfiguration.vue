@@ -136,7 +136,6 @@ const media = computed(() => {
 	return media;
 });
 
-
 const headStyles = computed(() => {
 	return {
 		style: [
@@ -151,8 +150,6 @@ const headStyles = computed(() => {
 	};
 });
 useHead(() => headStyles);
-
-
 
 function extractColorRules(object, prefix) {
 	object = cloneDeep(typeof object === 'object' ? object : {});
