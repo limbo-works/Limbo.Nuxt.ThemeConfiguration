@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.1.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v3.0.0...theme-configuration-v3.1.0) (2025-12-18)
+
+
+### Features
+
+* made able to configure extra theme configurations ([33dca40](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/33dca4040b306865188bc673c560cc396bad6d29))
+
+
+### Bug Fixes
+
+* prefer local ([869421d](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/869421d60a60d5b6b69f7c502cf4e7ddf0248cbe))
+
 ## [3.0.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v2.8.8...theme-configuration-v3.0.0) (2025-11-10)
 
 
