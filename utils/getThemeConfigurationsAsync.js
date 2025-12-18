@@ -6,7 +6,7 @@ export default async function getThemeConfigurationsAsync() {
 		{ as: 'json' }
 	);
 
-	Object.assign(configGlobs, extractThemeConfigurationsFromAppConfig(appConfig));
+	Object.assign(configGlobs, extractThemeConfigurationsFromAppConfig(appConfig), configGlobs);
 
 	const themeConfigurations = {};
 	for (const key in configGlobs) {
