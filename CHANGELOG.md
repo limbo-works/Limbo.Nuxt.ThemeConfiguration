@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.1](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v3.1.0...theme-configuration-v3.1.1) (2026-01-15)
+
+
+### Bug Fixes
+
+* wrap in runWithContext ([c2fea49](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/c2fea499155bf787956ba805394f8333cabc9e9a))
+
 ## [3.1.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v3.0.0...theme-configuration-v3.1.0) (2025-12-18)
 
 
