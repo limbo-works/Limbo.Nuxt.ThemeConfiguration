@@ -2,36 +2,36 @@ export default async function getThemeConfigurationsAsync() {
 	const appConfig = useAppConfig();
 
 	const configGlobs = import.meta.glob(
-		'~/assets/js/theme-configuration.*.(js|cjs|mjs)',
-		{ as: 'json' }
+		'~/assets/js/theme-configuration.*.(js|cjs|mjs)'
 	);
 
-	Object.assign(configGlobs, extractThemeConfigurationsFromAppConfig(appConfig), configGlobs);
+	Object.assign(configGlobs, extractThemeConfigurationsFromAppConfig(appConfig));
 
+	// Helper function to get theme name from glob key
+	function getThemeNameFromKey(key) {
+		const match = key.match(/theme-configuration\.([a-zA-Z0-9_-]+)\./);
+		return match ? match[1] : key;
+	}
+
+	// Load all themes eagerly to maintain compatibility
 	const themeConfigurations = {};
-	const loadedConfigs = new Map();
 
-	try {
-		for (const key in configGlobs) {
-			const themeName = key.match(
-				/theme-configuration\.([a-zA-Z0-9_-]+)\./
-			)?.[1] || key;
+	// Load all available themes
+	for (const key of Object.keys(configGlobs)) {
+		const themeName = getThemeNameFromKey(key);
 
-			// Cache loaded configurations to prevent re-importing
-			if (!loadedConfigs.has(key)) {
-				const config = (await configGlobs[key]())?.default;
-				loadedConfigs.set(key, config);
-				themeConfigurations[themeName] = config;
-			} else {
-				themeConfigurations[themeName] = loadedConfigs.get(key);
+		try {
+			const config = await configGlobs[key]();
+			const themeConfig = config?.default || config;
+			if (themeConfig && typeof themeConfig === 'object') {
+				// Deep clone to ensure completely serializable plain objects
+				themeConfigurations[themeName] = JSON.parse(JSON.stringify(themeConfig));
 			}
-		}
-	} finally {
-		// Clear references to prevent memory leaks
-		if (import.meta.server) {
-			loadedConfigs.clear();
+		} catch (error) {
+			console.warn(`Failed to load theme configuration "${themeName}": ${error?.message || String(error)}`);
 		}
 	}
 
-	return themeConfigurations;
+	// Return a completely plain object to avoid serialization issues
+	return JSON.parse(JSON.stringify(themeConfigurations));
 };

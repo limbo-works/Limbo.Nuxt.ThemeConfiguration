@@ -11,9 +11,16 @@ export default function extractThemeConfigurationsFromAppConfig(appConfig = {}) 
 				configPath = configPath.path;
 			}
 
-			configGlobs[name] = async () => (await import(configPath /* @vite-ignore */, {
-				as: 'json',
-			}));
+			// Use standard dynamic import
+			configGlobs[name] = async () => {
+				try {
+					const module = await import(/* @vite-ignore */ configPath);
+					return module?.default || module;
+				} catch (error) {
+					console.warn(`Failed to import theme configuration from "${configPath}": ${error?.message || String(error)}`);
+					return undefined;
+				}
+			};
 		}
 	}
 

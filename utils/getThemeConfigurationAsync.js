@@ -1,27 +1,25 @@
 export default async function getThemeConfigurationAsync(theme, subset) {
-	const appConfig = useAppConfig();
+	const { $themeConfigurations = {} } = useNuxtApp();
 
 	let config = undefined;
 	if (typeof theme === 'string') {
-		const configGlobs = import.meta.glob(
-			'~/assets/js/theme-configuration.*.(js|cjs|mjs)',
-			{ as: 'json' }
-		);
+		let themeConfig = $themeConfigurations[theme];
 
-		Object.assign(configGlobs, extractThemeConfigurationsFromAppConfig(appConfig), configGlobs);
-
-		const themeConfigurations = {};
-		for (const key in configGlobs) {
-			const themeName = key.match(
-				/theme-configuration\.([a-zA-Z0-9_-]+)\./
-			)?.[1] || key;
-			if (themeName === theme) {
-				themeConfigurations[themeName] = (await configGlobs[key]())?.default;
+		if (themeConfig && typeof themeConfig === 'object' && typeof themeConfig.then !== 'function') {
+			// Theme is already loaded
+			config = { ...themeConfig };
+		} else if (!themeConfig && $themeConfigurations.$loadTheme) {
+			// Try to load theme using the loader function
+			try {
+				const loadedConfig = await $themeConfigurations.$loadTheme(theme);
+				if (loadedConfig) {
+					config = { ...loadedConfig };
+				}
+			} catch (error) {
+				console.warn(`Failed to load theme configuration "${theme}":`, error);
 			}
-		}
-
-		if (themeConfigurations[theme]) {
-			config = { ...themeConfigurations[theme] };
+		} else if (!themeConfig) {
+			console.warn(`Theme "${theme}" not found. Available themes:`, Object.keys($themeConfigurations).filter(key => !key.startsWith('$')));
 		}
 	} else if (typeof theme === 'object') {
 		config = { ...theme };

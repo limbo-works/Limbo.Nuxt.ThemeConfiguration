@@ -3,8 +3,15 @@ export default function getThemeConfiguration(theme, subset) {
 
 	let config = undefined;
 	if (typeof theme === 'string') {
-		if ($themeConfigurations[theme]) {
-			config = { ...$themeConfigurations[theme] };
+		const themeConfig = $themeConfigurations[theme];
+
+		if (themeConfig && typeof themeConfig === 'object' && typeof themeConfig.then !== 'function') {
+			// Theme is loaded
+			config = { ...themeConfig };
+		} else if (!themeConfig) {
+			// Theme not found
+			console.warn(`Theme "${theme}" not found. Available themes:`, Object.keys($themeConfigurations).filter(key => !key.startsWith('$')));
+			return undefined;
 		}
 	} else if (typeof theme === 'object') {
 		config = { ...theme };
