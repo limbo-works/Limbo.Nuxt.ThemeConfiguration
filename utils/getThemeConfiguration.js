@@ -1,25 +1,18 @@
 export default function getThemeConfiguration(theme, subset) {
 	const { $themeConfigurations = {} } = useNuxtApp();
 
-	let config = undefined;
+	let config;
 	if (typeof theme === 'string') {
-		const themeConfig = $themeConfigurations[theme];
-
-		if (themeConfig && typeof themeConfig === 'object' && typeof themeConfig.then !== 'function') {
-			// Theme is loaded
-			config = { ...themeConfig };
-		} else if (!themeConfig) {
-			// Theme not found
-			console.warn(`Theme "${theme}" not found. Available themes:`, Object.keys($themeConfigurations).filter(key => !key.startsWith('$')));
+		config = $themeConfigurations[theme];
+		if (!config) {
+			console.warn(`Theme "${theme}" not found. Available themes:`, $themeConfigurations.$getAvailableThemes?.() || []);
 			return undefined;
 		}
 	} else if (typeof theme === 'object') {
-		config = { ...theme };
+		config = theme;
+	} else {
+		return undefined;
 	}
 
-	if (subset) {
-		config = getThemeConfigurationSubset(config, subset);
-	}
-
-	return config;
+	return subset ? getThemeConfigurationSubset(config, subset) : config;
 }

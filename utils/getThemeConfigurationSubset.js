@@ -1,81 +1,57 @@
 export default function getThemeConfigurationSubset(obj, subset) {
-	if (typeof obj === 'string') {
-		obj = getThemeConfiguration(obj);
-	}
-
-	if (!obj || !subset) {
-		return undefined;
-	}
-	const newObj = {};
+	if (!obj || !subset || typeof obj === 'string') return undefined;
 
 	if (typeof subset === 'string') {
-		// Just a single key
-		newObj[subset] = obj[subset];
-	} else if (Array.isArray(subset)) {
-		// An array of keys (or arrays, or objects, or regexes, etc.)
-		subset.forEach((key) => {
-			newObj[key] = obj[key];
-		});
-	} else if (typeof subset === 'object') {
-		if (subset instanceof RegExp) {
-			// A regex to match keys
-			for (const key in obj) {
-				if (subset.test(key)) {
-					newObj[key] = obj[key];
-				}
-			}
-		} else {
-			// An object of keys and/or nested subsets
-			for (const key in subset) {
-				const value = subset[key];
-				if (value) {
-					const isRegExp = new RegExp('^/(.*?)/([gimy]*)$');
-					if (isRegExp.test(key)) {
-						// The key is a regex
-						const regExp = new RegExp(
-							isRegExp.exec(key)[1],
-							isRegExp.exec(key)[2]
-						);
-						for (const objKey in obj) {
-							if (regExp.test(objKey)) {
-								if (typeof value === 'boolean') {
-									// We just want to include it all
-									newObj[objKey] = obj[objKey];
-								} else {
-									// We have nested subsets!
-									newObj[objKey] = getThemeConfigurationSubset(
-										obj[objKey],
-										value
-									);
-								}
-							}
-						}
-					} else {
-						// Regular key
-						if (typeof value === 'boolean') {
-							// We just want to include it all
-							newObj[key] = obj[key];
-						} else {
-							// We have nested subsets!
-							newObj[key] = getThemeConfigurationSubset(obj[key], value);
-						}
+		return obj[subset] !== undefined ? { [subset]: obj[subset] } : undefined;
+	}
+
+	if (Array.isArray(subset)) {
+		const result = {};
+		for (const key of subset) {
+			if (obj[key] !== undefined) result[key] = obj[key];
+		}
+		return Object.keys(result).length ? result : undefined;
+	}
+
+	if (subset instanceof RegExp) {
+		const result = {};
+		for (const key in obj) {
+			if (subset.test(key)) result[key] = obj[key];
+		}
+		return Object.keys(result).length ? result : undefined;
+	}
+
+	if (typeof subset === 'object') {
+		const result = {};
+		for (const key in subset) {
+			if (!subset[key]) continue;
+
+			const regexMatch = key.match(/^\/(.*)\/([gimy]*)$/);
+			if (regexMatch) {
+				const regex = new RegExp(regexMatch[1], regexMatch[2]);
+				for (const objKey in obj) {
+					if (regex.test(objKey)) {
+						result[objKey] = typeof subset[key] === 'boolean'
+							? obj[objKey]
+							: getThemeConfigurationSubset(obj[objKey], subset[key]);
 					}
 				}
+			} else if (obj[key] !== undefined) {
+				result[key] = typeof subset[key] === 'boolean'
+					? obj[key]
+					: getThemeConfigurationSubset(obj[key], subset[key]);
 			}
 		}
-	}
 
-	// Remove undefined values and empty objects
-	for (const key in newObj) {
-		if (
-			newObj[key] === undefined ||
-			(typeof newObj[key] === 'object' &&
-				Object.keys(newObj[key]).length === 0)
-		) {
-			delete newObj[key];
+		// Filter undefined values
+		for (const key in result) {
+			if (result[key] === undefined || (typeof result[key] === 'object' && Object.keys(result[key] || {}).length === 0)) {
+				delete result[key];
+			}
 		}
+
+		return Object.keys(result).length ? result : undefined;
 	}
 
-	// Return a fresh copy
-	return JSON.parse(JSON.stringify(newObj));
+	return undefined;
 }
