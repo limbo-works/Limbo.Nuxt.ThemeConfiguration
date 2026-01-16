@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.2](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v3.1.1...theme-configuration-v3.1.2) (2026-01-16)
+
+
+### Bug Fixes
+
+* more memory leak avoidance ([68ba6e3](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/68ba6e3b95767a47a59e307634c9ad4273a8096b))
+
 ## [3.1.1](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v3.1.0...theme-configuration-v3.1.1) (2026-01-15)
 
 
