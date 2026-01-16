@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.2.2](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v3.2.1...theme-configuration-v3.2.2) (2026-01-16)
+
+
+### Bug Fixes
+
+* only use stucturedClone if available ([1ea7d5a](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/1ea7d5aabb83682805ebd7f581adb5a2a90506e7))
+
 ## [3.2.1](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v3.2.0...theme-configuration-v3.2.1) (2026-01-16)
 
 
