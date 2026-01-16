@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.2.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v3.1.2...theme-configuration-v3.2.0) (2026-01-16)
+
+
+### Features
+
+* trying to make everything more efficient and lazy ([8e3cf7b](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/8e3cf7b3c7eb4071fdd3c4069e7057033fa8c319))
+
 ## [3.1.2](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v3.1.1...theme-configuration-v3.1.2) (2026-01-16)
 
 
