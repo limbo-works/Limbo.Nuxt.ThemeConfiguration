@@ -9,11 +9,28 @@ export default async function getThemeConfigurationsAsync() {
 	Object.assign(configGlobs, extractThemeConfigurationsFromAppConfig(appConfig), configGlobs);
 
 	const themeConfigurations = {};
-	for (const key in configGlobs) {
-		const themeName = key.match(
-			/theme-configuration\.([a-zA-Z0-9_-]+)\./
-		)?.[1] || key;
-		themeConfigurations[themeName] = (await configGlobs[key]())?.default;
+	const loadedConfigs = new Map();
+
+	try {
+		for (const key in configGlobs) {
+			const themeName = key.match(
+				/theme-configuration\.([a-zA-Z0-9_-]+)\./
+			)?.[1] || key;
+
+			// Cache loaded configurations to prevent re-importing
+			if (!loadedConfigs.has(key)) {
+				const config = (await configGlobs[key]())?.default;
+				loadedConfigs.set(key, config);
+				themeConfigurations[themeName] = config;
+			} else {
+				themeConfigurations[themeName] = loadedConfigs.get(key);
+			}
+		}
+	} finally {
+		// Clear references to prevent memory leaks
+		if (import.meta.server) {
+			loadedConfigs.clear();
+		}
 	}
 
 	return themeConfigurations;

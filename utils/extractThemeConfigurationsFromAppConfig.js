@@ -11,7 +11,7 @@ export default function extractThemeConfigurationsFromAppConfig(appConfig = {}) 
 				configPath = configPath.path;
 			}
 
-			configGlobs[name] = async () => (await import(configPath, {
+			configGlobs[name] = async () => (await import(configPath /* @vite-ignore */, {
 				as: 'json',
 			}));
 		}
