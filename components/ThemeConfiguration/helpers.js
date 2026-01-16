@@ -83,7 +83,13 @@ function restructureFontSizeObject(object) {
 function cloneDeep(object) {
 	// Use structuredClone when available (faster and handles more types)
 	if (typeof structuredClone !== 'undefined') {
-		return structuredClone(object);
+		try {
+			return structuredClone(object);
+		} catch (error) {
+			// structuredClone can throw DOMException for objects containing
+			// non-cloneable values (functions, symbols, DOM nodes, etc.)
+			// Fall through to manual cloning
+		}
 	}
 	// Fallback for primitives and simple objects
 	if (object === null || typeof object !== 'object') {
