@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.3.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v3.2.2...theme-configuration-v3.3.0) (2026-01-16)
+
+
+### Features
+
+* improved efficiency ([75d6b5a](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/75d6b5a3670ddae8c3be9fb627e53b045938caed))
+* improved efficiency further ([8192a4f](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/8192a4fcc1da697e6de8347e8c8c76cf91ef7066))
+
+
+### Bug Fixes
+
+* return to earlier state ([26e0544](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/26e0544055d73961e9d77d91bdd33c464b25b93c))
+
 ## [3.2.2](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v3.2.1...theme-configuration-v3.2.2) (2026-01-16)
 
 
