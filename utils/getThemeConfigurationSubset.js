@@ -1,5 +1,3 @@
-import getThemeConfiguration from './getThemeConfiguration.js';
-
 export default function getThemeConfigurationSubset(obj, subset) {
 	if (typeof obj === 'string') {
 		obj = getThemeConfiguration(obj);
@@ -67,9 +65,17 @@ export default function getThemeConfigurationSubset(obj, subset) {
 		}
 	}
 
-	// Return efficiently - only clone if needed
-	if (Object.keys(newObj).length === 0) {
-		return undefined;
+	// Remove undefined values and empty objects
+	for (const key in newObj) {
+		if (
+			newObj[key] === undefined ||
+			(typeof newObj[key] === 'object' &&
+				Object.keys(newObj[key]).length === 0)
+		) {
+			delete newObj[key];
+		}
 	}
-	return newObj;
+
+	// Return a fresh copy
+	return JSON.parse(JSON.stringify(newObj));
 }

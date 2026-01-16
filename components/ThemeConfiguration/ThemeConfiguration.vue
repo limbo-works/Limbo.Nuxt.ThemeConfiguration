@@ -22,6 +22,10 @@ const props = defineProps({
 	cssLayer: String,
 });
 
+const serializedProps = computed(() => {
+	return JSON.stringify(props);
+});
+
 defineExpose({
 	config: observedData,
 });
@@ -30,55 +34,37 @@ const iterationCounter = useState(() => 0);
 
 watch(() => props, () => {
 	iterationCounter.value++;
-	// Clear config cache when props change
-	configCache.clear();
 });
 
 const availableConfigs = getThemeConfigurations();
 const defaultConfig = availableConfigs.default || {};
 
-// Cache merged configs to avoid repeated cloning
-const configCache = new Map();
-
 const compConfig = computed(() => {
+	let clone = cloneDeep(defaultConfig);
+
 	let usedConfig = props.config;
-	const configKey = typeof usedConfig === 'string' ? usedConfig : JSON.stringify(usedConfig);
-
-	// Check cache first
-	if (configCache.has(configKey)) {
-		return configCache.get(configKey);
-	}
-
 	if (typeof usedConfig === 'string') {
 		usedConfig = availableConfigs[usedConfig];
 	}
 	usedConfig = usedConfig || {};
 
-	let result;
-	// Only clone and merge if we have custom config
+	// Overwrite by property
 	if (Object.keys(usedConfig).length) {
-		result = deepmerge(cloneDeep(defaultConfig), usedConfig);
-	} else {
-		result = defaultConfig;
+		clone = deepmerge(clone, cloneDeep(usedConfig));
 	}
 
-	// Cache the result
-	configCache.set(configKey, result);
-	return result;
+	// Default to the defaultConfig
+	return clone;
 });
 
 const classBaseConfig = computed(() => {
 	if (props.useThemeClasses && Array.isArray(props.useThemeClasses)) {
-		// Build merged config without excessive cloning
-		const mergedObj = {};
-		for (let i = 0; i < props.useThemeClasses.length; i++) {
-			const key = props.useThemeClasses[i];
-			const config = availableConfigs[key];
-			if (config) {
-				Object.assign(mergedObj, config);
-			}
-		}
-		return deepMergeExisting(mergedObj, compConfig.value);
+		return deepMergeExisting(
+			props.useThemeClasses.reduce((obj, key) => {
+				Object.assign(obj, availableConfigs[key]);
+			}, {}),
+			compConfig.value
+		);
 	}
 
 	return compConfig.value;
@@ -89,17 +75,19 @@ const cssText = computed(() => {
 	const rules = [makeCssText()];
 
 	if (props.useThemeClasses) {
-		const availableKeys = Object.keys(availableConfigs);
-		for (let i = 0; i < availableKeys.length; i++) {
-			const key = availableKeys[i];
+		for (const [key, value] of Object.entries(availableConfigs)) {
 			if (props.config === key) continue;
 			if (!props.config && key === 'default') continue;
-			if (Array.isArray(props.useThemeClasses) && !props.useThemeClasses.includes(key)) continue;
+			if (
+				Array.isArray(props.useThemeClasses) &&
+				!props.useThemeClasses.includes(key)
+			)
+				continue;
 
 			rules.push(
 				makeCssText(
 					`.u-theme-${key}`,
-					deepMergeExisting({ ...classBaseConfig.value }, availableConfigs[key])
+					deepMergeExisting({ ...classBaseConfig.value }, value)
 				)
 			);
 		}
@@ -110,66 +98,56 @@ const cssText = computed(() => {
 
 /* Compose media configs */
 const media = computed(() => {
-	const mediaObj = props.media || {};
-	const mediaKeys = Object.keys(mediaObj);
-	if (!mediaKeys.length) return [];
-
-	const result = new Array(mediaKeys.length);
-	for (let i = 0; i < mediaKeys.length; i++) {
-		const key = mediaKeys[i];
-		const config = mediaObj[key];
-
-		// Build rules more efficiently
-		const rules = [];
-		const baseConfig = typeof config === 'string' ? availableConfigs[config] : config;
-		rules.push(makeCssText(undefined, baseConfig));
+	const media = [];
+	for (const [key, config] of Object.entries(props.media || {})) {
+		const rules = [
+			makeCssText(
+				undefined,
+				typeof config === 'string' ? availableConfigs[config] : config
+			),
+		];
 
 		if (props.useThemeClasses) {
-			const availableKeys = Object.keys(availableConfigs);
-			for (let j = 0; j < availableKeys.length; j++) {
-				const themeKey = availableKeys[j];
-				if (props.config === themeKey) continue;
-				if (!props.config && themeKey === 'default') continue;
-				if (Array.isArray(props.useThemeClasses) && !props.useThemeClasses.includes(themeKey)) continue;
+			for (const [key] of Object.entries(availableConfigs)) {
+				if (props.config === key) continue;
+				if (!props.config && key === 'default') continue;
+				if (
+					Array.isArray(props.useThemeClasses) &&
+					!props.useThemeClasses.includes(key)
+				)
+					continue;
 
-				rules.push(makeCssText(`.u-theme-${themeKey}`, baseConfig));
+				rules.push(
+					makeCssText(
+						`.u-theme-${key}`,
+						typeof config === 'string'
+							? availableConfigs[config]
+							: config
+					)
+				);
 			}
 		}
 
-		result[i] = {
+		media.push({
 			query: key,
 			cssText: rules.join('\n'),
-		};
+		});
 	}
-	return result;
+	return media;
 });
 
 const headStyles = computed(() => {
-	const styles = [];
-
-	if (cssText.value) {
-		styles.push({
-			key: 'theme-configuration-' + iterationCounter.value,
-			type: 'text/css',
-			textContent: cssText.value
-		});
-	}
-
-	// Efficiently build media styles without array spreading
-	const mediaVal = media.value;
-	if (mediaVal?.length) {
-		for (let i = 0; i < mediaVal.length; i++) {
-			const mediaItem = mediaVal[i];
-			styles.push({
-				key: 'theme-configuration-' + mediaItem.query + '-' + iterationCounter.value,
+	return {
+		style: [
+			cssText.value && { key: 'theme-configuration-' + iterationCounter.value, type: 'text/css', textContent: cssText.value },
+			...(media.value?.map((mediaItem) => ({
+				key: 'theme-configuration-' + mediaItem.query + '-'  + iterationCounter.value,
 				type: 'text/css',
 				media: mediaItem.query,
 				textContent: mediaItem.cssText,
-			});
-		}
-	}
-
-	return { style: styles };
+			})) ?? []),
+		],
+	};
 });
 useHead(() => headStyles);
 
@@ -618,162 +596,187 @@ function extractRules(
 
 function makeCssText(selector, config = compConfig.value) {
 	if (!selector) {
-		let selectorStr = ':root';
+		const selectors = [':root'];
 		if (props.useThemeClasses) {
-			selectorStr += ', .u-theme';
+			selectors.push('.u-theme');
+
 			if (typeof props.config === 'string') {
-				selectorStr += `, .u-theme-${props.config}`;
+				selectors.push(`.u-theme-${props.config}`);
 			} else if (!props.config) {
-				selectorStr += ', .u-theme-default';
+				selectors.push('.u-theme-default');
 			}
 		}
-		selector = selectorStr;
+		selector = selectors.join(', ');
 	}
 
 	const { baseFontSize, smViewport, mdViewport, lgViewport } = config;
 
-	// Pre-allocate arrays to avoid repeated allocation
-	const allRules = [];
+	let rules = [
+		extractColorRules(config?.colors),
+		// Find variants ending with colors, like backgroundColors
+		...findAltRuleKeys('colors').map(({ configKey, prefix }) =>
+			extractColorRules(config[configKey], prefix)
+		),
+		extractLayoutRules(config?.layout),
+		extractFontRules(config?.fontSize),
+		extractFontRules(config?.fontStyles),
+		extractRules('spacing', config?.spacing),
+		// Find variants ending with spacing, like horizontalSpacing
+		...findAltRuleKeys('spacing').map(({ configKey }) =>
+			extractRules(configKey, config[configKey])
+		),
+		extractRules('borderRadius', config?.borderRadius),
+	];
 
-	// Add basic rules without spreading
-	allRules.push(extractColorRules(config?.colors));
+	let smToMdScreenRules = rules
+		.reduce((arr, obj) => {
+			arr.push(...(obj.smToMdScreenRules || []));
+			return arr;
+		}, [])
+		.filter(Boolean);
+	let mdScreenRules = rules
+		.reduce((arr, obj) => {
+			arr.push(...(obj.mdScreenRules || []));
+			return arr;
+		}, [])
+		.filter(Boolean);
+	let mdToLgScreenRules = rules
+		.reduce((arr, obj) => {
+			arr.push(...(obj.mdToLgScreenRules || []));
+			return arr;
+		}, [])
+		.filter(Boolean);
+	let lgScreenRules = rules
+		.reduce((arr, obj) => {
+			arr.push(...(obj.lgScreenRules || []));
+			return arr;
+		}, [])
+		.filter(Boolean);
+	rules = rules
+		.reduce((arr, obj) => {
+			arr.push(...(obj.rules || []));
+			return arr;
+		}, [])
+		.filter(Boolean);
 
-	// Add color variants efficiently
-	const colorKeys = findAltRuleKeys('colors');
-	for (let i = 0; i < colorKeys.length; i++) {
-		const { configKey, prefix } = colorKeys[i];
-		allRules.push(extractColorRules(config[configKey], prefix));
-	}
-
-	allRules.push(extractLayoutRules(config?.layout));
-	allRules.push(extractFontRules(config?.fontSize));
-	allRules.push(extractFontRules(config?.fontStyles));
-	allRules.push(extractRules('spacing', config?.spacing));
-
-	// Add spacing variants efficiently
-	const spacingKeys = findAltRuleKeys('spacing');
-	for (let i = 0; i < spacingKeys.length; i++) {
-		const { configKey } = spacingKeys[i];
-		allRules.push(extractRules(configKey, config[configKey]));
-	}
-
-	allRules.push(extractRules('borderRadius', config?.borderRadius));
-
-	// Efficiently collect rules into separate arrays
-	const rules = [];
-	const smToMdScreenRules = [];
-	const mdScreenRules = [];
-	const mdToLgScreenRules = [];
-	const lgScreenRules = [];
-
-	for (let i = 0; i < allRules.length; i++) {
-		const ruleSet = allRules[i];
-		if (!ruleSet) continue;
-
-		if (ruleSet.rules) {
-			for (let j = 0; j < ruleSet.rules.length; j++) {
-				if (ruleSet.rules[j]) rules.push(ruleSet.rules[j]);
-			}
-		}
-		if (ruleSet.smToMdScreenRules) {
-			for (let j = 0; j < ruleSet.smToMdScreenRules.length; j++) {
-				if (ruleSet.smToMdScreenRules[j]) smToMdScreenRules.push(ruleSet.smToMdScreenRules[j]);
-			}
-		}
-		if (ruleSet.mdScreenRules) {
-			for (let j = 0; j < ruleSet.mdScreenRules.length; j++) {
-				if (ruleSet.mdScreenRules[j]) mdScreenRules.push(ruleSet.mdScreenRules[j]);
-			}
-		}
-		if (ruleSet.mdToLgScreenRules) {
-			for (let j = 0; j < ruleSet.mdToLgScreenRules.length; j++) {
-				if (ruleSet.mdToLgScreenRules[j]) mdToLgScreenRules.push(ruleSet.mdToLgScreenRules[j]);
-			}
-		}
-		if (ruleSet.lgScreenRules) {
-			for (let j = 0; j < ruleSet.lgScreenRules.length; j++) {
-				if (ruleSet.lgScreenRules[j]) lgScreenRules.push(ruleSet.lgScreenRules[j]);
-			}
-		}
-	}
-
-
-
-	// Build CSS string efficiently without excessive array operations
-	const cssBuilder = [];
-
-	// Add CSS layer start
-	if (props.cssLayer) {
-		cssBuilder.push(`@layer ${props.cssLayer} {`);
-	}
-
-	// Build main rules section
+	// Apply selector around rules and indent
 	if (rules.length) {
-		cssBuilder.push(`${selector} {`);
-		for (let i = 0; i < rules.length; i++) {
-			cssBuilder.push(compConfig.value.minify ? rules[i] : `  ${rules[i]}`);
+		if (!compConfig.value.minify) {
+			rules = rules.map((rule) => `  ${rule}`);
 		}
-		cssBuilder.push('}');
+		rules.unshift(`${selector} {`);
+		rules.push('}');
 	}
 
-	// Build smToMd screen rules
+	// Apply media query and selector around rules and indent
 	if (smToMdScreenRules.length) {
-		const breakpoint = Math.round(((smViewport + mdViewport) / 2 / baseFontSize) * 1000) / 1000;
-		cssBuilder.push(`@media screen and (min-width: ${breakpoint}em) {`);
-		cssBuilder.push(compConfig.value.minify ? `${selector} {` : `  ${selector} {`);
-		for (let i = 0; i < smToMdScreenRules.length; i++) {
-			const indent = compConfig.value.minify ? '' : '    ';
-			cssBuilder.push(indent + smToMdScreenRules[i]);
+		// Selector
+		if (!compConfig.value.minify) {
+			smToMdScreenRules = smToMdScreenRules.map((rule) => `  ${rule}`);
 		}
-		cssBuilder.push(compConfig.value.minify ? '}' : '  }');
-		cssBuilder.push('}');
+		smToMdScreenRules.unshift(`${selector} {`);
+		smToMdScreenRules.push('}');
+
+		// Media query
+		if (!compConfig.value.minify) {
+			smToMdScreenRules = smToMdScreenRules.map((rule) => `  ${rule}`);
+		}
+		smToMdScreenRules.unshift(
+			`@media screen and (min-width: ${
+				Math.round(
+					((smViewport + mdViewport) / 2 / baseFontSize) * 1000
+				) / 1000
+			}em) {`
+		);
+		smToMdScreenRules.push('}');
 	}
 
-	// Build md screen rules
 	if (mdScreenRules.length) {
-		const breakpoint = Math.round((mdViewport / baseFontSize) * 1000) / 1000;
-		cssBuilder.push(`@media screen and (min-width: ${breakpoint}em) {`);
-		cssBuilder.push(compConfig.value.minify ? `${selector} {` : `  ${selector} {`);
-		for (let i = 0; i < mdScreenRules.length; i++) {
-			const indent = compConfig.value.minify ? '' : '    ';
-			cssBuilder.push(indent + mdScreenRules[i]);
+		// Selector
+		if (!compConfig.value.minify) {
+			mdScreenRules = mdScreenRules.map((rule) => `  ${rule}`);
 		}
-		cssBuilder.push(compConfig.value.minify ? '}' : '  }');
-		cssBuilder.push('}');
+		mdScreenRules.unshift(`${selector} {`);
+		mdScreenRules.push('}');
+
+		// Media query
+		if (!compConfig.value.minify) {
+			mdScreenRules = mdScreenRules.map((rule) => `  ${rule}`);
+		}
+		mdScreenRules.unshift(
+			`@media screen and (min-width: ${
+				Math.round((mdViewport / baseFontSize) * 1000) / 1000
+			}em) {`
+		);
+		mdScreenRules.push('}');
 	}
 
-	// Build mdToLg screen rules
 	if (mdToLgScreenRules.length) {
-		const breakpoint = Math.round(((mdViewport + lgViewport) / 2 / baseFontSize) * 1000) / 1000;
-		cssBuilder.push(`@media screen and (min-width: ${breakpoint}em) {`);
-		cssBuilder.push(compConfig.value.minify ? `${selector} {` : `  ${selector} {`);
-		for (let i = 0; i < mdToLgScreenRules.length; i++) {
-			const indent = compConfig.value.minify ? '' : '    ';
-			cssBuilder.push(indent + mdToLgScreenRules[i]);
+		// Selector
+		if (!compConfig.value.minify) {
+			mdToLgScreenRules = mdToLgScreenRules.map((rule) => `  ${rule}`);
 		}
-		cssBuilder.push(compConfig.value.minify ? '}' : '  }');
-		cssBuilder.push('}');
+		mdToLgScreenRules.unshift(`${selector} {`);
+		mdToLgScreenRules.push('}');
+
+		// Media query
+		if (!compConfig.value.minify) {
+			mdToLgScreenRules = mdToLgScreenRules.map((rule) => `  ${rule}`);
+		}
+		mdToLgScreenRules.unshift(
+			`@media screen and (min-width: ${
+				Math.round(
+					((mdViewport + lgViewport) / 2 / baseFontSize) * 1000
+				) / 1000
+			}em) {`
+		);
+		mdToLgScreenRules.push('}');
 	}
 
-	// Build lg screen rules
 	if (lgScreenRules.length) {
-		const breakpoint = Math.round((lgViewport / baseFontSize) * 1000) / 1000;
-		cssBuilder.push(`@media screen and (min-width: ${breakpoint}em) {`);
-		cssBuilder.push(compConfig.value.minify ? `${selector} {` : `  ${selector} {`);
-		for (let i = 0; i < lgScreenRules.length; i++) {
-			const indent = compConfig.value.minify ? '' : '    ';
-			cssBuilder.push(indent + lgScreenRules[i]);
+		// Selector
+		if (!compConfig.value.minify) {
+			lgScreenRules = lgScreenRules.map((rule) => `  ${rule}`);
 		}
-		cssBuilder.push(compConfig.value.minify ? '}' : '  }');
-		cssBuilder.push('}');
+		lgScreenRules.unshift(`${selector} {`);
+		lgScreenRules.push('}');
+
+		// Media query
+		if (!compConfig.value.minify) {
+			lgScreenRules = lgScreenRules.map((rule) => `  ${rule}`);
+		}
+		lgScreenRules.unshift(
+			`@media screen and (min-width: ${
+				Math.round((lgViewport / baseFontSize) * 1000) / 1000
+			}em) {`
+		);
+		lgScreenRules.push('}');
 	}
 
-	// Add CSS layer end
-	if (props.cssLayer) {
-		cssBuilder.push('}');
-	}
+	// Wrap in a CSS layer
+	const layer = props.cssLayer ? [`@layer ${props.cssLayer} {`] : [];
+	const layerEnd = props.cssLayer ? ['}'] : [];
 
-	return cssBuilder.join(compConfig.value.minify ? '' : '\n');
+	if (compConfig.value.minify) {
+		return [
+			...layer,
+			...rules,
+			...smToMdScreenRules,
+			...mdScreenRules,
+			...mdToLgScreenRules,
+			...lgScreenRules,
+			...layerEnd,
+		].join('');
+	}
+	return [
+		...layer,
+		...rules,
+		...smToMdScreenRules,
+		...mdScreenRules,
+		...mdToLgScreenRules,
+		...lgScreenRules,
+		...layerEnd,
+	].join('\n');
 }
 
 function findAltRuleKeys(key) {
