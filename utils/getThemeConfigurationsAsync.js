@@ -24,14 +24,14 @@ export default async function getThemeConfigurationsAsync() {
 			const config = await configGlobs[key]();
 			const themeConfig = config?.default || config;
 			if (themeConfig && typeof themeConfig === 'object') {
-				// Deep clone to ensure completely serializable plain objects
-				themeConfigurations[themeName] = JSON.parse(JSON.stringify(themeConfig));
+				// Store directly without unnecessary cloning
+				themeConfigurations[themeName] = themeConfig;
 			}
 		} catch (error) {
 			console.warn(`Failed to load theme configuration "${themeName}": ${error?.message || String(error)}`);
 		}
 	}
 
-	// Return a completely plain object to avoid serialization issues
-	return JSON.parse(JSON.stringify(themeConfigurations));
+	// Return configurations directly
+	return themeConfigurations;
 };
