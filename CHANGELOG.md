@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.2.1](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v3.2.0...theme-configuration-v3.2.1) (2026-01-16)
+
+
+### Bug Fixes
+
+* reduce the amount of objects and arrays ([b98ce51](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/b98ce51e6b41b3271059c23ac3760bc36dc18b50))
+
 ## [3.2.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v3.1.2...theme-configuration-v3.2.0) (2026-01-16)
 
 
