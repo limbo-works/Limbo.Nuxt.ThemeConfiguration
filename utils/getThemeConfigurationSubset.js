@@ -6,23 +6,29 @@ export default function getThemeConfigurationSubset(obj, subset) {
 	}
 
 	if (Array.isArray(subset)) {
-		const result = {};
+		let result;
 		for (const key of subset) {
-			if (obj[key] !== undefined) result[key] = obj[key];
+			if (obj[key] !== undefined) {
+				if (!result) result = {};
+				result[key] = obj[key];
+			}
 		}
-		return Object.keys(result).length ? result : undefined;
+		return result;
 	}
 
 	if (subset instanceof RegExp) {
-		const result = {};
+		let result;
 		for (const key in obj) {
-			if (subset.test(key)) result[key] = obj[key];
+			if (subset.test(key)) {
+				if (!result) result = {};
+				result[key] = obj[key];
+			}
 		}
-		return Object.keys(result).length ? result : undefined;
+		return result;
 	}
 
 	if (typeof subset === 'object') {
-		const result = {};
+		let result;
 		for (const key in subset) {
 			if (!subset[key]) continue;
 
@@ -31,26 +37,26 @@ export default function getThemeConfigurationSubset(obj, subset) {
 				const regex = new RegExp(regexMatch[1], regexMatch[2]);
 				for (const objKey in obj) {
 					if (regex.test(objKey)) {
-						result[objKey] = typeof subset[key] === 'boolean'
+						const value = typeof subset[key] === 'boolean'
 							? obj[objKey]
 							: getThemeConfigurationSubset(obj[objKey], subset[key]);
+						if (value !== undefined) {
+							if (!result) result = {};
+							result[objKey] = value;
+						}
 					}
 				}
 			} else if (obj[key] !== undefined) {
-				result[key] = typeof subset[key] === 'boolean'
+				const value = typeof subset[key] === 'boolean'
 					? obj[key]
 					: getThemeConfigurationSubset(obj[key], subset[key]);
+				if (value !== undefined) {
+					if (!result) result = {};
+					result[key] = value;
+				}
 			}
 		}
-
-		// Filter undefined values
-		for (const key in result) {
-			if (result[key] === undefined || (typeof result[key] === 'object' && Object.keys(result[key] || {}).length === 0)) {
-				delete result[key];
-			}
-		}
-
-		return Object.keys(result).length ? result : undefined;
+		return result;
 	}
 
 	return undefined;

@@ -5,7 +5,8 @@ export default function getThemeConfiguration(theme, subset) {
 	if (typeof theme === 'string') {
 		config = $themeConfigurations[theme];
 		if (!config) {
-			console.warn(`Theme "${theme}" not found. Available themes:`, $themeConfigurations.$getAvailableThemes?.() || []);
+			const availableThemes = $themeConfigurations.$getAvailableThemes?.();
+			console.warn(`Theme "${theme}" not found. Available themes:`, availableThemes || []);
 			return undefined;
 		}
 	} else if (typeof theme === 'object') {

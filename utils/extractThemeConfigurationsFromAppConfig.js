@@ -1,18 +1,25 @@
 export default function extractThemeConfigurationsFromAppConfig(appConfig = {}) {
 	const { themeConfiguration } = appConfig;
+	if (!themeConfiguration?.themes || !Array.isArray(themeConfiguration.themes)) {
+		return {};
+	}
 
 	const configGlobs = {};
-
-	if (themeConfiguration?.themes && Array.isArray(themeConfiguration.themes)) {
-		for (let configPath of themeConfiguration.themes) {
-			let name;
-			if (typeof configPath === 'object') {
-				name = configPath.name || configPath.path;
-				configPath = configPath.path;
-			}
-
-			// Use standard dynamic import
+	for (const configPath of themeConfiguration.themes) {
+		if (typeof configPath === 'object') {
+			const name = configPath.name || configPath.path;
+			const {path} = configPath;
 			configGlobs[name] = async () => {
+				try {
+					const module = await import(/* @vite-ignore */ path);
+					return module?.default || module;
+				} catch (error) {
+					console.warn(`Failed to import theme configuration from "${path}": ${error?.message || String(error)}`);
+					return undefined;
+				}
+			};
+		} else {
+			configGlobs[configPath] = async () => {
 				try {
 					const module = await import(/* @vite-ignore */ configPath);
 					return module?.default || module;
