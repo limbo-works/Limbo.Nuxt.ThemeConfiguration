@@ -37,6 +37,38 @@ export default defineNuxtConfig({
 
 Note that the component doesn't have to wrap your content and you should ever only have one on the page.
 
+## Configuration Options
+
+The theme configuration object supports the following settings:
+
+### disableBreakpointSpecificCustomProperties
+
+**Type:** `boolean`
+**Default:** `false`
+
+When set to `true`, this option prevents the generation of breakpoint-specific custom properties (those ending with `--sm`, `--md`, and `--lg`). Instead, the breakpoint values are hardcoded directly into the clamp functions.
+
+**Example:**
+
+```js
+{
+  disableBreakpointSpecificCustomProperties: true,
+  spacing: {
+    small: { sm: 8, md: 12, lg: 16 }
+  }
+}
+```
+
+**When false (default):**
+- Generates: `--theme-spacing-small--sm`, `--theme-spacing-small--md`, `--theme-spacing-small--lg`
+- Uses: `var(--theme-spacing-small--sm)` in calculations
+
+**When true:**
+- Does not generate: `--theme-spacing-small--sm`, `--theme-spacing-small--md`, `--theme-spacing-small--lg`
+- Hardcodes values directly into clamp functions
+
+This can be useful to reduce the number of generated custom properties and make the CSS output smaller when you don't need to reference the individual breakpoint values.
+
 ### Props:
 
 -   config: The configuration object or key for the theme settings. Can be a string (matching \~/assets/js/theme-configuration.**this-name**.js) or an object.

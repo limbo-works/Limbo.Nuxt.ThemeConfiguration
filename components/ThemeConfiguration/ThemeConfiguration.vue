@@ -223,6 +223,23 @@ function extractLayoutRules(object) {
 			}px;`;
 		};
 		const generateResponsiveRule = (columnCount) => {
+			// When disableBreakpointSpecificCustomProperties is true, hardcode the values
+			if (compConfig.value.disableBreakpointSpecificCustomProperties) {
+				const widthCalculation = `(var(--visual-viewport-width, 100dvw) - var(--theme-layout-margin, ${margin.sm}px) * 2 - var(--theme-layout-gutter, ${gutter.sm}px) * ${
+					columnCount - 1
+				}) / ${columnCount}`;
+
+				// If the columns are not meant to stop growing
+				if (typeof maxRuleValue === 'undefined') {
+					return `--theme-layout-column-of-${columnCount}: calc(${widthCalculation});`;
+				}
+
+				return `--theme-layout-column-of-${columnCount}: min(${widthCalculation}, (${maxRuleValue}px - var(--theme-layout-margin, ${margin.lg}px) * 2 - var(--theme-layout-gutter, ${gutter.lg}px) * ${
+					columnCount - 1
+				}) / ${columnCount});`;
+			}
+
+			// Default behavior with custom properties
 			const widthCalculation = `(var(--visual-viewport-width, 100dvw) - var(--theme-layout-margin, var(--theme-layout-margin--sm)) * 2 - var(--theme-layout-gutter, var(--theme-layout-gutter--sm)) * ${
 				columnCount - 1
 			}) / ${columnCount}`;
@@ -237,9 +254,12 @@ function extractLayoutRules(object) {
 			}) / ${columnCount});`;
 		};
 
-		rules.push(generateBaseRule('sm', sm, true));
-		rules.push(generateBaseRule('md', md, true));
-		rules.push(generateBaseRule('lg', lg, true));
+		// Only generate breakpoint-specific column properties when not disabled
+		if (!compConfig.value.disableBreakpointSpecificCustomProperties) {
+			rules.push(generateBaseRule('sm', sm, true));
+			rules.push(generateBaseRule('md', md, true));
+			rules.push(generateBaseRule('lg', lg, true));
+		}
 
 		const colCounts = [...new Set([sm, md, lg])];
 		for (let i = 0; i < colCounts.length; i++) {
@@ -312,21 +332,23 @@ function extractFontRules(object) {
 			for (const name in object[key]) {
 				const subObject = object[key][name];
 
-				rules.push(
-					`--theme-${key}-${sanitizeKey(
-						name
-					)}--sm: ${convertFromPercentage(subObject.sm)}em;`
-				);
-				rules.push(
-					`--theme-${key}-${sanitizeKey(
-						name
-					)}--md: ${convertFromPercentage(subObject.md)}em;`
-				);
-				rules.push(
-					`--theme-${key}-${sanitizeKey(
-						name
-					)}--lg: ${convertFromPercentage(subObject.lg)}em;`
-				);
+				if (!compConfig.value.disableBreakpointSpecificCustomProperties) {
+					rules.push(
+						`--theme-${key}-${sanitizeKey(
+							name
+						)}--sm: ${convertFromPercentage(subObject.sm)}em;`
+					);
+					rules.push(
+						`--theme-${key}-${sanitizeKey(
+							name
+						)}--md: ${convertFromPercentage(subObject.md)}em;`
+					);
+					rules.push(
+						`--theme-${key}-${sanitizeKey(
+							name
+						)}--lg: ${convertFromPercentage(subObject.lg)}em;`
+					);
+				}
 
 				rules.push(
 					`--theme-${key}-${sanitizeKey(
@@ -404,9 +426,11 @@ function extractFontRules(object) {
 					}
 				}
 
-				rules.push(`--theme-${key}-${sanitizeKey(name)}--sm: ${sm};`);
-				rules.push(`--theme-${key}-${sanitizeKey(name)}--md: ${md};`);
-				rules.push(`--theme-${key}-${sanitizeKey(name)}--lg: ${lg};`);
+				if (!compConfig.value.disableBreakpointSpecificCustomProperties) {
+					rules.push(`--theme-${key}-${sanitizeKey(name)}--sm: ${sm};`);
+					rules.push(`--theme-${key}-${sanitizeKey(name)}--md: ${md};`);
+					rules.push(`--theme-${key}-${sanitizeKey(name)}--lg: ${lg};`);
+				}
 
 				rules.push(`--theme-${key}-${sanitizeKey(name)}: ${sm};`);
 				if (md !== sm) {
@@ -453,14 +477,16 @@ function extractRules(
 	for (const name in object) {
 		const subObject = object[name];
 
-		// First the general rules
-		for (const suffix in subObject) {
-			const value = subObject[suffix];
-			rules.push(
-				`--theme-${sanitizeKey(prefix)}-${sanitizeKey(
-					name
-				)}--${suffix}: ${transformation(value)}${unit};`
-			);
+		// First the general rules (skip if disableBreakpointSpecificCustomProperties is true)
+		if (!compConfig.value.disableBreakpointSpecificCustomProperties) {
+			for (const suffix in subObject) {
+				const value = subObject[suffix];
+				rules.push(
+					`--theme-${sanitizeKey(prefix)}-${sanitizeKey(
+						name
+					)}--${suffix}: ${transformation(value)}${unit};`
+				);
+			}
 		}
 
 		// Then the scaling rules
@@ -507,7 +533,7 @@ function extractRules(
 			// This one is for larger screens (if lg is not the same as md)
 			if (lg !== md) {
 				if (lgViewport === mdViewport) {
-					rules.push(
+					mdScreenRules.push(
 						`--theme-${sanitizeKey(prefix)}-${sanitizeKey(
 							name
 						)}: ${transformation(lg)}${unit};`

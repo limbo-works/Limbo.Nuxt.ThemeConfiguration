@@ -11,6 +11,7 @@
 */
 export default {
 	// Testing only - set to false when done testing
+	disableBreakpointSpecificCustomProperties: false, // Enable this setting to disable breakpoint-specific custom properties
 	minify: true, // Can be turned to false for a more readable output in the style tag
 	round: '1px', // Round to nearest pixel
 
