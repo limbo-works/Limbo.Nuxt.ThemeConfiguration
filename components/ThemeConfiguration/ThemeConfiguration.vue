@@ -149,7 +149,7 @@ const headStyles = computed(() => {
 		],
 	};
 });
-useHead(() => headStyles);
+useHead(headStyles);
 
 function extractColorRules(object, prefix) {
 	object = cloneDeep(typeof object === 'object' ? object : {});
