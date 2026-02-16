@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.1](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v3.3.0...theme-configuration-v3.3.1) (2026-02-16)
+
+
+### Bug Fixes
+
+* refer headStyles directly in useHead ([9d823fa](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/9d823fab16bc6bc290efc880e24f903d093c3cad))
+
 ## [3.3.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v3.2.2...theme-configuration-v3.3.0) (2026-01-16)
 
 
