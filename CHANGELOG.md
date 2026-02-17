@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.4](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v3.3.3...theme-configuration-v3.3.4) (2026-02-17)
+
+
+### Bug Fixes
+
+* tried innerHTML instead ([9df04d5](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/9df04d565ac9be673c8adb0386999e38ea0b2957))
+
 ## [3.3.3](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v3.3.2...theme-configuration-v3.3.3) (2026-02-17)
 
 
