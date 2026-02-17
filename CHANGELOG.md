@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.3](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v3.3.2...theme-configuration-v3.3.3) (2026-02-17)
+
+
+### Bug Fixes
+
+* added space to trigger build ([7206ee1](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/7206ee1fca7fc83f8dd5cf701e4390f3539271de))
+
 ## [3.3.2](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v3.3.1...theme-configuration-v3.3.2) (2026-02-17)
 
 
