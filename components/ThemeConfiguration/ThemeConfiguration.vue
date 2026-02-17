@@ -150,6 +150,7 @@ const headStyles = computed(() => {
 		],
 	};
 });
+
 useHeadSafe(headStyles);
 
 function extractColorRules(object, prefix) {
