@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.3.2](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v3.3.1...theme-configuration-v3.3.2) (2026-02-17)
+
+
+### Bug Fixes
+
+* some minor cleanup ([09128ea](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/09128ea2048a7ebe677f876a1c728b0671173657))
+* try useHeadSafe instead ([4107138](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/41071381287275cc8b0a1f36f6f4477cf0978b52))
+
 ## [3.3.1](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v3.3.0...theme-configuration-v3.3.1) (2026-02-16)
 
 
