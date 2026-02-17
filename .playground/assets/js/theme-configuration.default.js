@@ -19,7 +19,8 @@ export default {
 	smViewport: 375, // Lowest value clamp
 	mdViewport: 1440, // Midpoint (used for both low-clamp and high-clamp)
 	lgViewport: 1920, // Highest value clamp
-	viewportWidth: undefined, // Default to 100dvw, what to base scalings on.
+
+	viewportWidth: undefined, // Default to 100dvw, what to base scalings on. A string inserted in the CSS, e.g. "100dvw" or "var(--my-width, 100vw)".
 
 	layout: {
 		margin: {
