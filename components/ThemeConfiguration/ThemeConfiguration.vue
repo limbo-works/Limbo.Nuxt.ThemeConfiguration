@@ -792,7 +792,7 @@ function makeCssText(selector, config = compConfig.value) {
 			...mdToLgScreenRules,
 			...lgScreenRules,
 			...layerEnd,
-		].join('');
+		].join('').replaceAll('  ', ' ');
 	}
 	return [
 		...layer,
