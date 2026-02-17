@@ -223,7 +223,8 @@ function extractLayoutRules(object) {
 			}px;`;
 		};
 		const generateResponsiveRule = (columnCount) => {
-			const widthCalculation = `(var(--visual-viewport-width, 100dvw) - var(--theme-layout-margin, var(--theme-layout-margin--sm)) * 2 - var(--theme-layout-gutter, var(--theme-layout-gutter--sm)) * ${
+			const { viewportWidth = '100dvw' } = compConfig.value;
+			const widthCalculation = `(var(--visual-viewport-width, ${viewportWidth}) - var(--theme-layout-margin, var(--theme-layout-margin--sm)) * 2 - var(--theme-layout-gutter, var(--theme-layout-gutter--sm)) * ${
 				columnCount - 1
 			}) / ${columnCount}`;
 
@@ -249,8 +250,9 @@ function extractLayoutRules(object) {
 	}
 
 	// Setup layout max
+	const { viewportWidth = '100dvw' } = compConfig.value;
 	if (typeof maxRuleValue === 'undefined') {
-		rules.push('--theme-layout-max: var(--visual-viewport-width, 100dvw);');
+		rules.push(`--theme-layout-max: var(--visual-viewport-width, ${viewportWidth});`);
 	} else {
 		rules.push(`--theme-layout-max: ${maxRuleValue}px;`);
 	}
@@ -469,6 +471,7 @@ function extractRules(
 		});
 		const { smViewport, mdViewport, lgViewport } = compConfig.value;
 		if (doScalingRule) {
+			const { viewportWidth = '100dvw' } = compConfig.value;
 			const { sm, md, lg } = subObject;
 
 			// This one is for smaller screens
@@ -495,8 +498,8 @@ function extractRules(
 					)}${unit} + ${
 						Math.round(
 							((max - min) / (mdViewport - smViewport)) * 100000
-						) / 1000
-					}vw - ${unit === 'rem' ? mid : 0}px, ${transformation(
+						) / 100000
+					} * ${viewportWidth} - ${unit === 'rem' ? mid : 0}px, ${transformation(
 						max + (unit === 'rem' ? mid : 0)
 					)}${unit} - ${unit === 'rem' ? mid : 0}px);`
 						.split(' - 0px')
@@ -535,8 +538,8 @@ function extractRules(
 							Math.round(
 								((max - min) / (lgViewport - mdViewport)) *
 									100000
-							) / 1000
-						}vw - ${unit === 'rem' ? mid : 0}px, ${transformation(
+							) / 100000
+						} * ${viewportWidth} - ${unit === 'rem' ? mid : 0}px, ${transformation(
 							max
 						)}${unit});`
 							.split(' - 0px')

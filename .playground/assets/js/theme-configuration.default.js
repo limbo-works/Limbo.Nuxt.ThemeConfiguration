@@ -4,7 +4,7 @@
 	coming from backend or solution-specific files (handled in the
 	ThemeConfiguration.vue component).
 
-	Only the keys in this default file will be the grounds for tailwind
+	Only the keys in this default file will be the grounds for unocss
 	rules - overwriting configurations should never introduce new keys,
 	unless they are added to this file too. Only the values of the keys
 	are overwritten.
@@ -19,19 +19,47 @@ export default {
 	smViewport: 375, // Lowest value clamp
 	mdViewport: 1440, // Midpoint (used for both low-clamp and high-clamp)
 	lgViewport: 1920, // Highest value clamp
+	viewportWidth: undefined, // Default to 100dvw, what to base scalings on.
+
+	layout: {
+		margin: {
+			sm: 16,
+			md: 96,
+			lg: 124,
+		},
+
+		gutter: {
+			sm: 16,
+			md: 24,
+			lg: 32,
+		},
+
+		// These rules will be turned into `X/Ycol` rules, which can then be used like `w-3/12col`.
+		// There should always be at least one column, both on sm, md and lg.
+		columns: {
+			sm: 8,
+			md: 12,
+			lg: 12,
+		},
+
+		// The max value that the design can be scaled to (single value, not sm-md-lg).
+		// The max will impact columns max scaling as well.
+		// undefined equals no max.
+		max: undefined,
+	},
 
 	// Rules
 	colors: {
 		/*
 			CSS variables will be created and used for the colors,
-			which will in turn be used in the Tailwind config. Keys
-			will be directly transfered to the Tailwind config.
+			which will in turn be used in the UnoCSS config. Keys
+			will be directly transfered to the UnoCSS config.
 
-			"primary: '#000000'" will result in the Tailwind rule:
+			"primary: '#000000'" will result in the UnoCSS rule:
 			"primary: var(--theme-colors-primary, #000000)"
 
 			If configuring a color with three comma-separated numbers,
-			the built-in Tailwind color opacities will be used in the
+			the built-in UnoCSS color opacities will be used in the
 			rules.
 		*/
 		text: '#000000',
@@ -101,33 +129,6 @@ export default {
 		onDangerExtraStrong: [253, 224, 225],
 		onDangerInteractive: [254, 250, 250],
 		onDangerDanger: [254, 250, 250],
-	},
-
-	layout: {
-		margin: {
-			sm: 16,
-			md: 96,
-			lg: 124,
-		},
-
-		gutter: {
-			sm: 16,
-			md: 24,
-			lg: 32,
-		},
-
-		// These rules will be turned into `X/Ycol` rules, which can then be used like `w-3/12col`.
-		// There should always be at least one column, both on sm, md and lg.
-		columns: {
-			sm: 8,
-			md: 12,
-			lg: 12,
-		},
-
-		// The max value that the design can be scaled to (single value, not sm-md-lg).
-		// The max will impact columns max scaling as well.
-		// undefined equals no max.
-		max: undefined,
 	},
 
 	containers: {
