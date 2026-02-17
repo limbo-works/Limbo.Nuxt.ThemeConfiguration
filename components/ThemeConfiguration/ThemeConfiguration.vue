@@ -142,6 +142,7 @@ const headStyles = computed(() => {
 			cssText.value && { key: 'theme-configuration-' + iterationCounter.value, type: 'text/css', textContent: cssText.value },
 			...(media.value?.map((mediaItem) => ({
 				key: 'theme-configuration-' + mediaItem.query + '-'  + iterationCounter.value,
+				id: 'theme-configuration-' + mediaItem.query + '-'  + iterationCounter.value,
 				type: 'text/css',
 				media: mediaItem.query,
 				textContent: mediaItem.cssText,
@@ -149,7 +150,7 @@ const headStyles = computed(() => {
 		],
 	};
 });
-useHead(headStyles);
+useHeadSafe(headStyles);
 
 function extractColorRules(object, prefix) {
 	object = cloneDeep(typeof object === 'object' ? object : {});
