@@ -22,10 +22,6 @@ const props = defineProps({
 	cssLayer: String,
 });
 
-const serializedProps = computed(() => {
-	return JSON.stringify(props);
-});
-
 defineExpose({
 	config: observedData,
 });
@@ -139,19 +135,19 @@ const media = computed(() => {
 const headStyles = computed(() => {
 	return {
 		style: [
-			cssText.value && { key: 'theme-configuration-' + iterationCounter.value, type: 'text/css', textContent: cssText.value },
+			cssText.value && { key: 'theme-configuration-' + iterationCounter.value, id: 'theme-configuration-' + iterationCounter.value, type: 'text/css', innerHTML: cssText.value },
 			...(media.value?.map((mediaItem) => ({
 				key: 'theme-configuration-' + mediaItem.query + '-'  + iterationCounter.value,
 				id: 'theme-configuration-' + mediaItem.query + '-'  + iterationCounter.value,
 				type: 'text/css',
 				media: mediaItem.query,
-				textContent: mediaItem.cssText,
+				innerHTML: mediaItem.cssText,
 			})) ?? []),
 		],
 	};
 });
 
-useHeadSafe(headStyles);
+useHead(headStyles);
 
 function extractColorRules(object, prefix) {
 	object = cloneDeep(typeof object === 'object' ? object : {});
