@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.5](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v3.3.4...theme-configuration-v3.3.5) (2026-02-19)
+
+
+### Bug Fixes
+
+* better handling of theme classes to only apply what they need to apply ([6d477c6](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/6d477c683cd0c950df04d06ece6087e34eec78f2))
+
 ## [3.3.4](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v3.3.3...theme-configuration-v3.3.4) (2026-02-17)
 
 
