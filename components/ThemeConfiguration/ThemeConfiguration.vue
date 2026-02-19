@@ -17,8 +17,27 @@ import {
 
 const props = defineProps({
 	config: [String, Object],
+
+	// Add specific media queries with their own theme configuration.
 	media: Object,
+
+	// If true, theme classes will be generated for each theme
+	// configuration, which can be used to apply different themes
+	// to different parts of the page. If an array is provided,
+	// only theme classes for the specified themes will be generated.
 	useThemeClasses: [Boolean, Array],
+
+	// If each theme class should be a "hard reset" to the current
+	// theme + the theme class, instead of being able to cascade on
+	// top of each other. This is useful to prevent unexpected
+	// results when using multiple theme classes together, but also
+	// causes more CSS to be generated.
+	mergeThemeClassesWithBaseConfig: {
+		type: Boolean,
+		default: false,
+	},
+
+	// Apply the generated CSS in a CSS layer.
 	cssLayer: String,
 });
 
@@ -53,18 +72,24 @@ const compConfig = computed(() => {
 	return clone;
 });
 
-const classBaseConfig = computed(() => {
-	if (props.useThemeClasses && Array.isArray(props.useThemeClasses)) {
-		return deepMergeExisting(
-			props.useThemeClasses.reduce((obj, key) => {
-				Object.assign(obj, availableConfigs[key]);
-			}, {}),
-			compConfig.value
-		);
-	}
-
-	return compConfig.value;
-});
+// // CAUSING ISSUES, REMOVED – REMOVE PROPERLY LATER
+// const classBaseConfig = computed(() => {
+// 	if (props.useThemeClasses) {
+// 		const themeClassArray = Array.isArray(props.useThemeClasses)
+// 			? props.useThemeClasses
+// 			: Object.keys(availableConfigs);
+// 		return deepMergeExisting(
+// 			themeClassArray.reduce((obj, key) => {
+// 				if (availableConfigs?.[key]) {
+// 					Object.assign(obj, availableConfigs[key]);
+// 				}
+// 				return obj;
+// 			}, {}),
+// 			defaultConfig
+// 		);
+// 	}
+// 	return compConfig.value;
+// });
 
 /* Compile css text */
 const cssText = computed(() => {
@@ -75,15 +100,19 @@ const cssText = computed(() => {
 			if (props.config === key) continue;
 			if (!props.config && key === 'default') continue;
 			if (
-				Array.isArray(props.useThemeClasses) &&
-				!props.useThemeClasses.includes(key)
-			)
-				continue;
+				Array.isArray(props.useThemeClasses)
+			) {
+				if (!props.useThemeClasses.includes(key)) {
+					continue;
+				}
+			}
 
 			rules.push(
 				makeCssText(
 					`.u-theme-${key}`,
-					deepMergeExisting({ ...classBaseConfig.value }, value)
+					props.mergeThemeClassesWithBaseConfig
+						? deepMergeExisting(cloneDeep(compConfig.value), value)
+						: value
 				)
 			);
 		}
@@ -831,6 +860,9 @@ function deepMergeExisting(target, source) {
 			}
 		}
 	}
+
+	// Also return the target in the end for easier chaining
+	return target;
 }
 
 watch(compConfig, (value) => (observedData.value = value), {
