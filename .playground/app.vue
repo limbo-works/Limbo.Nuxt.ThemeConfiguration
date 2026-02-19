@@ -23,8 +23,8 @@ const themeConfiguration = ref(null);
 const testSubset = getThemeConfiguration('default', {
 	[/colors/i]: /^on[A-Z]/,
 });
-console.log(testSubset);
-console.log(getThemeConfigurations());
+console.log('subset', testSubset);
+console.log('getThemeConfigurations', getThemeConfigurations());
 </script>
 
 <style>
