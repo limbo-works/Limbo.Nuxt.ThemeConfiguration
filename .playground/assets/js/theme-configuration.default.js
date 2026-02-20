@@ -11,8 +11,9 @@
 */
 export default {
 	// Testing only - set to false when done testing
-	minify: true, // Can be turned to false for a more readable output in the style tag
+	minify: false, // Can be turned to false for a more readable output in the style tag
 	round: '1px', // Round to nearest pixel
+	disableBreakpointSpecificCustomProperties: false, // Enable this setting to disable breakpoint-specific custom properties
 
 	// Setup
 	baseFontSize: 16, // For rem conversion
@@ -20,7 +21,7 @@ export default {
 	mdViewport: 1440, // Midpoint (used for both low-clamp and high-clamp)
 	lgViewport: 1920, // Highest value clamp
 
-	viewportWidth: undefined, // Default to 100dvw, what to base scalings on. A string inserted in the CSS, e.g. "100dvw" or "var(--my-width, 100vw)".
+	viewportWidth: undefined, // Default to "100dvw", what to base scalings on. A string inserted in the CSS, e.g. "100dvw" or "var(--my-width, 100vw)".
 
 	layout: {
 		margin: {

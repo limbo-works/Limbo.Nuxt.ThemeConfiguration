@@ -595,6 +595,7 @@ function makeRules(config, options) {
 					if (!property || !value) return;
 
 					/* eslint-disable */
+					const fallback = !config.disableBreakpointSpecificCustomProperties ? `, var(--theme-${sanitizeKey(value)}--sm)` : '';
 					return {
 						[property]: getIfNegativeRule(
 							rawSelector,
@@ -602,10 +603,10 @@ function makeRules(config, options) {
 						)
 							? `calc(var(--theme-${sanitizeKey(
 									value
-								)}, var(--theme-${sanitizeKey(value)}--sm)))`
+								)}${fallback}))`
 							: `var(--theme-${sanitizeKey(
 									value
-								)}, var(--theme-${sanitizeKey(value)}--sm))`,
+								)}${fallback})`,
 						transform: transformValue(currentSelector),
 					};
 					/* eslint-enable */
@@ -624,13 +625,14 @@ function makeRules(config, options) {
 					const property = utilityMap[match[1]] || match[1];
 					if (!property || !('max' in config.layout)) return;
 
+					const fallback = !config.disableBreakpointSpecificCustomProperties ? ', var(--theme-layout-max--sm)' : '';
 					return {
 						[property]: getIfNegativeRule(
 							rawSelector,
 							currentSelector
 						)
-							? 'calc(var(--theme-layout-max, var(--theme-layout-max--sm)))'
-							: 'var(--theme-layout-max, var(--theme-layout-max--sm))',
+							? `calc(var(--theme-layout-max${fallback}))`
+							: `var(--theme-layout-max${fallback})`,
 					};
 				},
 				{
@@ -663,11 +665,13 @@ function makeRules(config, options) {
 						return;
 					}
 
+					const fallback = !config.disableBreakpointSpecificCustomProperties ? `, var(--theme-layout-column-of-${columnCount}--sm)` : '';
+					const fallbackGutter = !config.disableBreakpointSpecificCustomProperties ? ', var(--theme-layout-gutter--sm)' : '';
 					return {
-						[property]: `calc(${columns} * var(--theme-layout-column-of-${columnCount}, var(--theme-layout-column-of-${columnCount}--sm)) + ${Math.max(
+						[property]: `calc(${columns} * var(--theme-layout-column-of-${columnCount}${fallback}) + ${Math.max(
 							0,
 							Math.ceil(columns) - 1
-						)} * var(--theme-layout-gutter, var(--theme-layout-gutter--sm)))`,
+						)} * var(--theme-layout-gutter${fallbackGutter}))`,
 						transform: transformValue(currentSelector),
 					};
 				},
@@ -690,6 +694,7 @@ function makeRules(config, options) {
 					if (!property || !value) return;
 
 					/* eslint-disable */
+					const fallback = !config.disableBreakpointSpecificCustomProperties ? `, var(--theme-spacing-${sanitizeKey(value)}--sm)` : '';
 					return {
 						[property]: getIfNegativeRule(
 							rawSelector,
@@ -697,14 +702,10 @@ function makeRules(config, options) {
 						)
 							? `calc(var(--theme-spacing-${sanitizeKey(
 									value
-								)}, var(--theme-spacing-${sanitizeKey(
-									value
-								)}--sm)))`
+								)}${fallback}))`
 							: `var(--theme-spacing-${sanitizeKey(
 									value
-								)}, var(--theme-spacing-${sanitizeKey(
-									value
-								)}--sm))`,
+								)}${fallback})`,
 						transform: transformValue(currentSelector),
 					};
 					/* eslint-enable */
@@ -730,6 +731,7 @@ function makeRules(config, options) {
 					if (!property || !value) return;
 
 					/* eslint-disable */
+					const fallback = !config.disableBreakpointSpecificCustomProperties ? `, var(--theme-horizontalSpacing-${sanitizeKey(value)}--sm)` : '';
 					return {
 						[property]: getIfNegativeRule(
 							rawSelector,
@@ -737,14 +739,10 @@ function makeRules(config, options) {
 						)
 							? `calc(var(--theme-horizontalSpacing-${sanitizeKey(
 									value
-								)}, var(--theme-horizontalSpacing-${sanitizeKey(
-									value
-								)}--sm)))`
+								)}${fallback}))`
 							: `var(--theme-horizontalSpacing-${sanitizeKey(
 									value
-								)}, var(--theme-horizontalSpacing-${sanitizeKey(
-									value
-								)}--sm))`,
+								)}${fallback})`,
 						transform: transformValue(currentSelector),
 					};
 					/* eslint-enable */
@@ -770,6 +768,7 @@ function makeRules(config, options) {
 					if (!property || !value) return;
 
 					/* eslint-disable */
+					const fallback = !config.disableBreakpointSpecificCustomProperties ? `, var(--theme-verticalSpacing-${sanitizeKey(value)}--sm)` : '';
 					return {
 						[property]: getIfNegativeRule(
 							rawSelector,
@@ -777,14 +776,10 @@ function makeRules(config, options) {
 						)
 							? `calc(var(--theme-verticalSpacing-${sanitizeKey(
 									value
-								)}, var(--theme-verticalSpacing-${sanitizeKey(
-									value
-								)}--sm)))`
+								)}${fallback}))`
 							: `var(--theme-verticalSpacing-${sanitizeKey(
 									value
-								)}, var(--theme-verticalSpacing-${sanitizeKey(
-									value
-								)}--sm))`,
+								)}${fallback})`,
 						transform: transformValue(currentSelector),
 					};
 					/* eslint-enable */
@@ -851,12 +846,11 @@ function makeRules(config, options) {
 					const value = currentSelector.split(`${match[1]}-`).pop();
 					if (!property || !value) return;
 
+					const fallback = !config.disableBreakpointSpecificCustomProperties ? `, var(--theme-borderRadius-${sanitizeKey(value)}--sm)` : '';
 					return {
 						[property]: `var(--theme-borderRadius-${sanitizeKey(
 							value
-						)}, var(--theme-borderRadius-${sanitizeKey(
-							value
-						)}--sm))`,
+						)}${fallback})`,
 					};
 				},
 				{

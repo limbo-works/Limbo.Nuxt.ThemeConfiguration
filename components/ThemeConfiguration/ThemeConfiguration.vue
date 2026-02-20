@@ -209,6 +209,7 @@ function extractColorRules(object, prefix) {
 
 function extractLayoutRules(object) {
 	object = cloneDeep(typeof object === 'object' ? object : {});
+	const useBreakpointSpecificRules = !compConfig.value.disableBreakpointSpecificCustomProperties;
 	const columns = object.columns || {};
 	delete object.columns;
 
@@ -250,8 +251,13 @@ function extractLayoutRules(object) {
 			}px;`;
 		};
 		const generateResponsiveRule = (columnCount) => {
+			const useBreakpointSpecificRules = !compConfig.value.disableBreakpointSpecificCustomProperties;
 			const { viewportWidth = '100dvw' } = compConfig.value;
-			const widthCalculation = `(var(--visual-viewport-width, ${viewportWidth}) - var(--theme-layout-margin, var(--theme-layout-margin--sm)) * 2 - var(--theme-layout-gutter, var(--theme-layout-gutter--sm)) * ${
+
+			const fallbackMargin = useBreakpointSpecificRules ? ', var(--theme-layout-margin--sm)' : '';
+			const fallbackGutter = useBreakpointSpecificRules ? ', var(--theme-layout-gutter--sm)' : '';
+
+			const widthCalculation = `(var(--visual-viewport-width, ${viewportWidth}) - var(--theme-layout-margin${fallbackMargin}) * 2 - var(--theme-layout-gutter${fallbackGutter}) * ${
 				columnCount - 1
 			}) / ${columnCount}`;
 
@@ -260,14 +266,18 @@ function extractLayoutRules(object) {
 				return `--theme-layout-column-of-${columnCount}: calc(${widthCalculation});`;
 			}
 
-			return `--theme-layout-column-of-${columnCount}: min(${widthCalculation}, (${maxRuleValue}px - var(--theme-layout-margin, var(--theme-layout-margin--lg)) * 2 - var(--theme-layout-gutter, var(--theme-layout-gutter--lg)) * ${
+			const fallbackMarginLg = useBreakpointSpecificRules ? ', var(--theme-layout-margin--lg)' : '';
+			const fallbackGutterLg = useBreakpointSpecificRules ? ', var(--theme-layout-gutter--lg)' : '';
+			return `--theme-layout-column-of-${columnCount}: min(${widthCalculation}, (${maxRuleValue}px - var(--theme-layout-margin${fallbackMarginLg}) * 2 - var(--theme-layout-gutter${fallbackGutterLg}) * ${
 				columnCount - 1
 			}) / ${columnCount});`;
 		};
 
-		rules.push(generateBaseRule('sm', sm, true));
-		rules.push(generateBaseRule('md', md, true));
-		rules.push(generateBaseRule('lg', lg, true));
+		if (useBreakpointSpecificRules) {
+			rules.push(generateBaseRule('sm', sm, true));
+			rules.push(generateBaseRule('md', md, true));
+			rules.push(generateBaseRule('lg', lg, true));
+		}
 
 		const colCounts = [...new Set([sm, md, lg])];
 		for (let i = 0; i < colCounts.length; i++) {
@@ -294,6 +304,7 @@ function extractLayoutRules(object) {
 }
 
 function extractFontRules(object) {
+	const useBreakpointSpecificRules = !compConfig.value.disableBreakpointSpecificCustomProperties;
 	object = typeof object === 'object' ? object : {};
 
 	// Restructure the object
@@ -341,39 +352,45 @@ function extractFontRules(object) {
 			for (const name in object[key]) {
 				const subObject = object[key][name];
 
-				rules.push(
-					`--theme-${key}-${sanitizeKey(
-						name
-					)}--sm: ${convertFromPercentage(subObject.sm)}em;`
-				);
-				rules.push(
-					`--theme-${key}-${sanitizeKey(
-						name
-					)}--md: ${convertFromPercentage(subObject.md)}em;`
-				);
-				rules.push(
-					`--theme-${key}-${sanitizeKey(
-						name
-					)}--lg: ${convertFromPercentage(subObject.lg)}em;`
-				);
+				const smValue = `${convertFromPercentage(subObject.sm)}em`;
+				const mdValue = `${convertFromPercentage(subObject.md)}em`;
+				const lgValue = `${convertFromPercentage(subObject.lg)}em`;
+
+				if (useBreakpointSpecificRules) {
+					rules.push(
+						`--theme-${key}-${sanitizeKey(
+							name
+						)}--sm: ${smValue};`
+					);
+					rules.push(
+						`--theme-${key}-${sanitizeKey(
+							name
+						)}--md: ${mdValue};`
+					);
+					rules.push(
+						`--theme-${key}-${sanitizeKey(
+							name
+						)}--lg: ${lgValue};`
+					);
+				}
 
 				rules.push(
 					`--theme-${key}-${sanitizeKey(
 						name
-					)}: ${convertFromPercentage(subObject.sm)}em;`
+					)}: ${smValue};`
 				);
 				if (subObject.md !== subObject.sm) {
 					smToMdScreenRules.push(
 						`--theme-${key}-${sanitizeKey(
 							name
-						)}: ${convertFromPercentage(subObject.md)}em;`
+						)}: ${mdValue};`
 					);
 				}
 				if (subObject.lg !== subObject.md) {
 					mdToLgScreenRules.push(
 						`--theme-${key}-${sanitizeKey(
 							name
-						)}: ${convertFromPercentage(subObject.lg)}em;`
+						)}: ${lgValue};`
 					);
 				}
 			}
@@ -433,9 +450,11 @@ function extractFontRules(object) {
 					}
 				}
 
-				rules.push(`--theme-${key}-${sanitizeKey(name)}--sm: ${sm};`);
-				rules.push(`--theme-${key}-${sanitizeKey(name)}--md: ${md};`);
-				rules.push(`--theme-${key}-${sanitizeKey(name)}--lg: ${lg};`);
+				if (useBreakpointSpecificRules) {
+					rules.push(`--theme-${key}-${sanitizeKey(name)}--sm: ${sm};`);
+					rules.push(`--theme-${key}-${sanitizeKey(name)}--md: ${md};`);
+					rules.push(`--theme-${key}-${sanitizeKey(name)}--lg: ${lg};`);
+				}
 
 				rules.push(`--theme-${key}-${sanitizeKey(name)}: ${sm};`);
 				if (md !== sm) {
@@ -475,6 +494,7 @@ function extractRules(
 	transformation = (value) => Number(value)
 ) {
 	object = typeof object === 'object' ? object : {};
+	const useBreakpointSpecificRules = !compConfig.value.disableBreakpointSpecificCustomProperties;
 	const rules = [];
 	const mdScreenRules = [];
 	const lgScreenRules = [];
@@ -483,13 +503,15 @@ function extractRules(
 		const subObject = object[name];
 
 		// First the general rules
-		for (const suffix in subObject) {
-			const value = subObject[suffix];
-			rules.push(
-				`--theme-${sanitizeKey(prefix)}-${sanitizeKey(
-					name
-				)}--${suffix}: ${transformation(value)}${unit};`
-			);
+		if (useBreakpointSpecificRules) {
+			for (const suffix in subObject) {
+				const value = subObject[suffix];
+				rules.push(
+					`--theme-${sanitizeKey(prefix)}-${sanitizeKey(
+						name
+					)}--${suffix}: ${transformation(value)}${unit};`
+				);
+			}
 		}
 
 		// Then the scaling rules
