@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.4.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v3.3.5...theme-configuration-v3.4.0) (2026-02-20)
+
+
+### Features
+
+* made disabling of breakpoint specific custom properties possible ([2992187](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/29921870ba6366bc6ac671495168d5569d934695))
+
 ## [3.3.5](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v3.3.4...theme-configuration-v3.3.5) (2026-02-19)
 
 
