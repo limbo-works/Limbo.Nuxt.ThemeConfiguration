@@ -3,7 +3,7 @@ export default async function getThemeConfigurationsAsync() {
 	const extracted = extractThemeConfigurationsFromAppConfig(useAppConfig());
 
 	if (Object.keys(extracted).length > 0) {
-		Object.assign(configGlobs, extracted);
+		Object.assign(configGlobs, extracted, configGlobs); // Local first, always
 	}
 
 	const themeLoaders = {};
