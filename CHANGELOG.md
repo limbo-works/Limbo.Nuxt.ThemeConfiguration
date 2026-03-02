@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.4.1](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v3.4.0...theme-configuration-v3.4.1) (2026-03-02)
+
+
+### Bug Fixes
+
+* local first always ([ad49614](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/ad496141c6ebaa5d78a53366eddebbb20b7817c0))
+
 ## [3.4.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v3.3.5...theme-configuration-v3.4.0) (2026-02-20)
 
 
