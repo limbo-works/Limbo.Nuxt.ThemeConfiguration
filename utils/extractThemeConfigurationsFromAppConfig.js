@@ -8,16 +8,24 @@ export default function extractThemeConfigurationsFromAppConfig(appConfig = {}) 
 	for (const configPath of themeConfiguration.themes) {
 		if (typeof configPath === 'object') {
 			const name = configPath.name || configPath.path;
-			const {path} = configPath;
-			configGlobs[name] = async () => {
-				try {
-					const module = await import(/* @vite-ignore */ path);
-					return module?.default || module;
-				} catch (error) {
-					console.warn(`Failed to import theme configuration from "${path}": ${error?.message || String(error)}`);
-					return undefined;
-				}
-			};
+			const { path, theme } = configPath;
+
+			// Direct theme access
+			if (theme) {
+				// Get the theme directly
+				configGlobs[name] = theme;
+			} else {
+				// Extract theme from path (doesn't work too well)
+				configGlobs[name] = async () => {
+					try {
+						const module = await import(/* @vite-ignore */ path);
+						return module?.default || module;
+					} catch (error) {
+						console.warn(`Failed to import theme configuration from "${path}": ${error?.message || String(error)}`);
+						return undefined;
+					}
+				};
+			}
 		} else {
 			configGlobs[configPath] = async () => {
 				try {
