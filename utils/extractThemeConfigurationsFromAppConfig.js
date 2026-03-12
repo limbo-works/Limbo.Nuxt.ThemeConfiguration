@@ -13,7 +13,7 @@ export default function extractThemeConfigurationsFromAppConfig(appConfig = {}) 
 			// Direct theme access
 			if (theme) {
 				// Get the theme directly
-				configGlobs[name] = theme;
+				configGlobs[name] = () => theme;
 			} else {
 				// Extract theme from path (doesn't work too well)
 				configGlobs[name] = async () => {
