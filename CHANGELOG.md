@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.5.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v3.4.1...theme-configuration-v3.5.0) (2026-03-12)
+
+
+### Features
+
+* allow direct theme extraction ([7dda071](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/7dda07166a3909f50a856fe335469eb76f39fc5a))
+
+
+### Bug Fixes
+
+* make function like the others ([fdaa651](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/fdaa6517968c069d2d3bcf58175a851fa88d8145))
+
 ## [3.4.1](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v3.4.0...theme-configuration-v3.4.1) (2026-03-02)
 
 
