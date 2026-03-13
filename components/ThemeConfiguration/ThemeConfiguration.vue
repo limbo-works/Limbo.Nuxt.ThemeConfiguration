@@ -329,6 +329,9 @@ function extractFontRules(object) {
 		if (object[key]) {
 			const extracted = extractRules(key, object[key], 'rem', (value) => {
 				return Math.round((Number(value) / baseFontSize) * 1000) / 1000;
+			}, {
+				min: compConfig.value.minFontSize,
+				max: compConfig.value.maxFontSize,
 			});
 			returnObject.rules.push(...extracted.rules);
 			returnObject.mdScreenRules.push(...extracted.mdScreenRules);
@@ -491,9 +494,11 @@ function extractRules(
 	prefix,
 	object,
 	unit = 'px',
-	transformation = (value) => Number(value)
+	transformation = (value) => Number(value),
+	otherOptions = {}
 ) {
 	object = typeof object === 'object' ? object : {};
+	otherOptions ??= {};
 	const useBreakpointSpecificRules = !compConfig.value.disableBreakpointSpecificCustomProperties;
 	const rules = [];
 	const mdScreenRules = [];
@@ -530,27 +535,59 @@ function extractRules(
 				return Math.round((m * x + b) * 1000) / 1000;
 			};
 			if (sm === md || smViewport === mdViewport) {
-				rules.push(
-					`--theme-${sanitizeKey(prefix)}-${sanitizeKey(
-						name
-					)}: ${transformation(sm)}${unit};`
-				);
+				if (otherOptions.min) {
+					if (otherOptions.max) {
+						rules.push(
+							`--theme-${sanitizeKey(prefix)}-${sanitizeKey(
+								name
+							)}: clamp(${typeof otherOptions.min === 'number' ? `${otherOptions.min}px` : otherOptions.min}, ${transformation(sm)}${unit}, ${typeof otherOptions.max === 'number' ? `${otherOptions.max}px` : otherOptions.max});`
+						);
+					} else {
+						rules.push(
+							`--theme-${sanitizeKey(prefix)}-${sanitizeKey(
+								name
+							)}: max(${typeof otherOptions.min === 'number' ? `${otherOptions.min}px` : otherOptions.min}, ${transformation(sm)}${unit});`
+						);
+					}
+				} else if (otherOptions.max) {
+					rules.push(
+						`--theme-${sanitizeKey(prefix)}-${sanitizeKey(
+							name
+						)}: min(${typeof otherOptions.max === 'number' ? `${otherOptions.max}px` : otherOptions.max}, ${transformation(sm)}${unit});`
+					);
+				} else {
+					rules.push(
+						`--theme-${sanitizeKey(prefix)}-${sanitizeKey(
+							name
+						)}: ${transformation(sm)}${unit};`
+					);
+				}
 			} else {
 				const min = Math.min(sm, md);
 				const max = Math.max(sm, md);
 				const mid = md;
+
+				let cssMin = `${transformation(min)}${unit}`;
+				let cssMax = `${transformation(
+					max + (unit === 'rem' ? mid : 0)
+				)}${unit} - ${unit === 'rem' ? mid : 0}px`;
+				if (otherOptions.min) {
+					cssMin = `max(${typeof otherOptions.min === 'number' ? `${otherOptions.min}px` : otherOptions.min}, ${cssMin})`;
+				}
+				if (otherOptions.max) {
+					cssMax = `min(${typeof otherOptions.max === 'number' ? `${otherOptions.max}px` : otherOptions.max}, ${cssMax})`;
+				}
+
 				rules.push(
 					`--theme-${sanitizeKey(prefix)}-${sanitizeKey(
 						name
-					)}: clamp(${transformation(min)}${unit}, ${transformation(
+					)}: clamp(${cssMin}, ${transformation(
 						f1(0) + (unit === 'rem' ? mid : 0)
 					)}${unit} + ${
 						Math.round(
 							((max - min) / (mdViewport - smViewport)) * 100000
 						) / 100000
-					} * ${viewportWidth} - ${unit === 'rem' ? mid : 0}px, ${transformation(
-						max + (unit === 'rem' ? mid : 0)
-					)}${unit} - ${unit === 'rem' ? mid : 0}px);`
+					} * ${viewportWidth} - ${unit === 'rem' ? mid : 0}px, ${cssMax});`
 						.split(' - 0px')
 						.join('')
 				);
@@ -559,11 +596,33 @@ function extractRules(
 			// This one is for larger screens (if lg is not the same as md)
 			if (lg !== md) {
 				if (lgViewport === mdViewport) {
-					rules.push(
-						`--theme-${sanitizeKey(prefix)}-${sanitizeKey(
-							name
-						)}: ${transformation(lg)}${unit};`
-					);
+					if (otherOptions.min) {
+						if (otherOptions.max) {
+							rules.push(
+								`--theme-${sanitizeKey(prefix)}-${sanitizeKey(
+									name
+								)}: clamp(${typeof otherOptions.min === 'number' ? `${otherOptions.min}px` : otherOptions.min}, ${transformation(lg)}${unit}, ${typeof otherOptions.max === 'number' ? `${otherOptions.max}px` : otherOptions.max});`
+							);
+						} else {
+							rules.push(
+								`--theme-${sanitizeKey(prefix)}-${sanitizeKey(
+									name
+								)}: max(${typeof otherOptions.min === 'number' ? `${otherOptions.min}px` : otherOptions.min}, ${transformation(lg)}${unit});`
+							);
+						}
+					} else if (otherOptions.max) {
+						rules.push(
+							`--theme-${sanitizeKey(prefix)}-${sanitizeKey(
+								name
+							)}: min(${typeof otherOptions.max === 'number' ? `${otherOptions.max}px` : otherOptions.max}, ${transformation(lg)}${unit});`
+						);
+					} else {
+						rules.push(
+							`--theme-${sanitizeKey(prefix)}-${sanitizeKey(
+								name
+							)}: ${transformation(lg)}${unit};`
+						);
+					}
 				} else {
 					const f2 = (x) => {
 						const m = (lg - md) / (lgViewport - mdViewport);
@@ -574,23 +633,33 @@ function extractRules(
 					const min = Math.min(md, lg);
 					const max = Math.max(md, lg);
 					const mid = md;
+
+					let cssMin = `${transformation(
+						min + (unit === 'rem' ? mid : 0)
+					)}${unit} - ${
+						unit === 'rem' ? mid : 0
+					}px`;
+					let cssMax = `${transformation(
+						max
+					)}${unit}`;
+					if (otherOptions.min) {
+						cssMin = `max(${typeof otherOptions.min === 'number' ? `${otherOptions.min}px` : otherOptions.min}, ${cssMin})`;
+					}
+					if (otherOptions.max) {
+						cssMax = `min(${typeof otherOptions.max === 'number' ? `${otherOptions.max}px` : otherOptions.max}, ${cssMax})`;
+					}
+
 					mdScreenRules.push(
 						`--theme-${sanitizeKey(prefix)}-${sanitizeKey(
 							name
-						)}: clamp(${transformation(
-							min + (unit === 'rem' ? mid : 0)
-						)}${unit} - ${
-							unit === 'rem' ? mid : 0
-						}px, ${transformation(
+						)}: clamp(${cssMin}, ${transformation(
 							f2(0) + (unit === 'rem' ? mid : 0)
 						)}${unit} + ${
 							Math.round(
 								((max - min) / (lgViewport - mdViewport)) *
 									100000
 							) / 100000
-						} * ${viewportWidth} - ${unit === 'rem' ? mid : 0}px, ${transformation(
-							max
-						)}${unit});`
+						} * ${viewportWidth} - ${unit === 'rem' ? mid : 0}px, ${cssMax});`
 							.split(' - 0px')
 							.join('')
 					);

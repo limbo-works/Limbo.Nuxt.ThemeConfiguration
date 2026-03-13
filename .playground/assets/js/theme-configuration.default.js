@@ -17,6 +17,9 @@ export default {
 
 	// Setup
 	baseFontSize: 16, // For rem conversion
+	minFontSize: 16,
+	maxFontSize: 20,
+
 	smViewport: 375, // Lowest value clamp
 	mdViewport: 1440, // Midpoint (used for both low-clamp and high-clamp)
 	lgViewport: 1920, // Highest value clamp
