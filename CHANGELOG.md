@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.6.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v3.5.0...theme-configuration-v3.6.0) (2026-03-13)
+
+
+### Features
+
+* added min and max font size ([7a2cbef](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/7a2cbeffd0d6fa7172a7c6aff2a4e67569950b9c))
+* cleanup run ([c74ebe5](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/c74ebe50cfcff3d58e9f26175bffcdebb867d64c))
+
 ## [3.5.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v3.4.1...theme-configuration-v3.5.0) (2026-03-12)
 
 ### Features
