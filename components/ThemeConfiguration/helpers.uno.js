@@ -595,7 +595,10 @@ function makeRules(config, options) {
 					if (!property || !value) return;
 
 					/* eslint-disable */
-					const fallback = !config.disableBreakpointSpecificCustomProperties ? `, var(--theme-${sanitizeKey(value)}--sm)` : '';
+					const fallback =
+						!config.disableBreakpointSpecificCustomProperties
+							? `, var(--theme-${sanitizeKey(value)}--sm)`
+							: '';
 					return {
 						[property]: getIfNegativeRule(
 							rawSelector,
@@ -604,9 +607,7 @@ function makeRules(config, options) {
 							? `calc(var(--theme-${sanitizeKey(
 									value
 								)}${fallback}))`
-							: `var(--theme-${sanitizeKey(
-									value
-								)}${fallback})`,
+							: `var(--theme-${sanitizeKey(value)}${fallback})`,
 						transform: transformValue(currentSelector),
 					};
 					/* eslint-enable */
@@ -625,7 +626,10 @@ function makeRules(config, options) {
 					const property = utilityMap[match[1]] || match[1];
 					if (!property || !('max' in config.layout)) return;
 
-					const fallback = !config.disableBreakpointSpecificCustomProperties ? ', var(--theme-layout-max--sm)' : '';
+					const fallback =
+						!config.disableBreakpointSpecificCustomProperties
+							? ', var(--theme-layout-max--sm)'
+							: '';
 					return {
 						[property]: getIfNegativeRule(
 							rawSelector,
@@ -665,8 +669,14 @@ function makeRules(config, options) {
 						return;
 					}
 
-					const fallback = !config.disableBreakpointSpecificCustomProperties ? `, var(--theme-layout-column-of-${columnCount}--sm)` : '';
-					const fallbackGutter = !config.disableBreakpointSpecificCustomProperties ? ', var(--theme-layout-gutter--sm)' : '';
+					const fallback =
+						!config.disableBreakpointSpecificCustomProperties
+							? `, var(--theme-layout-column-of-${columnCount}--sm)`
+							: '';
+					const fallbackGutter =
+						!config.disableBreakpointSpecificCustomProperties
+							? ', var(--theme-layout-gutter--sm)'
+							: '';
 					return {
 						[property]: `calc(${columns} * var(--theme-layout-column-of-${columnCount}${fallback}) + ${Math.max(
 							0,
@@ -694,7 +704,10 @@ function makeRules(config, options) {
 					if (!property || !value) return;
 
 					/* eslint-disable */
-					const fallback = !config.disableBreakpointSpecificCustomProperties ? `, var(--theme-spacing-${sanitizeKey(value)}--sm)` : '';
+					const fallback =
+						!config.disableBreakpointSpecificCustomProperties
+							? `, var(--theme-spacing-${sanitizeKey(value)}--sm)`
+							: '';
 					return {
 						[property]: getIfNegativeRule(
 							rawSelector,
@@ -731,7 +744,10 @@ function makeRules(config, options) {
 					if (!property || !value) return;
 
 					/* eslint-disable */
-					const fallback = !config.disableBreakpointSpecificCustomProperties ? `, var(--theme-horizontalSpacing-${sanitizeKey(value)}--sm)` : '';
+					const fallback =
+						!config.disableBreakpointSpecificCustomProperties
+							? `, var(--theme-horizontalSpacing-${sanitizeKey(value)}--sm)`
+							: '';
 					return {
 						[property]: getIfNegativeRule(
 							rawSelector,
@@ -768,7 +784,10 @@ function makeRules(config, options) {
 					if (!property || !value) return;
 
 					/* eslint-disable */
-					const fallback = !config.disableBreakpointSpecificCustomProperties ? `, var(--theme-verticalSpacing-${sanitizeKey(value)}--sm)` : '';
+					const fallback =
+						!config.disableBreakpointSpecificCustomProperties
+							? `, var(--theme-verticalSpacing-${sanitizeKey(value)}--sm)`
+							: '';
 					return {
 						[property]: getIfNegativeRule(
 							rawSelector,
@@ -846,7 +865,10 @@ function makeRules(config, options) {
 					const value = currentSelector.split(`${match[1]}-`).pop();
 					if (!property || !value) return;
 
-					const fallback = !config.disableBreakpointSpecificCustomProperties ? `, var(--theme-borderRadius-${sanitizeKey(value)}--sm)` : '';
+					const fallback =
+						!config.disableBreakpointSpecificCustomProperties
+							? `, var(--theme-borderRadius-${sanitizeKey(value)}--sm)`
+							: '';
 					return {
 						[property]: `var(--theme-borderRadius-${sanitizeKey(
 							value

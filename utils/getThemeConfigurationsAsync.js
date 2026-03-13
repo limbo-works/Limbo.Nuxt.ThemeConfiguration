@@ -1,5 +1,7 @@
 export default async function getThemeConfigurationsAsync() {
-	const configGlobs = import.meta.glob('~/assets/js/theme-configuration.*.(js|cjs|mjs)');
+	const configGlobs = import.meta.glob(
+		'~/assets/js/theme-configuration.*.(js|cjs|mjs)'
+	);
 	const extracted = extractThemeConfigurationsFromAppConfig(useAppConfig());
 
 	if (Object.keys(extracted).length > 0) {
@@ -13,5 +15,4 @@ export default async function getThemeConfigurationsAsync() {
 	}
 
 	return themeLoaders;
-};
-
+}

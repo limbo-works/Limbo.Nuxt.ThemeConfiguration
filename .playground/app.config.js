@@ -6,9 +6,14 @@ const path = pathParts.join('/');
 
 export default defineAppConfig({
 	themeConfiguration: {
-		themes: [{
-			name: 'citiDefault',
-			path: joinRelativeURL(path, './assets/js/theme-configuration.default.js'),
-		}],
+		themes: [
+			{
+				name: 'citiDefault',
+				path: joinRelativeURL(
+					path,
+					'./assets/js/theme-configuration.default.js'
+				),
+			},
+		],
 	},
 });

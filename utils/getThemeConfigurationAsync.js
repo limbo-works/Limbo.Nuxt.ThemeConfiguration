@@ -3,10 +3,16 @@ export default async function getThemeConfigurationAsync(theme, subset) {
 
 	let config;
 	if (typeof theme === 'string') {
-		config = $themeConfigurations[theme] || await $themeConfigurations.$loadTheme?.(theme);
+		config =
+			$themeConfigurations[theme] ||
+			(await $themeConfigurations.$loadTheme?.(theme));
 		if (!config) {
-			const availableThemes = $themeConfigurations.$getAvailableThemes?.();
-			console.warn(`Theme "${theme}" not found. Available themes:`, availableThemes || []);
+			const availableThemes =
+				$themeConfigurations.$getAvailableThemes?.();
+			console.warn(
+				`Theme "${theme}" not found. Available themes:`,
+				availableThemes || []
+			);
 			return undefined;
 		}
 	} else if (typeof theme === 'object') {

@@ -47,21 +47,39 @@ defineExpose({
 
 const iterationCounter = useState(() => 0);
 
-watch(() => props, () => {
-	iterationCounter.value++;
-});
+watch(
+	() => props,
+	() => {
+		iterationCounter.value++;
+	}
+);
 
 const availableConfigs = getThemeConfigurations();
 const defaultConfig = availableConfigs.default || {};
 
+function resolveConfig(config) {
+	if (typeof config === 'string') {
+		return availableConfigs[config] || {};
+	}
+	return config || {};
+}
+
+function shouldIncludeThemeClass(key) {
+	if (props.config === key) return false;
+	if (!props.config && key === 'default') return false;
+	if (
+		Array.isArray(props.useThemeClasses) &&
+		!props.useThemeClasses.includes(key)
+	) {
+		return false;
+	}
+	return true;
+}
+
 const compConfig = computed(() => {
 	let clone = cloneDeep(defaultConfig);
 
-	let usedConfig = props.config;
-	if (typeof usedConfig === 'string') {
-		usedConfig = availableConfigs[usedConfig];
-	}
-	usedConfig = usedConfig || {};
+	const usedConfig = resolveConfig(props.config);
 
 	// Overwrite by property
 	if (Object.keys(usedConfig).length) {
@@ -72,40 +90,13 @@ const compConfig = computed(() => {
 	return clone;
 });
 
-// // CAUSING ISSUES, REMOVED – REMOVE PROPERLY LATER
-// const classBaseConfig = computed(() => {
-// 	if (props.useThemeClasses) {
-// 		const themeClassArray = Array.isArray(props.useThemeClasses)
-// 			? props.useThemeClasses
-// 			: Object.keys(availableConfigs);
-// 		return deepMergeExisting(
-// 			themeClassArray.reduce((obj, key) => {
-// 				if (availableConfigs?.[key]) {
-// 					Object.assign(obj, availableConfigs[key]);
-// 				}
-// 				return obj;
-// 			}, {}),
-// 			defaultConfig
-// 		);
-// 	}
-// 	return compConfig.value;
-// });
-
 /* Compile css text */
 const cssText = computed(() => {
 	const rules = [makeCssText()];
 
 	if (props.useThemeClasses) {
 		for (const [key, value] of Object.entries(availableConfigs)) {
-			if (props.config === key) continue;
-			if (!props.config && key === 'default') continue;
-			if (
-				Array.isArray(props.useThemeClasses)
-			) {
-				if (!props.useThemeClasses.includes(key)) {
-					continue;
-				}
-			}
+			if (!shouldIncludeThemeClass(key)) continue;
 
 			rules.push(
 				makeCssText(
@@ -123,51 +114,41 @@ const cssText = computed(() => {
 
 /* Compose media configs */
 const media = computed(() => {
-	const media = [];
+	const mediaEntries = [];
 	for (const [key, config] of Object.entries(props.media || {})) {
-		const rules = [
-			makeCssText(
-				undefined,
-				typeof config === 'string' ? availableConfigs[config] : config
-			),
-		];
+		const resolvedConfig = resolveConfig(config);
+		const rules = [makeCssText(undefined, resolvedConfig)];
 
 		if (props.useThemeClasses) {
-			for (const [key] of Object.entries(availableConfigs)) {
-				if (props.config === key) continue;
-				if (!props.config && key === 'default') continue;
-				if (
-					Array.isArray(props.useThemeClasses) &&
-					!props.useThemeClasses.includes(key)
-				)
-					continue;
+			for (const [themeKey] of Object.entries(availableConfigs)) {
+				if (!shouldIncludeThemeClass(themeKey)) continue;
 
-				rules.push(
-					makeCssText(
-						`.u-theme-${key}`,
-						typeof config === 'string'
-							? availableConfigs[config]
-							: config
-					)
-				);
+				rules.push(makeCssText(`.u-theme-${themeKey}`, resolvedConfig));
 			}
 		}
 
-		media.push({
+		mediaEntries.push({
 			query: key,
 			cssText: rules.join('\n'),
 		});
 	}
-	return media;
+	return mediaEntries;
 });
 
 const headStyles = computed(() => {
+	const iteration = iterationCounter.value;
+	const baseId = `theme-configuration-${iteration}`;
 	return {
 		style: [
-			cssText.value && { key: 'theme-configuration-' + iterationCounter.value, id: 'theme-configuration-' + iterationCounter.value, type: 'text/css', innerHTML: cssText.value },
+			cssText.value && {
+				key: baseId,
+				id: baseId,
+				type: 'text/css',
+				innerHTML: cssText.value,
+			},
 			...(media.value?.map((mediaItem) => ({
-				key: 'theme-configuration-' + mediaItem.query + '-'  + iterationCounter.value,
-				id: 'theme-configuration-' + mediaItem.query + '-'  + iterationCounter.value,
+				key: `theme-configuration-${mediaItem.query}-${iteration}`,
+				id: `theme-configuration-${mediaItem.query}-${iteration}`,
 				type: 'text/css',
 				media: mediaItem.query,
 				innerHTML: mediaItem.cssText,
@@ -209,7 +190,8 @@ function extractColorRules(object, prefix) {
 
 function extractLayoutRules(object) {
 	object = cloneDeep(typeof object === 'object' ? object : {});
-	const useBreakpointSpecificRules = !compConfig.value.disableBreakpointSpecificCustomProperties;
+	const useBreakpointSpecificRules =
+		!compConfig.value.disableBreakpointSpecificCustomProperties;
 	const columns = object.columns || {};
 	delete object.columns;
 
@@ -251,11 +233,14 @@ function extractLayoutRules(object) {
 			}px;`;
 		};
 		const generateResponsiveRule = (columnCount) => {
-			const useBreakpointSpecificRules = !compConfig.value.disableBreakpointSpecificCustomProperties;
 			const { viewportWidth = '100dvw' } = compConfig.value;
 
-			const fallbackMargin = useBreakpointSpecificRules ? ', var(--theme-layout-margin--sm)' : '';
-			const fallbackGutter = useBreakpointSpecificRules ? ', var(--theme-layout-gutter--sm)' : '';
+			const fallbackMargin = useBreakpointSpecificRules
+				? ', var(--theme-layout-margin--sm)'
+				: '';
+			const fallbackGutter = useBreakpointSpecificRules
+				? ', var(--theme-layout-gutter--sm)'
+				: '';
 
 			const widthCalculation = `(var(--visual-viewport-width, ${viewportWidth}) - var(--theme-layout-margin${fallbackMargin}) * 2 - var(--theme-layout-gutter${fallbackGutter}) * ${
 				columnCount - 1
@@ -266,22 +251,25 @@ function extractLayoutRules(object) {
 				return `--theme-layout-column-of-${columnCount}: calc(${widthCalculation});`;
 			}
 
-			const fallbackMarginLg = useBreakpointSpecificRules ? ', var(--theme-layout-margin--lg)' : '';
-			const fallbackGutterLg = useBreakpointSpecificRules ? ', var(--theme-layout-gutter--lg)' : '';
+			const fallbackMarginLg = useBreakpointSpecificRules
+				? ', var(--theme-layout-margin--lg)'
+				: '';
+			const fallbackGutterLg = useBreakpointSpecificRules
+				? ', var(--theme-layout-gutter--lg)'
+				: '';
 			return `--theme-layout-column-of-${columnCount}: min(${widthCalculation}, (${maxRuleValue}px - var(--theme-layout-margin${fallbackMarginLg}) * 2 - var(--theme-layout-gutter${fallbackGutterLg}) * ${
 				columnCount - 1
 			}) / ${columnCount});`;
 		};
 
 		if (useBreakpointSpecificRules) {
-			rules.push(generateBaseRule('sm', sm, true));
-			rules.push(generateBaseRule('md', md, true));
-			rules.push(generateBaseRule('lg', lg, true));
+			rules.push(generateBaseRule('sm', sm));
+			rules.push(generateBaseRule('md', md));
+			rules.push(generateBaseRule('lg', lg));
 		}
 
 		const colCounts = [...new Set([sm, md, lg])];
-		for (let i = 0; i < colCounts.length; i++) {
-			const colCount = colCounts[i];
+		for (const colCount of colCounts) {
 			rules.push(generateResponsiveRule(colCount));
 		}
 	}
@@ -289,7 +277,9 @@ function extractLayoutRules(object) {
 	// Setup layout max
 	const { viewportWidth = '100dvw' } = compConfig.value;
 	if (typeof maxRuleValue === 'undefined') {
-		rules.push(`--theme-layout-max: var(--visual-viewport-width, ${viewportWidth});`);
+		rules.push(
+			`--theme-layout-max: var(--visual-viewport-width, ${viewportWidth});`
+		);
 	} else {
 		rules.push(`--theme-layout-max: ${maxRuleValue}px;`);
 	}
@@ -304,7 +294,8 @@ function extractLayoutRules(object) {
 }
 
 function extractFontRules(object) {
-	const useBreakpointSpecificRules = !compConfig.value.disableBreakpointSpecificCustomProperties;
+	const useBreakpointSpecificRules =
+		!compConfig.value.disableBreakpointSpecificCustomProperties;
 	object = typeof object === 'object' ? object : {};
 
 	// Restructure the object
@@ -327,12 +318,20 @@ function extractFontRules(object) {
 	// Extract font sizes as rem
 	['fontSize'].forEach((key) => {
 		if (object[key]) {
-			const extracted = extractRules(key, object[key], 'rem', (value) => {
-				return Math.round((Number(value) / baseFontSize) * 1000) / 1000;
-			}, {
-				min: compConfig.value.minFontSize,
-				max: compConfig.value.maxFontSize,
-			});
+			const extracted = extractRules(
+				key,
+				object[key],
+				'rem',
+				(value) => {
+					return (
+						Math.round((Number(value) / baseFontSize) * 1000) / 1000
+					);
+				},
+				{
+					min: compConfig.value.minFontSize,
+					max: compConfig.value.maxFontSize,
+				}
+			);
 			returnObject.rules.push(...extracted.rules);
 			returnObject.mdScreenRules.push(...extracted.mdScreenRules);
 		}
@@ -361,39 +360,25 @@ function extractFontRules(object) {
 
 				if (useBreakpointSpecificRules) {
 					rules.push(
-						`--theme-${key}-${sanitizeKey(
-							name
-						)}--sm: ${smValue};`
+						`--theme-${key}-${sanitizeKey(name)}--sm: ${smValue};`
 					);
 					rules.push(
-						`--theme-${key}-${sanitizeKey(
-							name
-						)}--md: ${mdValue};`
+						`--theme-${key}-${sanitizeKey(name)}--md: ${mdValue};`
 					);
 					rules.push(
-						`--theme-${key}-${sanitizeKey(
-							name
-						)}--lg: ${lgValue};`
+						`--theme-${key}-${sanitizeKey(name)}--lg: ${lgValue};`
 					);
 				}
 
-				rules.push(
-					`--theme-${key}-${sanitizeKey(
-						name
-					)}: ${smValue};`
-				);
+				rules.push(`--theme-${key}-${sanitizeKey(name)}: ${smValue};`);
 				if (subObject.md !== subObject.sm) {
 					smToMdScreenRules.push(
-						`--theme-${key}-${sanitizeKey(
-							name
-						)}: ${mdValue};`
+						`--theme-${key}-${sanitizeKey(name)}: ${mdValue};`
 					);
 				}
 				if (subObject.lg !== subObject.md) {
 					mdToLgScreenRules.push(
-						`--theme-${key}-${sanitizeKey(
-							name
-						)}: ${lgValue};`
+						`--theme-${key}-${sanitizeKey(name)}: ${lgValue};`
 					);
 				}
 			}
@@ -433,30 +418,21 @@ function extractFontRules(object) {
 
 				let { sm, md, lg } = subObject;
 				if (key === 'fontFamily') {
-					if (!sm.startsWith('"') && !sm.startsWith('\'')) {
-						if (!sm.match(/^[a-zA-Z]*$/)) {
-							sm.includes('\'') && (sm = `"${sm}"`);
-							!sm.includes('\'') && (sm = `'${sm}'`);
-						}
-					}
-					if (!md.startsWith('"') && !md.startsWith('\'')) {
-						if (!md.match(/^[a-zA-Z]*$/)) {
-							md.includes('\'') && (md = `"${md}"`);
-							!md.includes('\'') && (md = `'${md}'`);
-						}
-					}
-					if (!lg.startsWith('"') && !lg.startsWith('\'')) {
-						if (!lg.match(/^[a-zA-Z]*$/)) {
-							lg.includes('\'') && (lg = `"${lg}"`);
-							!lg.includes('\'') && (lg = `'${lg}'`);
-						}
-					}
+					sm = normalizeFontFamily(sm);
+					md = normalizeFontFamily(md);
+					lg = normalizeFontFamily(lg);
 				}
 
 				if (useBreakpointSpecificRules) {
-					rules.push(`--theme-${key}-${sanitizeKey(name)}--sm: ${sm};`);
-					rules.push(`--theme-${key}-${sanitizeKey(name)}--md: ${md};`);
-					rules.push(`--theme-${key}-${sanitizeKey(name)}--lg: ${lg};`);
+					rules.push(
+						`--theme-${key}-${sanitizeKey(name)}--sm: ${sm};`
+					);
+					rules.push(
+						`--theme-${key}-${sanitizeKey(name)}--md: ${md};`
+					);
+					rules.push(
+						`--theme-${key}-${sanitizeKey(name)}--lg: ${lg};`
+					);
 				}
 
 				rules.push(`--theme-${key}-${sanitizeKey(name)}: ${sm};`);
@@ -490,6 +466,16 @@ function extractFontRules(object) {
 	return returnObject;
 }
 
+function normalizeFontFamily(value) {
+	if (value.startsWith('"') || value.startsWith('\'')) {
+		return value;
+	}
+	if (value.match(/^[a-zA-Z]*$/)) {
+		return value;
+	}
+	return value.includes('\'') ? `"${value}"` : `'${value}'`;
+}
+
 function extractRules(
 	prefix,
 	object,
@@ -499,7 +485,8 @@ function extractRules(
 ) {
 	object = typeof object === 'object' ? object : {};
 	otherOptions ??= {};
-	const useBreakpointSpecificRules = !compConfig.value.disableBreakpointSpecificCustomProperties;
+	const useBreakpointSpecificRules =
+		!compConfig.value.disableBreakpointSpecificCustomProperties;
 	const rules = [];
 	const mdScreenRules = [];
 	const lgScreenRules = [];
@@ -521,7 +508,7 @@ function extractRules(
 
 		// Then the scaling rules
 		const doScalingRule = ['sm', 'md', 'lg'].every((key) => {
-			return Object.keys(subObject).includes(key);
+			return key in subObject;
 		});
 		const { smViewport, mdViewport, lgViewport } = compConfig.value;
 		if (doScalingRule) {
@@ -636,12 +623,8 @@ function extractRules(
 
 					let cssMin = `${transformation(
 						min + (unit === 'rem' ? mid : 0)
-					)}${unit} - ${
-						unit === 'rem' ? mid : 0
-					}px`;
-					let cssMax = `${transformation(
-						max
-					)}${unit}`;
+					)}${unit} - ${unit === 'rem' ? mid : 0}px`;
+					let cssMax = `${transformation(max)}${unit}`;
 					if (otherOptions.min) {
 						cssMin = `max(${typeof otherOptions.min === 'number' ? `${otherOptions.min}px` : otherOptions.min}, ${cssMin})`;
 					}
@@ -749,36 +732,19 @@ function makeCssText(selector, config = compConfig.value) {
 		extractRules('borderRadius', config?.borderRadius),
 	];
 
-	let smToMdScreenRules = rules
-		.reduce((arr, obj) => {
-			arr.push(...(obj.smToMdScreenRules || []));
-			return arr;
-		}, [])
-		.filter(Boolean);
-	let mdScreenRules = rules
-		.reduce((arr, obj) => {
-			arr.push(...(obj.mdScreenRules || []));
-			return arr;
-		}, [])
-		.filter(Boolean);
-	let mdToLgScreenRules = rules
-		.reduce((arr, obj) => {
-			arr.push(...(obj.mdToLgScreenRules || []));
-			return arr;
-		}, [])
-		.filter(Boolean);
-	let lgScreenRules = rules
-		.reduce((arr, obj) => {
-			arr.push(...(obj.lgScreenRules || []));
-			return arr;
-		}, [])
-		.filter(Boolean);
-	rules = rules
-		.reduce((arr, obj) => {
-			arr.push(...(obj.rules || []));
-			return arr;
-		}, [])
-		.filter(Boolean);
+	const collectRules = (key) =>
+		rules
+			.reduce((arr, obj) => {
+				arr.push(...(obj[key] || []));
+				return arr;
+			}, [])
+			.filter(Boolean);
+
+	let smToMdScreenRules = collectRules('smToMdScreenRules');
+	let mdScreenRules = collectRules('mdScreenRules');
+	let mdToLgScreenRules = collectRules('mdToLgScreenRules');
+	let lgScreenRules = collectRules('lgScreenRules');
+	rules = collectRules('rules');
 
 	// Apply selector around rules and indent
 	if (rules.length) {
@@ -887,7 +853,9 @@ function makeCssText(selector, config = compConfig.value) {
 			...mdToLgScreenRules,
 			...lgScreenRules,
 			...layerEnd,
-		].join('').replaceAll('  ', ' ');
+		]
+			.join('')
+			.replaceAll('  ', ' ');
 	}
 	return [
 		...layer,
@@ -902,17 +870,17 @@ function makeCssText(selector, config = compConfig.value) {
 
 function findAltRuleKeys(key) {
 	const partial = key.charAt(0).toUpperCase() + key.slice(1);
-	const returnArray = [];
+	const matches = [];
 
-	Object.keys(compConfig.value).forEach((configKey) => {
+	for (const configKey of Object.keys(compConfig.value)) {
 		if (configKey.endsWith(partial)) {
-			returnArray.push({
+			matches.push({
 				configKey,
 				prefix: configKey.split(partial)[0].toLowerCase(),
 			});
 		}
-	});
-	return returnArray;
+	}
+	return matches;
 }
 
 function deepMergeExisting(target, source) {

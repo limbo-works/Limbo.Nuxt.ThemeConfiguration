@@ -2,7 +2,9 @@ export default function getThemeConfigurationSubset(obj, subset) {
 	if (!obj || !subset || typeof obj === 'string') return undefined;
 
 	if (typeof subset === 'string') {
-		return obj[subset] !== undefined ? { [subset]: obj[subset] } : undefined;
+		return obj[subset] !== undefined
+			? { [subset]: obj[subset] }
+			: undefined;
 	}
 
 	if (Array.isArray(subset)) {
@@ -37,9 +39,13 @@ export default function getThemeConfigurationSubset(obj, subset) {
 				const regex = new RegExp(regexMatch[1], regexMatch[2]);
 				for (const objKey in obj) {
 					if (regex.test(objKey)) {
-						const value = typeof subset[key] === 'boolean'
-							? obj[objKey]
-							: getThemeConfigurationSubset(obj[objKey], subset[key]);
+						const value =
+							typeof subset[key] === 'boolean'
+								? obj[objKey]
+								: getThemeConfigurationSubset(
+									obj[objKey],
+									subset[key]
+								);
 						if (value !== undefined) {
 							if (!result) result = {};
 							result[objKey] = value;
@@ -47,9 +53,10 @@ export default function getThemeConfigurationSubset(obj, subset) {
 					}
 				}
 			} else if (obj[key] !== undefined) {
-				const value = typeof subset[key] === 'boolean'
-					? obj[key]
-					: getThemeConfigurationSubset(obj[key], subset[key]);
+				const value =
+					typeof subset[key] === 'boolean'
+						? obj[key]
+						: getThemeConfigurationSubset(obj[key], subset[key]);
 				if (value !== undefined) {
 					if (!result) result = {};
 					result[key] = value;
