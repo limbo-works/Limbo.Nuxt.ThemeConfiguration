@@ -869,10 +869,13 @@ function makeRules(config, options) {
 						!config.disableBreakpointSpecificCustomProperties
 							? `, var(--theme-borderRadius-${sanitizeKey(value)}--sm)`
 							: '';
+					if (Array.isArray(property)) {
+						return Object.fromEntries(
+							property.map((p) => [p, `var(--theme-borderRadius-${sanitizeKey(value)}${fallback})`])
+						);
+					}
 					return {
-						[property]: `var(--theme-borderRadius-${sanitizeKey(
-							value
-						)}${fallback})`,
+						[property]: `var(--theme-borderRadius-${sanitizeKey(value)}${fallback})`,
 					};
 				},
 				{
