@@ -3,6 +3,7 @@ export default defineThemeConfig({
 	options: {
 		minify: true,
 		round: '1px',
+		disableBreakpointSpecificCustomProperties: false,
 
 		namedBreaks: {
 			sm: 375,
@@ -10,7 +11,11 @@ export default defineThemeConfig({
 			lg: 1920,
 		},
 
+		viewportWidth: '100dvw',
+
 		baseFontSize: 16,
+		minFontSize: 16,
+		maxFontSize: 64,
 
 		handlers: {
 			colors: myCustomColorsHandler,

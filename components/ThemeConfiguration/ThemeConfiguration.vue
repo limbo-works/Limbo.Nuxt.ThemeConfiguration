@@ -13,7 +13,7 @@ import {
 	restructureFontSizeObject,
 	cloneDeep,
 	deepmerge,
-} from './helpers.js';
+} from '~/assets/js/helpers.js';
 
 const props = defineProps({
 	config: [String, Object],

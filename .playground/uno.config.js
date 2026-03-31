@@ -3,7 +3,7 @@ import { presetCore } from '@limbo-works/nuxt-core/assets/js/unocss/preset-core.
 import {
 	makeThemeUtilities,
 	makeRules,
-} from '../components/ThemeConfiguration/helpers.uno.js';
+} from '../assets/js/helpers.uno.js';
 import defaultConfig from './assets/js/theme-configuration.default.js';
 
 export default defineConfig({
