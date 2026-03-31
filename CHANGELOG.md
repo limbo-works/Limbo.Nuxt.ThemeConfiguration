@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.6.1](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v3.6.0...theme-configuration-v3.6.1) (2026-03-31)
+
+
+### Bug Fixes
+
+* border radius error ([fb984fe](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/fb984fe5076fe8c2eec9809ce600da98af2bb42d))
+
 ## [3.6.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v3.5.0...theme-configuration-v3.6.0) (2026-03-13)
 
 
