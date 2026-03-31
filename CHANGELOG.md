@@ -1,5 +1,19 @@
 # Changelog
 
+## [4.0.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v3.6.1...theme-configuration-v4.0.0) (2026-03-31)
+
+
+### ⚠ BREAKING CHANGES
+
+* moved helper/non-component js files from /components/ to /assets/js/
+* upgraded to Nuxt4
+
+### Features
+
+* moved helper/non-component js files from /components/ to /assets/js/ ([e966eb7](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/e966eb713dea170b5b39acb14f221fe5d14d8cee))
+* moved logic to composable to be able to run it without component ([a13859e](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/a13859e3974804f41582d19d868a3967712c27f6))
+* upgraded to Nuxt4 ([9d33708](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/9d33708adb11098f83f408698f30fbedf4850304))
+
 ## [3.6.1](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v3.6.0...theme-configuration-v3.6.1) (2026-03-31)
 
 
