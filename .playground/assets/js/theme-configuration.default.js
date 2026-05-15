@@ -17,8 +17,6 @@ export default {
 
 	// Setup
 	baseFontSize: 16, // For rem conversion
-	minFontSize: 16,
-	maxFontSize: 20,
 
 	smViewport: 375, // Lowest value clamp
 	mdViewport: 1440, // Midpoint (used for both low-clamp and high-clamp)
@@ -67,29 +65,106 @@ export default {
 			the built-in UnoCSS color opacities will be used in the
 			rules.
 		*/
-		text: '#000000',
+		// Core text and surface colors
+		onSurface: [33, 33, 33],
+		onSurfaceInverse: [255, 255, 255],
+		onSurfaceVariant: [73, 73, 73],
+
+		// Primary variant
+		onSurfacePrimary: [251, 251, 254],
+		onSurfacePrimarySubtle: [96, 89, 179],
+		onSurfacePrimaryMedium: [117, 114, 188],
+
+		// Secondary variant
+		onSurfaceSecondary: [255, 255, 255],
+		onSurfaceSecondarySubtle: [207, 124, 97],
+		onSurfaceSecondaryMedium: [193, 114, 89],
+
+		// Success variant
+		onSurfaceSuccess: [255, 255, 255],
+		onSurfaceSuccessSubtle: [76, 175, 80],
+		onSurfaceSuccessMedium: [56, 142, 60],
+
+		// Danger variant
+		onSurfaceDanger: [255, 255, 255],
+		onSurfaceDangerSubtle: [189, 109, 114],
+		onSurfaceDangerMedium: [211, 47, 47],
+
+		// Warning variant
+		onSurfaceWarning: [255, 255, 255],
+		onSurfaceWarningSubtle: [255, 152, 0],
+		onSurfaceWarningMedium: [245, 127, 23],
+
+		// Info variant
+		onSurfaceInfo: [255, 255, 255],
+		onSurfaceInfoSubtle: [2, 136, 209],
+		onSurfaceInfoMedium: [3, 155, 229],
+
+		// Fish stick theme
+		onSurfaceFishStick: [33, 33, 33],
+
+		// Legacy support
 		onPrimaryStrong: [251, 251, 254],
 		onPrimaryMedium: [209, 214, 250],
 		'on-primary-medium': [209, 214, 250],
 		onFishStickStrong: [0, 0, 0],
-		onFishStickMediumFried: [0, 0, 0],
-		'on-fishStick-oldAndMusky': [0, 0, 0],
-		'on-test-test-another-test': [0, 0, 0],
-		onSurfaceDanger: [100, 100, 100],
-		// ...other colors here
 	},
 
 	backgroundColors: {
+		surface: [255, 255, 255],
+		surfaceVariant: [240, 240, 240],
+		surfaceInverse: [33, 33, 33],
+
 		primary: [75, 67, 190],
+		primarySubtle: [230, 224, 250],
+		primaryMedium: [117, 110, 200],
+
+		secondary: [255, 87, 34],
+		secondarySubtle: [255, 224, 178],
+		secondaryMedium: [255, 152, 0],
+
+		success: [76, 175, 80],
+		successSubtle: [200, 230, 201],
+		successMedium: [129, 199, 132],
+
+		danger: [244, 67, 54],
+		dangerSubtle: [255, 205, 210],
+		dangerMedium: [229, 57, 53],
+
+		warning: [255, 152, 0],
+		warningSubtle: [255, 243, 224],
+		warningMedium: [251, 188, 5],
+
+		info: [33, 150, 243],
+		infoSubtle: [227, 242, 253],
+		infoMedium: [66, 165, 245],
+
 		fishStick: [255, 255, 255],
-		'test-test': [255, 255, 255],
 	},
 	textColors: {
+		onSurface: [33, 33, 33],
+		onSurfaceInverse: [255, 255, 255],
+		onSurfaceVariant: [97, 97, 97],
+
 		onPrimarySubtle: [96, 89, 179],
 		onPrimaryMedium: [0, 0, 255],
 		onPrimaryStrong: [117, 114, 188],
 		onPrimaryExtraStrong: [140, 147, 198],
-		'test-textColors': [140, 147, 198],
+
+		onSecondarySubtle: [207, 124, 97],
+		onSecondaryMedium: [193, 114, 89],
+
+		onSuccessSubtle: [76, 175, 80],
+		onSuccessMedium: [56, 142, 60],
+
+		onDangerSubtle: [189, 109, 114],
+		onDangerMedium: [211, 47, 47],
+
+		onWarningSubtle: [255, 152, 0],
+		onWarningMedium: [245, 127, 23],
+
+		onInfoSubtle: [2, 136, 209],
+		onInfoMedium: [3, 155, 229],
 	},
 	borderColors: {
 		onPrimarySubtle: [96, 89, 179],
@@ -230,9 +305,9 @@ export default {
 				lg: 1.2,
 			},
 			letterSpacing: {
-				sm: -0.5,
-				md: -1,
-				lg: -0.5,
+				sm: 0,
+				md: 0.1,
+				lg: 0,
 			},
 		},
 		h2: {
@@ -247,9 +322,9 @@ export default {
 				lg: 1.2,
 			},
 			letterSpacing: {
-				sm: -0.25,
-				md: -0.5,
-				lg: -1,
+				sm: 0.025,
+				md: 0.05,
+				lg: 0,
 			},
 		},
 		h3: {
@@ -265,8 +340,8 @@ export default {
 			},
 			letterSpacing: {
 				sm: 0,
-				md: -0.5,
-				lg: -0.5,
+				md: 0.05,
+				lg: 0.05,
 			},
 		},
 		h4: {
@@ -281,9 +356,9 @@ export default {
 				lg: 1.4,
 			},
 			letterSpacing: {
-				sm: -0.1,
-				md: -0.1,
-				lg: -0.1,
+				sm: 0.01,
+				md: 0.01,
+				lg: 0.01,
 			},
 		},
 		h5: {
@@ -298,9 +373,9 @@ export default {
 				lg: 1.4,
 			},
 			letterSpacing: {
-				sm: -0.1,
-				md: -0.1,
-				lg: -0.1,
+				sm: 0.01,
+				md: 0.01,
+				lg: 0.01,
 			},
 		},
 		body1: {
@@ -315,9 +390,9 @@ export default {
 				lg: 1.4,
 			},
 			letterSpacing: {
-				sm: -0.2,
-				md: -0.2,
-				lg: -0.25,
+				sm: 0.02,
+				md: 0.02,
+				lg: 0.025,
 			},
 		},
 		body2: {
@@ -332,9 +407,9 @@ export default {
 				lg: 1.4,
 			},
 			letterSpacing: {
-				sm: -0.2,
-				md: -0.2,
-				lg: -0.25,
+				sm: 0.02,
+				md: 0.02,
+				lg: 0.025,
 			},
 		},
 		button: {
@@ -349,9 +424,9 @@ export default {
 				lg: 1.4,
 			},
 			letterSpacing: {
-				sm: 0.25,
-				md: 0.25,
-				lg: 0.25,
+				sm: 0.025,
+				md: 0.025,
+				lg: 0.025,
 			},
 		},
 		caption: {
@@ -366,9 +441,9 @@ export default {
 				lg: 1.2,
 			},
 			letterSpacing: {
-				sm: 0.25,
-				md: 0.25,
-				lg: 0.5,
+				sm: 0.025,
+				md: 0.025,
+				lg: 0.05,
 			},
 		},
 		overline: {
@@ -383,9 +458,9 @@ export default {
 				lg: 1.2,
 			},
 			letterSpacing: {
-				sm: 1.5,
-				md: 1.5,
-				lg: 2,
+				sm: 0.5,
+				md: 0.5,
+				lg: 0,
 			},
 		},
 	},
