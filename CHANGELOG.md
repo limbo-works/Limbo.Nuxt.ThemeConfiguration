@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.1](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v4.1.0...theme-configuration-v4.1.1) (2026-05-15)
+
+
+### Bug Fixes
+
+* moved where the clamping happens ([db11b69](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/db11b6905a9abdd83d1c19cd18c8cf7703257de6))
+
 ## [4.1.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v4.0.0...theme-configuration-v4.1.0) (2026-05-15)
 
 
