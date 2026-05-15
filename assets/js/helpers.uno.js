@@ -821,9 +821,9 @@ function makeRules(config, options) {
 					if (!property || !value) return;
 
 					const _return = {
-						'font-size': `var(--theme-fontSize-${sanitizeKey(
+						'font-size': `clamp(var(--minFontSize, 0px), var(--theme-fontSize-${sanitizeKey(
 							value
-						)})`,
+						)}), var(--maxFontSize, 9999px))`,
 						'--minFontSize': '0px',
 						'--maxFontSize': '9999px',
 					};

@@ -485,17 +485,17 @@ export function useThemeConfiguration(options = {
 					rules.push(
 						`--theme-${sanitizeKey(prefix)}-${sanitizeKey(
 							name
-						)}: clamp(var(--minFontSize, 0px), ${transformation(sm)}${unit}, var(--maxFontSize, 9999px));`
+						)}: ${transformation(sm)}${unit};`
 					);
 				} else {
 					const min = Math.min(sm, md);
 					const max = Math.max(sm, md);
 					const mid = md;
 
-					let cssMin = `max(var(--minFontSize, 0px), ${transformation(min)}${unit})`;
-					let cssMax = `min(var(--maxFontSize, 9999px), ${transformation(
+					let cssMin = `${transformation(min)}${unit}`;
+					let cssMax = `${transformation(
 						max + (unit === 'rem' ? mid : 0)
-					)}${unit} - ${unit === 'rem' ? mid : 0}px)`;
+					)}${unit} - ${unit === 'rem' ? mid : 0}px`;
 
 					rules.push(
 						`--theme-${sanitizeKey(prefix)}-${sanitizeKey(
@@ -518,7 +518,7 @@ export function useThemeConfiguration(options = {
 						rules.push(
 							`--theme-${sanitizeKey(prefix)}-${sanitizeKey(
 								name
-							)}: clamp(var(--minFontSize, 0px), ${transformation(lg)}${unit}, var(--maxFontSize, 9999px));`
+							)}: ${transformation(lg)}${unit};`
 						);
 					} else {
 						const f2 = (x) => {
@@ -531,10 +531,10 @@ export function useThemeConfiguration(options = {
 						const max = Math.max(md, lg);
 						const mid = md;
 
-						let cssMin = `max(var(--minFontSize, 0px), ${transformation(
+						let cssMin = `${transformation(
 							min + (unit === 'rem' ? mid : 0)
-						)}${unit} - ${unit === 'rem' ? mid : 0}px)`;
-						let cssMax = `min(var(--maxFontSize, 9999px), ${transformation(max)}${unit})`;
+						)}${unit} - ${unit === 'rem' ? mid : 0}px`;
+						let cssMax = `${transformation(max)}${unit}`;
 
 						mdScreenRules.push(
 							`--theme-${sanitizeKey(prefix)}-${sanitizeKey(
