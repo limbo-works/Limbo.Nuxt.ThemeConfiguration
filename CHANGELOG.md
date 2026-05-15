@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v4.0.0...theme-configuration-v4.1.0) (2026-05-15)
+
+
+### Features
+
+* updated with text-min and text-max utilities ([b2c4d67](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/b2c4d67ee574d35e61d9799e3ef56ec5f0ddd3d1))
+
 ## [4.0.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v3.6.1...theme-configuration-v4.0.0) (2026-03-31)
 
 
