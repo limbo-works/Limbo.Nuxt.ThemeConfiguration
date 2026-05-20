@@ -67,9 +67,39 @@ function restructureFontSizeObject(object) {
 
 function cloneDeep(object) {
 	if (typeof structuredClone === 'function') {
-		return structuredClone(object);
+		try {
+			return structuredClone(object);
+		} catch (e) {
+			// Fall through to recursive clone if structuredClone fails
+		}
 	}
-	return JSON.parse(JSON.stringify(object));
+	return recursiveClone(object);
+}
+
+function recursiveClone(obj) {
+	// Handle primitives and null
+	if (obj === null || typeof obj !== 'object') {
+		return obj;
+	}
+
+	// Handle Date
+	if (obj instanceof Date) {
+		return new Date(obj.getTime());
+	}
+
+	// Handle Array
+	if (Array.isArray(obj)) {
+		return obj.map((item) => recursiveClone(item));
+	}
+
+	// Handle Object
+	const cloned = {};
+	for (const key in obj) {
+		if (Object.prototype.hasOwnProperty.call(obj, key)) {
+			cloned[key] = recursiveClone(obj[key]);
+		}
+	}
+	return cloned;
 }
 
 const isObject = (item) =>
