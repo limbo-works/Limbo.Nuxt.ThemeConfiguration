@@ -52,7 +52,7 @@ export function useThemeConfiguration(options = {
 
 	const colorRules = computed(() => extractColorRules(compConfig.value?.colors));
 	const altColorRules = computed(() =>
-		findAltRuleKeys('colors').map(({ configKey, prefix }) =>
+		findAltRuleKeys('colors', compConfig.value).map(({ configKey, prefix }) =>
 			extractColorRules(compConfig.value[configKey], prefix)
 		)
 	);
@@ -67,34 +67,44 @@ export function useThemeConfiguration(options = {
 		extractRules('spacing', compConfig.value?.spacing)
 	);
 	const altSpacingRules = computed(() =>
-		findAltRuleKeys('spacing').map(({ configKey }) =>
+		findAltRuleKeys('spacing', compConfig.value).map(({ configKey }) =>
 			extractRules(configKey, compConfig.value[configKey])
 		)
 	);
-	const cachedRuleSections = computed(() => [
-		colorRules.value,
-		...altColorRules.value,
-		layoutRules.value,
-		fontSizeRules.value,
-		fontStyleRules.value,
-		spacingRules.value,
-		...altSpacingRules.value,
-		extractRules('borderRadius', compConfig.value?.borderRadius),
-	]);
+	const cachedRuleSections = computed(() => createRuleSections(compConfig.value));
+	const themeClassRuleSections = computed(() => {
+		const sections = {};
+		if (!options.useThemeClasses) return sections;
+
+		for (const [key, value] of Object.entries(availableConfigs)) {
+			if (!shouldIncludeThemeClass(key)) continue;
+
+			const config =
+				options.mergeThemeClassesWithBaseConfig ?? false
+					? deepMergeExisting(cloneDeep(compConfig.value), value)
+					: value;
+			sections[key] = {
+				config,
+				rules: createRuleSections(config),
+			};
+		}
+
+		return sections;
+	});
 
 	/* Compile css text */
 	const cssText = computed(() => {
 		const rules = [makeCssText(undefined, compConfig.value, cachedRuleSections.value)];
 
 		if (options.useThemeClasses) {
-			for (const [key, value] of Object.entries(availableConfigs)) {
+			for (const [key] of Object.entries(availableConfigs)) {
 				if (!shouldIncludeThemeClass(key)) continue;
+				const themeClassRuleSection = themeClassRuleSections.value[key];
 				rules.push(
 					makeCssText(
 						`.u-theme-${key}`,
-						options.mergeThemeClassesWithBaseConfig ?? false
-							? deepMergeExisting(cloneDeep(compConfig.value), value)
-							: value
+						themeClassRuleSection.config,
+						themeClassRuleSection.rules
 					)
 				);
 			}
@@ -807,6 +817,36 @@ export function useThemeConfiguration(options = {
 			...lgScreenRules,
 			...layerEnd,
 		].join('\n');
+	}
+
+	function createRuleSections(config) {
+		if (config === compConfig.value) {
+			return [
+				colorRules.value,
+				...altColorRules.value,
+				layoutRules.value,
+				fontSizeRules.value,
+				fontStyleRules.value,
+				spacingRules.value,
+				...altSpacingRules.value,
+				extractRules('borderRadius', compConfig.value?.borderRadius),
+			];
+		}
+
+		return [
+			extractColorRules(config?.colors),
+			...findAltRuleKeys('colors', config).map(({ configKey, prefix }) =>
+				extractColorRules(config[configKey], prefix)
+			),
+			extractLayoutRules(config?.layout),
+			extractFontRules(config?.fontSize),
+			extractFontRules(config?.fontStyles),
+			extractRules('spacing', config?.spacing),
+			...findAltRuleKeys('spacing', config).map(({ configKey }) =>
+				extractRules(configKey, config[configKey])
+			),
+			extractRules('borderRadius', config?.borderRadius),
+		];
 	}
 
 	function findAltRuleKeys(key, config = compConfig.value) {
