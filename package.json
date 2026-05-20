@@ -8,8 +8,9 @@
 		"build": "nuxi build .playground",
 		"generate": "nuxi generate .playground",
 		"preview": "nuxi preview .playground",
-		"prettier": "prettier \"**/*.{js,vue,md,yml,css,scss,json}\"",
+		"prettier": "prettier \"**/*.{js,ts,vue,md,yml,css,scss,json}\"",
 		"eslint": "eslint \"**/*.{js,vue}\"",
+		"typecheck": "nuxi prepare && nuxi typecheck",
 		"lint": "yarn prettier --check . && yarn eslint --quiet .",
 		"lint:fix": "yarn prettier --write . && yarn eslint --fix --quiet .",
 		"test": "exit 0"

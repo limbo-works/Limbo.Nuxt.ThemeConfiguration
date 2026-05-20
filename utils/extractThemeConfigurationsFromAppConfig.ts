@@ -1,5 +1,7 @@
+import type { ThemeLoaders } from './theme-configuration.types';
+
 export default function extractThemeConfigurationsFromAppConfig(
-	appConfig = {}
+	appConfig: Record<string, any> = {}
 ) {
 	const { themeConfiguration } = appConfig;
 	if (
@@ -9,7 +11,7 @@ export default function extractThemeConfigurationsFromAppConfig(
 		return {};
 	}
 
-	const configGlobs = {};
+	const configGlobs: ThemeLoaders = {};
 	for (const configPath of themeConfiguration.themes) {
 		if (typeof configPath === 'object') {
 			const name = configPath.name || configPath.path;
@@ -27,7 +29,7 @@ export default function extractThemeConfigurationsFromAppConfig(
 						return module?.default || module;
 					} catch (error) {
 						console.warn(
-							`Failed to import theme configuration from "${path}": ${error?.message || String(error)}`
+							`Failed to import theme configuration from "${path}": ${(error as Error)?.message || String(error)}`
 						);
 						return undefined;
 					}
@@ -40,7 +42,7 @@ export default function extractThemeConfigurationsFromAppConfig(
 					return module?.default || module;
 				} catch (error) {
 					console.warn(
-						`Failed to import theme configuration from "${configPath}": ${error?.message || String(error)}`
+						`Failed to import theme configuration from "${configPath}": ${(error as Error)?.message || String(error)}`
 					);
 					return undefined;
 				}

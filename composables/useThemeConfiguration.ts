@@ -1,20 +1,28 @@
+// @ts-nocheck
 import {
 	sanitizeKey,
 	restructureFontSizeObject,
 	cloneDeep,
 	deepmerge,
-} from '~/assets/js/helpers.js';
+} from '~/assets/js/helpers';
 
-export function useThemeConfiguration(
-	options = {
+export function useThemeConfiguration(options?: {
+	config?: string | Record<string, any>;
+	media?: Record<string, string | Record<string, any>>;
+	useThemeClasses?: boolean | string[];
+	mergeThemeClassesWithBaseConfig?: boolean;
+	cssLayer?: string;
+}) {
+	const iterationCounter = useState(() => 0);
+
+	const opts = {
 		config: undefined,
 		media: undefined,
 		useThemeClasses: undefined,
 		mergeThemeClassesWithBaseConfig: false,
 		cssLayer: undefined,
-	}
-) {
-	const iterationCounter = useState(() => 0);
+		...options,
+	};
 
 	const availableConfigs = getThemeConfigurations();
 	const defaultConfig = availableConfigs.default || {};
@@ -27,11 +35,11 @@ export function useThemeConfiguration(
 	}
 
 	function shouldIncludeThemeClass(key) {
-		if (options.config === key) return false;
-		if (!options.config && key === 'default') return false;
+		if (opts.config === key) return false;
+		if (!opts.config && key === 'default') return false;
 		if (
-			Array.isArray(options.useThemeClasses) &&
-			!options.useThemeClasses.includes(key)
+			Array.isArray(opts.useThemeClasses) &&
+			!opts.useThemeClasses.includes(key)
 		) {
 			return false;
 		}
@@ -41,7 +49,7 @@ export function useThemeConfiguration(
 	const compConfig = computed(() => {
 		let clone = cloneDeep(defaultConfig);
 
-		const usedConfig = resolveConfig(options.config);
+		const usedConfig = resolveConfig(opts.config);
 
 		// Overwrite by property
 		if (Object.keys(usedConfig).length) {
@@ -83,13 +91,13 @@ export function useThemeConfiguration(
 	);
 	const themeClassRuleSections = computed(() => {
 		const sections = {};
-		if (!options.useThemeClasses) return sections;
+		if (!opts.useThemeClasses) return sections;
 
 		for (const [key, value] of Object.entries(availableConfigs)) {
 			if (!shouldIncludeThemeClass(key)) continue;
 
 			const config =
-				(options.mergeThemeClassesWithBaseConfig ?? false)
+				(opts.mergeThemeClassesWithBaseConfig ?? false)
 					? deepMergeExisting(cloneDeep(compConfig.value), value)
 					: value;
 			sections[key] = {
@@ -107,7 +115,7 @@ export function useThemeConfiguration(
 			makeCssText(undefined, compConfig.value, cachedRuleSections.value),
 		];
 
-		if (options.useThemeClasses) {
+		if (opts.useThemeClasses) {
 			for (const [key] of Object.entries(availableConfigs)) {
 				if (!shouldIncludeThemeClass(key)) continue;
 				const themeClassRuleSection = themeClassRuleSections.value[key];
@@ -127,11 +135,11 @@ export function useThemeConfiguration(
 	/* Compose media configs */
 	const media = computed(() => {
 		const mediaEntries = [];
-		for (const [key, config] of Object.entries(options.media || {})) {
+		for (const [key, config] of Object.entries(opts.media || {})) {
 			const resolvedConfig = resolveConfig(config);
 			const rules = [makeCssText(undefined, resolvedConfig)];
 
-			if (options.useThemeClasses) {
+			if (opts.useThemeClasses) {
 				for (const [themeKey] of Object.entries(availableConfigs)) {
 					if (!shouldIncludeThemeClass(themeKey)) continue;
 
@@ -488,13 +496,13 @@ export function useThemeConfiguration(
 	}
 
 	function normalizeFontFamily(value) {
-		if (value.startsWith('"') || value.startsWith('\'')) {
+		if (value.startsWith('"') || value.startsWith("'")) {
 			return value;
 		}
 		if (value.match(/^[a-zA-Z]*$/)) {
 			return value;
 		}
-		return value.includes('\'') ? `"${value}"` : `'${value}'`;
+		return value.includes("'") ? `"${value}"` : `'${value}'`;
 	}
 
 	function extractRules(
@@ -674,9 +682,9 @@ export function useThemeConfiguration(
 			if (options.useThemeClasses) {
 				selectors.push('.u-theme');
 
-				if (typeof options.config === 'string') {
-					selectors.push(`.u-theme-${options.config}`);
-				} else if (!options.config) {
+				if (typeof opts.config === 'string') {
+					selectors.push(`.u-theme-${opts.config}`);
+				} else if (!opts.config) {
 					selectors.push('.u-theme-default');
 				}
 			}
@@ -819,8 +827,8 @@ export function useThemeConfiguration(
 		}
 
 		// Wrap in a CSS layer
-		const layer = options.cssLayer ? [`@layer ${options.cssLayer} {`] : [];
-		const layerEnd = options.cssLayer ? ['}'] : [];
+		const layer = opts.cssLayer ? [`@layer ${opts.cssLayer} {`] : [];
+		const layerEnd = opts.cssLayer ? ['}'] : [];
 
 		if (compConfig.value.minify) {
 			return [

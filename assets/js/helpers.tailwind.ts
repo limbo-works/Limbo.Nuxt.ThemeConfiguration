@@ -1,8 +1,5 @@
-import {
-	sanitizeKey,
-	restructureFontSizeObject,
-	cloneDeep,
-} from './helpers.js';
+// @ts-nocheck
+import { sanitizeKey, restructureFontSizeObject, cloneDeep } from './helpers';
 
 export { makeThemeUtilities, makeThemePlugins };
 

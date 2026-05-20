@@ -1,4 +1,7 @@
-export default function getThemeConfigurationSubset(obj, subset) {
+export default function getThemeConfigurationSubset(
+	obj: Record<string, any> | undefined,
+	subset: string | string[] | RegExp | Record<string, any> | undefined
+): Record<string, any> | undefined {
 	if (!obj || !subset || typeof obj === 'string') return undefined;
 
 	if (typeof subset === 'string') {
@@ -8,7 +11,7 @@ export default function getThemeConfigurationSubset(obj, subset) {
 	}
 
 	if (Array.isArray(subset)) {
-		let result;
+		let result: Record<string, any> | undefined;
 		for (const key of subset) {
 			if (obj[key] !== undefined) {
 				if (!result) result = {};
@@ -19,7 +22,7 @@ export default function getThemeConfigurationSubset(obj, subset) {
 	}
 
 	if (subset instanceof RegExp) {
-		let result;
+		let result: Record<string, any> | undefined;
 		for (const key in obj) {
 			if (subset.test(key)) {
 				if (!result) result = {};
@@ -30,12 +33,12 @@ export default function getThemeConfigurationSubset(obj, subset) {
 	}
 
 	if (typeof subset === 'object') {
-		let result;
+		let result: Record<string, any> | undefined;
 		for (const key in subset) {
 			if (!subset[key]) continue;
 
 			const regexMatch = key.match(/^\/(.*)\/([gimy]*)$/);
-			if (regexMatch) {
+			if (regexMatch?.[1]) {
 				const regex = new RegExp(regexMatch[1], regexMatch[2]);
 				for (const objKey in obj) {
 					if (regex.test(objKey)) {
@@ -43,9 +46,9 @@ export default function getThemeConfigurationSubset(obj, subset) {
 							typeof subset[key] === 'boolean'
 								? obj[objKey]
 								: getThemeConfigurationSubset(
-									obj[objKey],
-									subset[key]
-								);
+										obj[objKey],
+										subset[key]
+									);
 						if (value !== undefined) {
 							if (!result) result = {};
 							result[objKey] = value;

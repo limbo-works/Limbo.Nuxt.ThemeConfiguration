@@ -1,10 +1,12 @@
 export { sanitizeKey, restructureFontSizeObject, cloneDeep, deepmerge };
 
-function sanitizeKey(key) {
+function sanitizeKey(key: string | number) {
 	return String(key).replace(/[^a-zA-Z0-9]/g, '-');
 }
 
-function restructureFontSizeObject(object) {
+function restructureFontSizeObject(
+	object: Record<string, any>
+): Record<string, any> {
 	const propertyList = [
 		'fontFamily',
 		'fontWeight',
@@ -17,8 +19,10 @@ function restructureFontSizeObject(object) {
 		'paragraphSpacing',
 		'paragraphIndent',
 	];
-	return Object.keys(typeof object === 'object' ? object : {}).reduce(
-		(newObject, key) => {
+	return Object.keys(typeof object === 'object' ? object : {}).reduce<
+		Record<string, any>
+	>(
+		(newObject: Record<string, any>, key) => {
 			// We got properties as the outermost shell
 			propertyList.forEach((property) => {
 				if (object[key][property]) {
@@ -61,11 +65,11 @@ function restructureFontSizeObject(object) {
 			}
 			return newObject;
 		},
-		{}
+		{} as Record<string, any>
 	);
 }
 
-function cloneDeep(object) {
+function cloneDeep<T>(object: T): T {
 	if (typeof structuredClone === 'function') {
 		try {
 			return structuredClone(object);
@@ -76,7 +80,7 @@ function cloneDeep(object) {
 	return recursiveClone(object);
 }
 
-function recursiveClone(obj) {
+function recursiveClone<T>(obj: T): T {
 	// Handle primitives and null
 	if (obj === null || typeof obj !== 'object') {
 		return obj;
@@ -84,29 +88,33 @@ function recursiveClone(obj) {
 
 	// Handle Date
 	if (obj instanceof Date) {
-		return new Date(obj.getTime());
+		return new Date(obj.getTime()) as T;
 	}
 
 	// Handle Array
 	if (Array.isArray(obj)) {
-		return obj.map((item) => recursiveClone(item));
+		return obj.map((item) => recursiveClone(item)) as T;
 	}
 
 	// Handle Object
-	const cloned = {};
+	const cloned: Record<string, any> = {};
 	for (const key in obj) {
 		if (Object.prototype.hasOwnProperty.call(obj, key)) {
 			cloned[key] = recursiveClone(obj[key]);
 		}
 	}
-	return cloned;
+	return cloned as T;
 }
 
-const isObject = (item) =>
+const isObject = (item: any) =>
 	item && typeof item === 'object' && !Array.isArray(item);
-function deepmerge(target, ...sources) {
+function deepmerge(
+	target: Record<string, any>,
+	...sources: Record<string, any>[]
+) {
 	if (!sources.length) return target;
 	const source = sources.shift();
+	if (!source) return target;
 
 	if (isObject(target) && isObject(source)) {
 		for (const key in source) {

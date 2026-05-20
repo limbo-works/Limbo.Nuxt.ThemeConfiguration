@@ -1,7 +1,15 @@
+// @ts-nocheck
+import type {
+	ThemeConfiguration,
+	ThemeLoaders,
+	ThemeSystem,
+} from '~/utils/theme-configuration.types';
+
 export default defineNuxtPlugin(async (nuxtApp) => {
 	try {
-		const themeLoaders = await getThemeConfigurationsAsync();
-		const themeCache = {};
+		const themeLoaders =
+			(await getThemeConfigurationsAsync()) as ThemeLoaders;
+		const themeCache: Record<string, ThemeConfiguration> = {};
 		let isDestroyed = false;
 
 		const themeSystem = new Proxy(themeCache, {
@@ -98,7 +106,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
 
 				return isDestroyed ? undefined : target[prop];
 			},
-		});
+		}) as ThemeSystem;
 
 		// Pre-load all themes for backward compatibility
 		await Promise.all(

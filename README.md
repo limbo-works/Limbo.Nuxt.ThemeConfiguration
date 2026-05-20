@@ -143,7 +143,7 @@ Useful config options:
 
 ## UnoCSS Integration
 
-This package includes helpers in `assets/js/helpers.uno.js`:
+This package includes helpers in `assets/js/helpers.uno.ts`:
 
 - `makeThemeUtilities(config)`
 - `makeRules(config)`
@@ -155,7 +155,7 @@ import { defineConfig } from 'unocss';
 import {
 	makeThemeUtilities,
 	makeRules,
-} from '@limbo-works/theme-configuration/assets/js/helpers.uno.js';
+} from '@limbo-works/theme-configuration/assets/js/helpers.uno.ts';
 import defaultTheme from './assets/js/theme-configuration.default.js';
 
 export default defineConfig({
@@ -209,7 +209,7 @@ The UnoCSS helper supports explicit font-size constraints using CSS variables co
 
 ## Tailwind Integration Helpers
 
-For Tailwind-based setups, helper functions are available in `assets/js/helpers.tailwind.js`:
+For Tailwind-based setups, helper functions are available in `assets/js/helpers.tailwind.ts`:
 
 - `makeThemeUtilities(config)`
 - `makeThemePlugins(config)`

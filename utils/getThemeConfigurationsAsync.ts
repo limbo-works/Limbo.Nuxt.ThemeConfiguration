@@ -1,6 +1,8 @@
+import type { ThemeLoaders } from './theme-configuration.types';
+
 export default async function getThemeConfigurationsAsync() {
 	const configGlobs = import.meta.glob(
-		'~/assets/js/theme-configuration.*.(js|cjs|mjs)'
+		'~/assets/js/theme-configuration.*.(js|cjs|mjs|ts|cts|mts)'
 	);
 	const extracted = extractThemeConfigurationsFromAppConfig(useAppConfig());
 
@@ -8,10 +10,11 @@ export default async function getThemeConfigurationsAsync() {
 		Object.assign(configGlobs, extracted, configGlobs); // Local first, always
 	}
 
-	const themeLoaders = {};
+	const themeLoaders: ThemeLoaders = {};
 	for (const key in configGlobs) {
 		const match = key.match(/theme-configuration\.([a-zA-Z0-9_-]+)\./);
-		themeLoaders[match ? match[1] : key] = configGlobs[key];
+		const loaderKey = match?.[1] || key;
+		themeLoaders[loaderKey] = configGlobs[key] as ThemeLoaders[string];
 	}
 
 	return themeLoaders;

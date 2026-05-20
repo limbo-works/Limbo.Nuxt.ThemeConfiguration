@@ -2,17 +2,15 @@
 
 ## [4.2.1](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v4.2.0...theme-configuration-v4.2.1) (2026-05-20)
 
-
 ### Bug Fixes
 
-* cloneDeep error ([75d7ca9](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/75d7ca902ac366ec3443f125bdaf27d006be50c5))
+- cloneDeep error ([75d7ca9](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/75d7ca902ac366ec3443f125bdaf27d006be50c5))
 
 ## [4.2.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v4.1.1...theme-configuration-v4.2.0) (2026-05-20)
 
-
 ### Features
 
-* minor performance improvements ([5de3110](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/5de31108eb55269ec54579b09d0167ece7f58b9f))
+- minor performance improvements ([5de3110](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/5de31108eb55269ec54579b09d0167ece7f58b9f))
 
 ## [4.1.1](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v4.1.0...theme-configuration-v4.1.1) (2026-05-15)
 

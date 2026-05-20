@@ -1,10 +1,11 @@
+// @ts-nocheck
 import { colorResolver } from '@unocss/preset-mini/utils';
 import {
 	sanitizeKey,
 	restructureFontSizeObject,
 	cloneDeep,
 	deepmerge,
-} from './helpers.js';
+} from './helpers';
 
 // From https://github.com/unocss/unocss/blob/main/packages/preset-mini/src/_utils/handlers/regex.ts
 const numberWithUnitRE =
