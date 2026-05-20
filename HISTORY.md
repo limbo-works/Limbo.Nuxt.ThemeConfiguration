@@ -74,9 +74,13 @@ The formal Nuxt 3 package and versioning began with the 2.0 release series, buil
 - **Modern Dependencies**: Upgrade to latest tooling and dependencies
 - **Code Quality**: Comprehensive linting and code standardization
 
-### Version 2.7.0+ (May 2025)
+### Version 2.7.0 (May 7, 2025)
 - **Performance Optimization**: Migration to `useHead` for better style injection
+
+### Version 2.7.1 (May 14, 2025)
 - **Dynamic Style Management**: Improved handling of dynamic style updates
+
+### Version 2.7.2 (May 21, 2025)
 - **Configuration Key Management**: Enhanced tracking of configuration changes
 
 ## Integration with Design Tokens and Figma
