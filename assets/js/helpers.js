@@ -66,6 +66,9 @@ function restructureFontSizeObject(object) {
 }
 
 function cloneDeep(object) {
+	if (typeof structuredClone === 'function') {
+		return structuredClone(object);
+	}
 	return JSON.parse(JSON.stringify(object));
 }
 
