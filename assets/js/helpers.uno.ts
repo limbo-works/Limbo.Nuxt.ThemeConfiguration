@@ -1109,9 +1109,28 @@ function getOpacityRules() {
 	);
 
 	let opacityRules = [];
-	[presetNuxtCore, presetCitiCore].filter(Boolean).forEach((preset) => {
+	[presetNuxtCore, presetCitiCore].filter(Boolean).forEach((presetModule) => {
+		const presetFactory =
+			typeof presetModule === 'function'
+				? presetModule
+				: typeof presetModule?.default === 'function'
+					? presetModule.default
+					: typeof presetModule?.presetCore === 'function'
+						? presetModule.presetCore
+						: typeof presetModule?.presetCitiCore === 'function'
+							? presetModule.presetCitiCore
+							: null;
+
+		const preset =
+			presetFactory?.() ||
+			(typeof presetModule?.default === 'object'
+				? presetModule.default
+				: typeof presetModule === 'object'
+					? presetModule
+					: null);
+
 		opacityRules.push(
-			...(preset?.()?.rules?.filter?.((rule) => {
+			...(preset?.rules?.filter?.((rule) => {
 				return (
 					String(rule[0]).indexOf('op(?:acity)?') >= 0 ||
 					String(rule[0]).indexOf('opacity') >= 0
