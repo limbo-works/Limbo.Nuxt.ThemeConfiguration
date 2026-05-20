@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.2.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v4.1.1...theme-configuration-v4.2.0) (2026-05-20)
+
+
+### Features
+
+* minor performance improvements ([5de3110](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/5de31108eb55269ec54579b09d0167ece7f58b9f))
+
 ## [4.1.1](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v4.1.0...theme-configuration-v4.1.1) (2026-05-15)
 
 ### Bug Fixes
