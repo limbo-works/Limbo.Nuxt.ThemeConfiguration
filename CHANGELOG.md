@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.2.1](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v4.2.0...theme-configuration-v4.2.1) (2026-05-20)
+
+
+### Bug Fixes
+
+* cloneDeep error ([75d7ca9](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/75d7ca902ac366ec3443f125bdaf27d006be50c5))
+
 ## [4.2.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v4.1.1...theme-configuration-v4.2.0) (2026-05-20)
 
 
