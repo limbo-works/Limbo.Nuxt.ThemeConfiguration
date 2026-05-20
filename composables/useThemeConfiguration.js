@@ -14,13 +14,6 @@ export function useThemeConfiguration(options = {
 }) {
 	const iterationCounter = useState(() => 0);
 
-	watch(
-		() => options,
-		() => {
-			iterationCounter.value++;
-		}
-	);
-
 	const availableConfigs = getThemeConfigurations();
 	const defaultConfig = availableConfigs.default || {};
 
@@ -57,19 +50,61 @@ export function useThemeConfiguration(options = {
 		return clone;
 	});
 
+	const colorRules = computed(() => extractColorRules(compConfig.value?.colors));
+	const altColorRules = computed(() =>
+		findAltRuleKeys('colors', compConfig.value).map(({ configKey, prefix }) =>
+			extractColorRules(compConfig.value[configKey], prefix)
+		)
+	);
+	const layoutRules = computed(() => extractLayoutRules(compConfig.value?.layout));
+	const fontSizeRules = computed(() =>
+		extractFontRules(compConfig.value?.fontSize)
+	);
+	const fontStyleRules = computed(() =>
+		extractFontRules(compConfig.value?.fontStyles)
+	);
+	const spacingRules = computed(() =>
+		extractRules('spacing', compConfig.value?.spacing)
+	);
+	const altSpacingRules = computed(() =>
+		findAltRuleKeys('spacing', compConfig.value).map(({ configKey }) =>
+			extractRules(configKey, compConfig.value[configKey])
+		)
+	);
+	const cachedRuleSections = computed(() => createRuleSections(compConfig.value));
+	const themeClassRuleSections = computed(() => {
+		const sections = {};
+		if (!options.useThemeClasses) return sections;
+
+		for (const [key, value] of Object.entries(availableConfigs)) {
+			if (!shouldIncludeThemeClass(key)) continue;
+
+			const config =
+				options.mergeThemeClassesWithBaseConfig ?? false
+					? deepMergeExisting(cloneDeep(compConfig.value), value)
+					: value;
+			sections[key] = {
+				config,
+				rules: createRuleSections(config),
+			};
+		}
+
+		return sections;
+	});
+
 	/* Compile css text */
 	const cssText = computed(() => {
-		const rules = [makeCssText()];
+		const rules = [makeCssText(undefined, compConfig.value, cachedRuleSections.value)];
 
 		if (options.useThemeClasses) {
-			for (const [key, value] of Object.entries(availableConfigs)) {
+			for (const [key] of Object.entries(availableConfigs)) {
 				if (!shouldIncludeThemeClass(key)) continue;
+				const themeClassRuleSection = themeClassRuleSections.value[key];
 				rules.push(
 					makeCssText(
 						`.u-theme-${key}`,
-						options.mergeThemeClassesWithBaseConfig ?? false
-							? deepMergeExisting(cloneDeep(compConfig.value), value)
-							: value
+						themeClassRuleSection.config,
+						themeClassRuleSection.rules
 					)
 				);
 			}
@@ -100,6 +135,14 @@ export function useThemeConfiguration(options = {
 		}
 		return mediaEntries;
 	});
+
+	watch(
+		[cssText, media],
+		() => {
+			iterationCounter.value++;
+		},
+		{ flush: 'sync' }
+	);
 
 	const headStyles = computed(() => {
 		const iteration = iterationCounter.value;
@@ -602,7 +645,11 @@ export function useThemeConfiguration(options = {
 		};
 	}
 
-	function makeCssText(selector, config = compConfig.value) {
+	function makeCssText(
+		selector,
+		config = compConfig.value,
+		cachedSections = undefined
+	) {
 		if (!selector) {
 			const selectors = [':root'];
 			if (options.useThemeClasses) {
@@ -619,10 +666,10 @@ export function useThemeConfiguration(options = {
 
 		const { baseFontSize, smViewport, mdViewport, lgViewport } = config;
 
-		let rules = [
+		let rules = cachedSections || [
 			extractColorRules(config?.colors),
 			// Find variants ending with colors, like backgroundColors
-			...findAltRuleKeys('colors').map(({ configKey, prefix }) =>
+			...findAltRuleKeys('colors', config).map(({ configKey, prefix }) =>
 				extractColorRules(config[configKey], prefix)
 			),
 			extractLayoutRules(config?.layout),
@@ -630,7 +677,7 @@ export function useThemeConfiguration(options = {
 			extractFontRules(config?.fontStyles),
 			extractRules('spacing', config?.spacing),
 			// Find variants ending with spacing, like horizontalSpacing
-			...findAltRuleKeys('spacing').map(({ configKey }) =>
+			...findAltRuleKeys('spacing', config).map(({ configKey }) =>
 				extractRules(configKey, config[configKey])
 			),
 			extractRules('borderRadius', config?.borderRadius),
@@ -772,11 +819,41 @@ export function useThemeConfiguration(options = {
 		].join('\n');
 	}
 
-	function findAltRuleKeys(key) {
+	function createRuleSections(config) {
+		if (config === compConfig.value) {
+			return [
+				colorRules.value,
+				...altColorRules.value,
+				layoutRules.value,
+				fontSizeRules.value,
+				fontStyleRules.value,
+				spacingRules.value,
+				...altSpacingRules.value,
+				extractRules('borderRadius', compConfig.value?.borderRadius),
+			];
+		}
+
+		return [
+			extractColorRules(config?.colors),
+			...findAltRuleKeys('colors', config).map(({ configKey, prefix }) =>
+				extractColorRules(config[configKey], prefix)
+			),
+			extractLayoutRules(config?.layout),
+			extractFontRules(config?.fontSize),
+			extractFontRules(config?.fontStyles),
+			extractRules('spacing', config?.spacing),
+			...findAltRuleKeys('spacing', config).map(({ configKey }) =>
+				extractRules(configKey, config[configKey])
+			),
+			extractRules('borderRadius', config?.borderRadius),
+		];
+	}
+
+	function findAltRuleKeys(key, config = compConfig.value) {
 		const partial = key.charAt(0).toUpperCase() + key.slice(1);
 		const matches = [];
 
-		for (const configKey of Object.keys(compConfig.value)) {
+		for (const configKey of Object.keys(config || {})) {
 			if (configKey.endsWith(partial)) {
 				matches.push({
 					configKey,

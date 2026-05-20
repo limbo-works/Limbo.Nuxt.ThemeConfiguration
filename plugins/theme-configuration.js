@@ -101,9 +101,11 @@ export default defineNuxtPlugin(async (nuxtApp) => {
 		});
 
 		// Pre-load all themes for backward compatibility
-		for (const themeName of Object.keys(themeLoaders)) {
-			await themeSystem.$loadTheme(themeName);
-		}
+		await Promise.all(
+			Object.keys(themeLoaders).map((themeName) =>
+				themeSystem.$loadTheme(themeName)
+			)
+		);
 
 		// Add cleanup on app unmount/destroy
 		nuxtApp.hook('app:beforeUnmount', () => {
