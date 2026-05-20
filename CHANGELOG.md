@@ -2,46 +2,41 @@
 
 ## [4.1.1](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v4.1.0...theme-configuration-v4.1.1) (2026-05-15)
 
-
 ### Bug Fixes
 
-* moved where the clamping happens ([db11b69](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/db11b6905a9abdd83d1c19cd18c8cf7703257de6))
+- moved where the clamping happens ([db11b69](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/db11b6905a9abdd83d1c19cd18c8cf7703257de6))
 
 ## [4.1.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v4.0.0...theme-configuration-v4.1.0) (2026-05-15)
 
-
 ### Features
 
-* updated with text-min and text-max utilities ([b2c4d67](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/b2c4d67ee574d35e61d9799e3ef56ec5f0ddd3d1))
+- updated with text-min and text-max utilities ([b2c4d67](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/b2c4d67ee574d35e61d9799e3ef56ec5f0ddd3d1))
 
 ## [4.0.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v3.6.1...theme-configuration-v4.0.0) (2026-03-31)
 
-
 ### ⚠ BREAKING CHANGES
 
-* moved helper/non-component js files from /components/ to /assets/js/
-* upgraded to Nuxt4
+- moved helper/non-component js files from /components/ to /assets/js/
+- upgraded to Nuxt4
 
 ### Features
 
-* moved helper/non-component js files from /components/ to /assets/js/ ([e966eb7](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/e966eb713dea170b5b39acb14f221fe5d14d8cee))
-* moved logic to composable to be able to run it without component ([a13859e](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/a13859e3974804f41582d19d868a3967712c27f6))
-* upgraded to Nuxt4 ([9d33708](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/9d33708adb11098f83f408698f30fbedf4850304))
+- moved helper/non-component js files from /components/ to /assets/js/ ([e966eb7](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/e966eb713dea170b5b39acb14f221fe5d14d8cee))
+- moved logic to composable to be able to run it without component ([a13859e](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/a13859e3974804f41582d19d868a3967712c27f6))
+- upgraded to Nuxt4 ([9d33708](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/9d33708adb11098f83f408698f30fbedf4850304))
 
 ## [3.6.1](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v3.6.0...theme-configuration-v3.6.1) (2026-03-31)
 
-
 ### Bug Fixes
 
-* border radius error ([fb984fe](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/fb984fe5076fe8c2eec9809ce600da98af2bb42d))
+- border radius error ([fb984fe](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/fb984fe5076fe8c2eec9809ce600da98af2bb42d))
 
 ## [3.6.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v3.5.0...theme-configuration-v3.6.0) (2026-03-13)
 
-
 ### Features
 
-* added min and max font size ([7a2cbef](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/7a2cbeffd0d6fa7172a7c6aff2a4e67569950b9c))
-* cleanup run ([c74ebe5](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/c74ebe50cfcff3d58e9f26175bffcdebb867d64c))
+- added min and max font size ([7a2cbef](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/7a2cbeffd0d6fa7172a7c6aff2a4e67569950b9c))
+- cleanup run ([c74ebe5](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/c74ebe50cfcff3d58e9f26175bffcdebb867d64c))
 
 ## [3.5.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v3.4.1...theme-configuration-v3.5.0) (2026-03-12)
 

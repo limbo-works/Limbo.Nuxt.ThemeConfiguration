@@ -5,13 +5,15 @@ import {
 	deepmerge,
 } from '~/assets/js/helpers.js';
 
-export function useThemeConfiguration(options = {
-	config: undefined,
-	media: undefined,
-	useThemeClasses: undefined,
-	mergeThemeClassesWithBaseConfig: false,
-	cssLayer: undefined,
-}) {
+export function useThemeConfiguration(
+	options = {
+		config: undefined,
+		media: undefined,
+		useThemeClasses: undefined,
+		mergeThemeClassesWithBaseConfig: false,
+		cssLayer: undefined,
+	}
+) {
 	const iterationCounter = useState(() => 0);
 
 	const availableConfigs = getThemeConfigurations();
@@ -50,13 +52,18 @@ export function useThemeConfiguration(options = {
 		return clone;
 	});
 
-	const colorRules = computed(() => extractColorRules(compConfig.value?.colors));
+	const colorRules = computed(() =>
+		extractColorRules(compConfig.value?.colors)
+	);
 	const altColorRules = computed(() =>
-		findAltRuleKeys('colors', compConfig.value).map(({ configKey, prefix }) =>
-			extractColorRules(compConfig.value[configKey], prefix)
+		findAltRuleKeys('colors', compConfig.value).map(
+			({ configKey, prefix }) =>
+				extractColorRules(compConfig.value[configKey], prefix)
 		)
 	);
-	const layoutRules = computed(() => extractLayoutRules(compConfig.value?.layout));
+	const layoutRules = computed(() =>
+		extractLayoutRules(compConfig.value?.layout)
+	);
 	const fontSizeRules = computed(() =>
 		extractFontRules(compConfig.value?.fontSize)
 	);
@@ -71,7 +78,9 @@ export function useThemeConfiguration(options = {
 			extractRules(configKey, compConfig.value[configKey])
 		)
 	);
-	const cachedRuleSections = computed(() => createRuleSections(compConfig.value));
+	const cachedRuleSections = computed(() =>
+		createRuleSections(compConfig.value)
+	);
 	const themeClassRuleSections = computed(() => {
 		const sections = {};
 		if (!options.useThemeClasses) return sections;
@@ -80,7 +89,7 @@ export function useThemeConfiguration(options = {
 			if (!shouldIncludeThemeClass(key)) continue;
 
 			const config =
-				options.mergeThemeClassesWithBaseConfig ?? false
+				(options.mergeThemeClassesWithBaseConfig ?? false)
 					? deepMergeExisting(cloneDeep(compConfig.value), value)
 					: value;
 			sections[key] = {
@@ -94,7 +103,9 @@ export function useThemeConfiguration(options = {
 
 	/* Compile css text */
 	const cssText = computed(() => {
-		const rules = [makeCssText(undefined, compConfig.value, cachedRuleSections.value)];
+		const rules = [
+			makeCssText(undefined, compConfig.value, cachedRuleSections.value),
+		];
 
 		if (options.useThemeClasses) {
 			for (const [key] of Object.entries(availableConfigs)) {
@@ -124,7 +135,9 @@ export function useThemeConfiguration(options = {
 				for (const [themeKey] of Object.entries(availableConfigs)) {
 					if (!shouldIncludeThemeClass(themeKey)) continue;
 
-					rules.push(makeCssText(`.u-theme-${themeKey}`, resolvedConfig));
+					rules.push(
+						makeCssText(`.u-theme-${themeKey}`, resolvedConfig)
+					);
 				}
 			}
 
@@ -333,7 +346,8 @@ export function useThemeConfiguration(options = {
 					'rem',
 					(value) => {
 						return (
-							Math.round((Number(value) / baseFontSize) * 1000) / 1000
+							Math.round((Number(value) / baseFontSize) * 1000) /
+							1000
 						);
 					}
 				);
@@ -375,7 +389,9 @@ export function useThemeConfiguration(options = {
 						);
 					}
 
-					rules.push(`--theme-${key}-${sanitizeKey(name)}: ${smValue};`);
+					rules.push(
+						`--theme-${key}-${sanitizeKey(name)}: ${smValue};`
+					);
 					if (subObject.md !== subObject.sm) {
 						smToMdScreenRules.push(
 							`--theme-${key}-${sanitizeKey(name)}: ${mdValue};`
@@ -547,7 +563,8 @@ export function useThemeConfiguration(options = {
 							f1(0) + (unit === 'rem' ? mid : 0)
 						)}${unit} + ${
 							Math.round(
-								((max - min) / (mdViewport - smViewport)) * 100000
+								((max - min) / (mdViewport - smViewport)) *
+									100000
 							) / 100000
 						} * ${viewportWidth} - ${unit === 'rem' ? mid : 0}px, ${cssMax});`
 							.split(' - 0px')
@@ -619,7 +636,9 @@ export function useThemeConfiguration(options = {
 						0,
 						ruleParts[1].length - 1
 					);
-					roundedRules.push(`${property}: round(${value}, ${roundTo});`);
+					roundedRules.push(
+						`${property}: round(${value}, ${roundTo});`
+					);
 				});
 
 				ruleSet.push(...roundedRules, '}');
@@ -710,14 +729,18 @@ export function useThemeConfiguration(options = {
 		if (smToMdScreenRules.length) {
 			// Selector
 			if (!compConfig.value.minify) {
-				smToMdScreenRules = smToMdScreenRules.map((rule) => `  ${rule}`);
+				smToMdScreenRules = smToMdScreenRules.map(
+					(rule) => `  ${rule}`
+				);
 			}
 			smToMdScreenRules.unshift(`${selector} {`);
 			smToMdScreenRules.push('}');
 
 			// Media query
 			if (!compConfig.value.minify) {
-				smToMdScreenRules = smToMdScreenRules.map((rule) => `  ${rule}`);
+				smToMdScreenRules = smToMdScreenRules.map(
+					(rule) => `  ${rule}`
+				);
 			}
 			smToMdScreenRules.unshift(
 				`@media screen and (min-width: ${
@@ -752,14 +775,18 @@ export function useThemeConfiguration(options = {
 		if (mdToLgScreenRules.length) {
 			// Selector
 			if (!compConfig.value.minify) {
-				mdToLgScreenRules = mdToLgScreenRules.map((rule) => `  ${rule}`);
+				mdToLgScreenRules = mdToLgScreenRules.map(
+					(rule) => `  ${rule}`
+				);
 			}
 			mdToLgScreenRules.unshift(`${selector} {`);
 			mdToLgScreenRules.push('}');
 
 			// Media query
 			if (!compConfig.value.minify) {
-				mdToLgScreenRules = mdToLgScreenRules.map((rule) => `  ${rule}`);
+				mdToLgScreenRules = mdToLgScreenRules.map(
+					(rule) => `  ${rule}`
+				);
 			}
 			mdToLgScreenRules.unshift(
 				`@media screen and (min-width: ${

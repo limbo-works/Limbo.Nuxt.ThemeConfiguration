@@ -15,21 +15,32 @@
 				Theme Configuration Playground
 			</h1>
 			<p class="hero__sub text-body2 text-onSurfacePrimaryMedium">
-				Responsive typography &middot; CSS variable theming &middot; Min/max constraints
+				Responsive typography &middot; CSS variable theming &middot;
+				Min/max constraints
 			</p>
 		</header>
 
 		<!-- Section: Typography -->
 		<section class="section px-layout-margin py-layout-gutter">
-			<h2 class="section__title text-h4 text-onSurface">Typography Scale</h2>
+			<h2 class="section__title text-h4 text-onSurface">
+				Typography Scale
+			</h2>
 			<p class="section__intro text-body2 text-onSurfaceVariant">
-				All sizes are fluid, scaling between <code>smViewport</code> (375px) and <code>lgViewport</code> (1920px).
+				All sizes are fluid, scaling between
+				<code>smViewport</code> (375px) and
+				<code>lgViewport</code> (1920px).
 			</p>
 
 			<div class="type-stack">
 				<div v-for="size in fontSizes" :key="size.key" class="type-row">
-					<span class="type-row__label text-caption text-onSurfaceVariant">{{ size.label }}</span>
-					<p :class="`text-${size.key} text-onSurface`" class="type-row__sample">
+					<span
+						class="type-row__label text-caption text-onSurfaceVariant"
+						>{{ size.label }}</span
+					>
+					<p
+						:class="`text-${size.key} text-onSurface`"
+						class="type-row__sample"
+					>
 						{{ size.sample }}
 					</p>
 				</div>
@@ -37,38 +48,59 @@
 		</section>
 
 		<!-- Section: Min/Max Constraints -->
-		<section class="section section--tinted px-layout-margin py-layout-gutter">
-			<h2 class="section__title text-h4 text-onSurface">Min / Max Font Size Constraints</h2>
+		<section
+			class="section section--tinted px-layout-margin py-layout-gutter"
+		>
+			<h2 class="section__title text-h4 text-onSurface">
+				Min / Max Font Size Constraints
+			</h2>
 			<p class="section__intro text-body2 text-onSurfaceVariant">
-				Combine any <code>text-*</code> size with <code>text-min-*</code> and/or <code>text-max-*</code>.
-				Resize your window to see the constraints in action.
+				Combine any <code>text-*</code> size with
+				<code>text-min-*</code> and/or <code>text-max-*</code>. Resize
+				your window to see the constraints in action.
 			</p>
 
 			<div class="constraint-grid">
 				<div class="constraint-card constraint-card--a">
-					<code class="constraint-card__label">text-h1 text-min-24</code>
-					<p class="text-h1 text-min-24 text-onSurface constraint-card__demo">
+					<code class="constraint-card__label"
+						>text-h1 text-min-24</code
+					>
+					<p
+						class="text-h1 text-min-24 text-onSurface constraint-card__demo"
+					>
 						Never smaller than 24px
 					</p>
 				</div>
 
 				<div class="constraint-card constraint-card--b">
-					<code class="constraint-card__label">text-h1 text-max-h3</code>
-					<p class="text-h1 text-max-h3 text-onSurface constraint-card__demo">
+					<code class="constraint-card__label"
+						>text-h1 text-max-h3</code
+					>
+					<p
+						class="text-h1 text-max-h3 text-onSurface constraint-card__demo"
+					>
 						Capped at h3 font size
 					</p>
 				</div>
 
 				<div class="constraint-card constraint-card--c">
-					<code class="constraint-card__label">text-h1 text-min-20 text-max-48</code>
-					<p class="text-h1 text-min-20 text-max-48 text-onSurface constraint-card__demo">
+					<code class="constraint-card__label"
+						>text-h1 text-min-20 text-max-48</code
+					>
+					<p
+						class="text-h1 text-min-20 text-max-48 text-onSurface constraint-card__demo"
+					>
 						Clamped between 20&ndash;48px
 					</p>
 				</div>
 
 				<div class="constraint-card constraint-card--d">
-					<code class="constraint-card__label">text-body2 text-min-[1rem]</code>
-					<p class="text-body2 text-min-[1rem] text-onSurface constraint-card__demo">
+					<code class="constraint-card__label"
+						>text-body2 text-min-[1rem]</code
+					>
+					<p
+						class="text-body2 text-min-[1rem] text-onSurface constraint-card__demo"
+					>
 						Arbitrary unit: won't shrink below 1rem
 					</p>
 				</div>
@@ -79,65 +111,151 @@
 		<section class="section px-layout-margin py-layout-gutter">
 			<h2 class="section__title text-h4 text-onSurface">Color System</h2>
 			<p class="section__intro text-body2 text-onSurfaceVariant">
-				Background and text colors defined in the theme config, available as UnoCSS utilities.
+				Background and text colors defined in the theme config,
+				available as UnoCSS utilities.
 			</p>
 
 			<div class="color-groups">
 				<div class="color-group">
-					<h3 class="color-group__heading text-caption text-onSurfaceVariant">Primary</h3>
+					<h3
+						class="color-group__heading text-caption text-onSurfaceVariant"
+					>
+						Primary
+					</h3>
 					<div class="color-swatches">
-						<div class="swatch bg-primary"><span class="text-onSurfacePrimary text-caption">primary</span></div>
-						<div class="swatch bg-primaryMedium"><span class="text-onSurfacePrimary text-caption">medium</span></div>
-						<div class="swatch bg-primarySubtle swatch--light"><span class="text-onSurface text-caption">subtle</span></div>
+						<div class="swatch bg-primary">
+							<span class="text-onSurfacePrimary text-caption"
+								>primary</span
+							>
+						</div>
+						<div class="swatch bg-primaryMedium">
+							<span class="text-onSurfacePrimary text-caption"
+								>medium</span
+							>
+						</div>
+						<div class="swatch bg-primarySubtle swatch--light">
+							<span class="text-onSurface text-caption"
+								>subtle</span
+							>
+						</div>
 					</div>
 				</div>
 
 				<div class="color-group">
-					<h3 class="color-group__heading text-caption text-onSurfaceVariant">Secondary</h3>
+					<h3
+						class="color-group__heading text-caption text-onSurfaceVariant"
+					>
+						Secondary
+					</h3>
 					<div class="color-swatches">
-						<div class="swatch bg-secondary"><span class="text-onSurfaceSecondary text-caption">secondary</span></div>
-						<div class="swatch bg-secondaryMedium"><span class="text-onSurfaceSecondary text-caption">medium</span></div>
-						<div class="swatch bg-secondarySubtle swatch--light"><span class="text-onSurface text-caption">subtle</span></div>
+						<div class="swatch bg-secondary">
+							<span class="text-onSurfaceSecondary text-caption"
+								>secondary</span
+							>
+						</div>
+						<div class="swatch bg-secondaryMedium">
+							<span class="text-onSurfaceSecondary text-caption"
+								>medium</span
+							>
+						</div>
+						<div class="swatch bg-secondarySubtle swatch--light">
+							<span class="text-onSurface text-caption"
+								>subtle</span
+							>
+						</div>
 					</div>
 				</div>
 
 				<div class="color-group">
-					<h3 class="color-group__heading text-caption text-onSurfaceVariant">Status</h3>
+					<h3
+						class="color-group__heading text-caption text-onSurfaceVariant"
+					>
+						Status
+					</h3>
 					<div class="color-swatches">
-						<div class="swatch bg-success"><span class="text-onSurfaceSuccess text-caption">success</span></div>
-						<div class="swatch bg-warning"><span class="text-onSurfaceWarning text-caption">warning</span></div>
-						<div class="swatch bg-danger"><span class="text-onSurfaceDanger text-caption">danger</span></div>
-						<div class="swatch bg-info"><span class="text-onSurfaceInfo text-caption">info</span></div>
+						<div class="swatch bg-success">
+							<span class="text-onSurfaceSuccess text-caption"
+								>success</span
+							>
+						</div>
+						<div class="swatch bg-warning">
+							<span class="text-onSurfaceWarning text-caption"
+								>warning</span
+							>
+						</div>
+						<div class="swatch bg-danger">
+							<span class="text-onSurfaceDanger text-caption"
+								>danger</span
+							>
+						</div>
+						<div class="swatch bg-info">
+							<span class="text-onSurfaceInfo text-caption"
+								>info</span
+							>
+						</div>
 					</div>
 				</div>
 
 				<div class="color-group">
-					<h3 class="color-group__heading text-caption text-onSurfaceVariant">Surface</h3>
+					<h3
+						class="color-group__heading text-caption text-onSurfaceVariant"
+					>
+						Surface
+					</h3>
 					<div class="color-swatches">
-						<div class="swatch bg-surface swatch--light swatch--border"><span class="text-onSurface text-caption">surface</span></div>
-						<div class="swatch bg-surfaceVariant swatch--light"><span class="text-onSurface text-caption">variant</span></div>
-						<div class="swatch bg-surfaceInverse"><span class="text-onSurfaceInverse text-caption">inverse</span></div>
+						<div
+							class="swatch bg-surface swatch--light swatch--border"
+						>
+							<span class="text-onSurface text-caption"
+								>surface</span
+							>
+						</div>
+						<div class="swatch bg-surfaceVariant swatch--light">
+							<span class="text-onSurface text-caption"
+								>variant</span
+							>
+						</div>
+						<div class="swatch bg-surfaceInverse">
+							<span class="text-onSurfaceInverse text-caption"
+								>inverse</span
+							>
+						</div>
 					</div>
 				</div>
 			</div>
 		</section>
 
 		<!-- Section: Layout spacing -->
-		<section class="section section--tinted px-layout-margin py-layout-gutter">
-			<h2 class="section__title text-h4 text-onSurface">Layout Spacing</h2>
+		<section
+			class="section section--tinted px-layout-margin py-layout-gutter"
+		>
+			<h2 class="section__title text-h4 text-onSurface">
+				Layout Spacing
+			</h2>
 			<p class="section__intro text-body2 text-onSurfaceVariant">
-				<code>layout-margin</code> and <code>layout-gutter</code> scale responsively based on the viewport.
+				<code>layout-margin</code> and <code>layout-gutter</code> scale
+				responsively based on the viewport.
 			</p>
 
 			<div class="spacing-demo">
 				<div class="spacing-demo__ruler">
-					<div class="spacing-demo__track bg-primarySubtle px-layout-margin">
-						<span class="text-caption text-onSurface spacing-demo__inner">&#8592; <code>px-layout-margin</code> &#8594;</span>
+					<div
+						class="spacing-demo__track bg-primarySubtle px-layout-margin"
+					>
+						<span
+							class="text-caption text-onSurface spacing-demo__inner"
+							>&#8592; <code>px-layout-margin</code> &#8594;</span
+						>
 					</div>
 				</div>
 				<div class="spacing-demo__ruler">
-					<div class="spacing-demo__track bg-secondarySubtle p-layout-gutter">
-						<span class="text-caption text-onSurface spacing-demo__inner"><code>p-layout-gutter</code></span>
+					<div
+						class="spacing-demo__track bg-secondarySubtle p-layout-gutter"
+					>
+						<span
+							class="text-caption text-onSurface spacing-demo__inner"
+							><code>p-layout-gutter</code></span
+						>
 					</div>
 				</div>
 			</div>
@@ -147,20 +265,33 @@
 		<section class="section px-layout-margin py-layout-gutter">
 			<h2 class="section__title text-h4 text-onSurface">Theme Scope</h2>
 			<p class="section__intro text-body2 text-onSurfaceVariant">
-				Use <code>bg-scope-*</code> to scope CSS variable overrides to a subtree.
+				Use <code>bg-scope-*</code> to scope CSS variable overrides to a
+				subtree.
 			</p>
 
 			<div class="scope-demo">
 				<div class="scope-demo__pane bg-primary bg-scope-primary">
-					<p class="text-h4 text-onSurfacePrimary scope-demo__label">bg-scope-primary</p>
-					<p class="text-body2 text-onSurfacePrimaryMedium scope-demo__body">
-						Text colors shift to ensure contrast against the primary background.
+					<p class="text-h4 text-onSurfacePrimary scope-demo__label">
+						bg-scope-primary
+					</p>
+					<p
+						class="text-body2 text-onSurfacePrimaryMedium scope-demo__body"
+					>
+						Text colors shift to ensure contrast against the primary
+						background.
 					</p>
 				</div>
 				<div class="scope-demo__pane bg-fishStick bg-scope-fishStick">
-					<p class="text-h4 text-onSurfaceFishStick scope-demo__label">bg-scope-fishStick</p>
-					<p class="text-body2 text-onSurfaceFishStick scope-demo__body">
-						Text colors shift to ensure contrast against the fishStick background.
+					<p
+						class="text-h4 text-onSurfaceFishStick scope-demo__label"
+					>
+						bg-scope-fishStick
+					</p>
+					<p
+						class="text-body2 text-onSurfaceFishStick scope-demo__body"
+					>
+						Text colors shift to ensure contrast against the
+						fishStick background.
 					</p>
 				</div>
 			</div>
@@ -175,11 +306,31 @@ const fontSizes = [
 	{ key: 'h1', label: 'h1 — 30→64px', sample: 'The quick brown fox' },
 	{ key: 'h2', label: 'h2 — 25→48px', sample: 'The quick brown fox' },
 	{ key: 'h3', label: 'h3 — 18→32px', sample: 'The quick brown fox jumps' },
-	{ key: 'h4', label: 'h4 — 16→24px', sample: 'The quick brown fox jumps over' },
-	{ key: 'body1', label: 'body1 — 16→24px', sample: 'The quick brown fox jumps over the lazy dog' },
-	{ key: 'body2', label: 'body2 — 14→20px', sample: 'The quick brown fox jumps over the lazy dog' },
-	{ key: 'caption', label: 'caption — 12→14px', sample: 'The quick brown fox jumps over the lazy dog' },
-	{ key: 'overline', label: 'overline — 10→12px', sample: 'THE QUICK BROWN FOX' },
+	{
+		key: 'h4',
+		label: 'h4 — 16→24px',
+		sample: 'The quick brown fox jumps over',
+	},
+	{
+		key: 'body1',
+		label: 'body1 — 16→24px',
+		sample: 'The quick brown fox jumps over the lazy dog',
+	},
+	{
+		key: 'body2',
+		label: 'body2 — 14→20px',
+		sample: 'The quick brown fox jumps over the lazy dog',
+	},
+	{
+		key: 'caption',
+		label: 'caption — 12→14px',
+		sample: 'The quick brown fox jumps over the lazy dog',
+	},
+	{
+		key: 'overline',
+		label: 'overline — 10→12px',
+		sample: 'THE QUICK BROWN FOX',
+	},
 ];
 </script>
 
@@ -283,10 +434,18 @@ code {
 	text-overflow: ellipsis;
 	white-space: nowrap;
 }
-.constraint-card--a { border-left: 3px solid rgb(75, 67, 190); }
-.constraint-card--b { border-left: 3px solid rgb(255, 87, 34); }
-.constraint-card--c { border-left: 3px solid rgb(76, 175, 80); }
-.constraint-card--d { border-left: 3px solid rgb(33, 150, 243); }
+.constraint-card--a {
+	border-left: 3px solid rgb(75, 67, 190);
+}
+.constraint-card--b {
+	border-left: 3px solid rgb(255, 87, 34);
+}
+.constraint-card--c {
+	border-left: 3px solid rgb(76, 175, 80);
+}
+.constraint-card--d {
+	border-left: 3px solid rgb(33, 150, 243);
+}
 
 /* ─── Color system ────────────────────────────────────── */
 .color-groups {

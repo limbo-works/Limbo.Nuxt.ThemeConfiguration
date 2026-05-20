@@ -1,6 +1,8 @@
 /* Note: This file is just to examplify structure for a future config file */
-export default defineThemeConfig({ // defineThemeConfig should be an imported helper function, setting up the base structure
-	options: { // These options should also be set-able from the module config, but can be overwritten by the themes
+export default defineThemeConfig({
+	// defineThemeConfig should be an imported helper function, setting up the base structure
+	options: {
+		// These options should also be set-able from the module config, but can be overwritten by the themes
 		minify: true,
 		round: '1px',
 		disableBreakpointSpecificCustomProperties: false,

@@ -857,86 +857,82 @@ function makeRules(config, options) {
 		);
 
 	// Rules for min font size utilities
-	rules.push(
-		[
-			/^text-min-(.+)$/,
-			(match) => {
-				const value = match[1];
-				if (!value) return;
+	rules.push([
+		/^text-min-(.+)$/,
+		(match) => {
+			const value = match[1];
+			if (!value) return;
 
-				// Reset to default
-				if (value === 'unset') {
-					return { '--minFontSize': '0px' };
-				}
+			// Reset to default
+			if (value === 'unset') {
+				return { '--minFontSize': '0px' };
+			}
 
-				// Check if it's a config value (like 'lg' or 'sm')
-				if (config.fontSize?.[value]) {
-					return {
-						'--minFontSize': `var(--theme-fontSize-${sanitizeKey(value)})`,
-					};
-				}
+			// Check if it's a config value (like 'lg' or 'sm')
+			if (config.fontSize?.[value]) {
+				return {
+					'--minFontSize': `var(--theme-fontSize-${sanitizeKey(value)})`,
+				};
+			}
 
-				// Check if it's a number (like '16' for 16px)
-				if (/^\d+$/.test(value)) {
-					return {
-						'--minFontSize': `${value}px`,
-					};
-				}
+			// Check if it's a number (like '16' for 16px)
+			if (/^\d+$/.test(value)) {
+				return {
+					'--minFontSize': `${value}px`,
+				};
+			}
 
-				// Check if it's an arbitrary value (like '[calc(1rem+12px)]')
-				if (value.startsWith('[') && value.endsWith(']')) {
-					const arbitraryValue = value.slice(1, -1);
-					return {
-						'--minFontSize': arbitraryValue,
-					};
-				}
-			},
-			{
-				autocomplete: 'text-min-$fontSize',
-			},
-		]
-	);
+			// Check if it's an arbitrary value (like '[calc(1rem+12px)]')
+			if (value.startsWith('[') && value.endsWith(']')) {
+				const arbitraryValue = value.slice(1, -1);
+				return {
+					'--minFontSize': arbitraryValue,
+				};
+			}
+		},
+		{
+			autocomplete: 'text-min-$fontSize',
+		},
+	]);
 
 	// Rules for max font size utilities
-	rules.push(
-		[
-			/^text-max-(.+)$/,
-			(match) => {
-				const value = match[1];
-				if (!value) return;
+	rules.push([
+		/^text-max-(.+)$/,
+		(match) => {
+			const value = match[1];
+			if (!value) return;
 
-				// Reset to default
-				if (value === 'unset') {
-					return { '--maxFontSize': '9999px' };
-				}
+			// Reset to default
+			if (value === 'unset') {
+				return { '--maxFontSize': '9999px' };
+			}
 
-				// Check if it's a config value (like 'lg' or 'sm')
-				if (config.fontSize?.[value]) {
-					return {
-						'--maxFontSize': `var(--theme-fontSize-${sanitizeKey(value)})`,
-					};
-				}
+			// Check if it's a config value (like 'lg' or 'sm')
+			if (config.fontSize?.[value]) {
+				return {
+					'--maxFontSize': `var(--theme-fontSize-${sanitizeKey(value)})`,
+				};
+			}
 
-				// Check if it's a number (like '64' for 64px)
-				if (/^\d+$/.test(value)) {
-					return {
-						'--maxFontSize': `${value}px`,
-					};
-				}
+			// Check if it's a number (like '64' for 64px)
+			if (/^\d+$/.test(value)) {
+				return {
+					'--maxFontSize': `${value}px`,
+				};
+			}
 
-				// Check if it's an arbitrary value (like '[calc(1rem+12px)]')
-				if (value.startsWith('[') && value.endsWith(']')) {
-					const arbitraryValue = value.slice(1, -1);
-					return {
-						'--maxFontSize': arbitraryValue,
-					};
-				}
-			},
-			{
-				autocomplete: 'text-max-$fontSize',
-			},
-		]
-	);
+			// Check if it's an arbitrary value (like '[calc(1rem+12px)]')
+			if (value.startsWith('[') && value.endsWith(']')) {
+				const arbitraryValue = value.slice(1, -1);
+				return {
+					'--maxFontSize': arbitraryValue,
+				};
+			}
+		},
+		{
+			autocomplete: 'text-max-$fontSize',
+		},
+	]);
 
 	// Rules for border radius utilities
 	Object.keys(config.borderRadius || {}).length &&
@@ -955,7 +951,10 @@ function makeRules(config, options) {
 							: '';
 					if (Array.isArray(property)) {
 						return Object.fromEntries(
-							property.map((p) => [p, `var(--theme-borderRadius-${sanitizeKey(value)}${fallback})`])
+							property.map((p) => [
+								p,
+								`var(--theme-borderRadius-${sanitizeKey(value)}${fallback})`,
+							])
 						);
 					}
 					return {

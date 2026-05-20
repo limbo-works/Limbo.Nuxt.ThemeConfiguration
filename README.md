@@ -152,16 +152,17 @@ Example:
 
 ```ts
 import { defineConfig } from 'unocss';
-import { makeThemeUtilities, makeRules } from '@limbo-works/theme-configuration/assets/js/helpers.uno.js';
+import {
+	makeThemeUtilities,
+	makeRules,
+} from '@limbo-works/theme-configuration/assets/js/helpers.uno.js';
 import defaultTheme from './assets/js/theme-configuration.default.js';
 
 export default defineConfig({
 	theme: {
 		...makeThemeUtilities(defaultTheme),
 	},
-	rules: [
-		...makeRules(defaultTheme),
-	],
+	rules: [...makeRules(defaultTheme)],
 });
 ```
 
@@ -174,7 +175,7 @@ Generated/extended utility behavior includes:
 - Typography token utility classes (`text-h1`, etc.).
 - Border radius utilities from theme tokens.
 
-## Text Clamp Rules: text-min-* and text-max-*
+## Text Clamp Rules: text-min-_ and text-max-_
 
 The UnoCSS helper supports explicit font-size constraints using CSS variables consumed by `text-*` utilities.
 
