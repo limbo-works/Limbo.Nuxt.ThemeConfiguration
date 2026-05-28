@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.3.2](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v4.3.1...theme-configuration-v4.3.2) (2026-05-28)
+
+
+### Bug Fixes
+
+* made dynamic again ([0f0f2ed](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/0f0f2ed8434fd69c0a3c5fcf60176371150530b0))
+
 ## [4.3.1](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v4.3.0...theme-configuration-v4.3.1) (2026-05-20)
 
 
