@@ -15,14 +15,18 @@ export function useThemeConfiguration(options?: {
 }) {
 	const iterationCounter = useState(() => 0);
 
-	const opts = {
-		config: undefined,
-		media: undefined,
-		useThemeClasses: undefined,
-		mergeThemeClassesWithBaseConfig: false,
-		cssLayer: undefined,
-		...options,
-	};
+	// Make options reactive if possible
+	const opts = computed(() => {
+		// If options is a ref, unwrap it
+		const rawOptions = isRef(options) ? options.value : options || {};
+		return {
+			config: rawOptions.config,
+			media: rawOptions.media,
+			useThemeClasses: rawOptions.useThemeClasses,
+			mergeThemeClassesWithBaseConfig: rawOptions.mergeThemeClassesWithBaseConfig ?? false,
+			cssLayer: rawOptions.cssLayer,
+		};
+	});
 
 	const availableConfigs = getThemeConfigurations();
 	const defaultConfig = availableConfigs.default || {};
@@ -35,11 +39,12 @@ export function useThemeConfiguration(options?: {
 	}
 
 	function shouldIncludeThemeClass(key) {
-		if (opts.config === key) return false;
-		if (!opts.config && key === 'default') return false;
+		const o = opts.value;
+		if (o.config === key) return false;
+		if (!o.config && key === 'default') return false;
 		if (
-			Array.isArray(opts.useThemeClasses) &&
-			!opts.useThemeClasses.includes(key)
+			Array.isArray(o.useThemeClasses) &&
+			!o.useThemeClasses.includes(key)
 		) {
 			return false;
 		}
@@ -48,14 +53,11 @@ export function useThemeConfiguration(options?: {
 
 	const compConfig = computed(() => {
 		let clone = cloneDeep(defaultConfig);
-
-		const usedConfig = resolveConfig(opts.config);
-
+		const usedConfig = resolveConfig(opts.value.config);
 		// Overwrite by property
 		if (Object.keys(usedConfig).length) {
 			clone = deepmerge(clone, cloneDeep(usedConfig));
 		}
-
 		// Default to the defaultConfig
 		return clone;
 	});
@@ -90,14 +92,15 @@ export function useThemeConfiguration(options?: {
 		createRuleSections(compConfig.value)
 	);
 	const themeClassRuleSections = computed(() => {
+		const o = opts.value;
 		const sections = {};
-		if (!opts.useThemeClasses) return sections;
+		if (!o.useThemeClasses) return sections;
 
 		for (const [key, value] of Object.entries(availableConfigs)) {
 			if (!shouldIncludeThemeClass(key)) continue;
 
 			const config =
-				(opts.mergeThemeClassesWithBaseConfig ?? false)
+				(o.mergeThemeClassesWithBaseConfig ?? false)
 					? deepMergeExisting(cloneDeep(compConfig.value), value)
 					: value;
 			sections[key] = {
@@ -111,11 +114,12 @@ export function useThemeConfiguration(options?: {
 
 	/* Compile css text */
 	const cssText = computed(() => {
+		const o = opts.value;
 		const rules = [
 			makeCssText(undefined, compConfig.value, cachedRuleSections.value),
 		];
 
-		if (opts.useThemeClasses) {
+		if (o.useThemeClasses) {
 			for (const [key] of Object.entries(availableConfigs)) {
 				if (!shouldIncludeThemeClass(key)) continue;
 				const themeClassRuleSection = themeClassRuleSections.value[key];
@@ -134,12 +138,13 @@ export function useThemeConfiguration(options?: {
 
 	/* Compose media configs */
 	const media = computed(() => {
+		const o = opts.value;
 		const mediaEntries = [];
-		for (const [key, config] of Object.entries(opts.media || {})) {
+		for (const [key, config] of Object.entries(o.media || {})) {
 			const resolvedConfig = resolveConfig(config);
 			const rules = [makeCssText(undefined, resolvedConfig)];
 
-			if (opts.useThemeClasses) {
+			if (o.useThemeClasses) {
 				for (const [themeKey] of Object.entries(availableConfigs)) {
 					if (!shouldIncludeThemeClass(themeKey)) continue;
 
