@@ -1,9 +1,14 @@
 import type { ThemeLoaders } from './theme-configuration.types';
 
 export default async function getThemeConfigurationsAsync() {
-	const configGlobs = import.meta.glob(
-		'~/assets/js/theme-configuration.*.(js|cjs|mjs|ts|cts|mts)'
-	);
+	const configGlobs = {
+		...import.meta.glob('~/assets/js/theme-configuration.*.js'),
+		...import.meta.glob('~/assets/js/theme-configuration.*.cjs'),
+		...import.meta.glob('~/assets/js/theme-configuration.*.mjs'),
+		...import.meta.glob('~/assets/js/theme-configuration.*.ts'),
+		...import.meta.glob('~/assets/js/theme-configuration.*.cts'),
+		...import.meta.glob('~/assets/js/theme-configuration.*.mts'),
+	};
 	const extracted = extractThemeConfigurationsFromAppConfig(useAppConfig());
 
 	if (Object.keys(extracted).length > 0) {
