@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.3.4](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v4.3.3...theme-configuration-v4.3.4) (2026-07-21)
+
+
+### Bug Fixes
+
+* node version in release please ([37eb23a](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/37eb23a84e3c1ae266a3fb7eb2df89aaec3dc21e))
+
 ## [4.3.3](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v4.3.2...theme-configuration-v4.3.3) (2026-07-21)
 
 
