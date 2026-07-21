@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.3.3](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v4.3.2...theme-configuration-v4.3.3) (2026-07-21)
+
+
+### Bug Fixes
+
+* updated to side-by-site-imports ([272eaf9](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/272eaf98358584379f50cf26247962e75e333feb))
+
 ## [4.3.2](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v4.3.1...theme-configuration-v4.3.2) (2026-05-28)
 
 
