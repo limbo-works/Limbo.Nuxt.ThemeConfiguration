@@ -117,12 +117,12 @@ export default defineNuxtPlugin(async (nuxtApp) => {
 
 		// Add cleanup on app unmount/destroy
 		nuxtApp.hook('app:beforeUnmount', () => {
-			themeSystem.$destroy();
+			themeSystem?.$destroy?.();
 		});
 
 		// Also handle browser page unload for cleanup
 		if (process.client) {
-			const cleanup = () => themeSystem.$destroy();
+			const cleanup = () => themeSystem?.$destroy?.();
 			window.addEventListener('beforeunload', cleanup);
 			window.addEventListener('pagehide', cleanup);
 		}
