@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.3.5](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v4.3.4...theme-configuration-v4.3.5) (2026-08-12)
+
+
+### Bug Fixes
+
+* added some security around destroying ([cec3bb3](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/cec3bb3f9ee78a06de9a8953ce761123e7a5641c))
+
 ## [4.3.4](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v4.3.3...theme-configuration-v4.3.4) (2026-07-21)
 
 
