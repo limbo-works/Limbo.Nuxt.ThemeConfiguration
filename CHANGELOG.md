@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.4.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v4.3.5...theme-configuration-v4.4.0) (2026-08-21)
+
+
+### Features
+
+* made more things proper typescript ([57e006e](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/57e006e8fa9c52c61fbbc967292b282d06e51cec))
+
 ## [4.3.5](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v4.3.4...theme-configuration-v4.3.5) (2026-08-12)
 
 ### Bug Fixes
