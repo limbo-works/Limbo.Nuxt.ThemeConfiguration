@@ -465,7 +465,5 @@ export default {
 		},
 	},
 
-	borderRadius: {
-		/* to be added */
-	},
+	borderRadius: {/* to be added */},
 };

@@ -1,8 +1,17 @@
-export type ThemeConfiguration = Record<string, any>;
+export type ThemeScalar = string | number | boolean | null;
+
+export interface ThemeConfiguration {
+	[key: string]: ThemeScalar | ThemeConfiguration | ThemeConfiguration[];
+}
+
+export interface ThemeSubsetMap {
+	[key: string]: boolean | ThemeSubset;
+}
+
+export type ThemeSubset = string | string[] | RegExp | ThemeSubsetMap;
 
 export type ThemeLoaderResult =
-	| ThemeConfiguration
-	| { default?: ThemeConfiguration };
+	ThemeConfiguration | { default?: ThemeConfiguration };
 
 export type ThemeLoader = () => Promise<ThemeLoaderResult> | ThemeLoaderResult;
 

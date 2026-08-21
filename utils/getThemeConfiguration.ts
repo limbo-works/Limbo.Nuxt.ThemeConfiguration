@@ -1,11 +1,12 @@
 import type {
 	ThemeConfiguration,
+	ThemeSubset,
 	ThemeSystem,
 } from './theme-configuration.types';
 
 export default function getThemeConfiguration(
 	theme: string | ThemeConfiguration,
-	subset?: string | string[] | RegExp | Record<string, any>
+	subset?: ThemeSubset
 ) {
 	const { $themeConfigurations = {} } = useNuxtApp();
 	const typedThemeConfigurations = $themeConfigurations as ThemeSystem;
@@ -13,8 +14,7 @@ export default function getThemeConfiguration(
 	let config: ThemeConfiguration | undefined;
 	if (typeof theme === 'string') {
 		config = typedThemeConfigurations[theme] as
-			| ThemeConfiguration
-			| undefined;
+			ThemeConfiguration | undefined;
 		if (!config) {
 			const availableThemes =
 				typedThemeConfigurations.$getAvailableThemes?.();

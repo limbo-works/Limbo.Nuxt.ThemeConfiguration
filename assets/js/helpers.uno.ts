@@ -660,13 +660,11 @@ function makeRules(config, options) {
 						.map((str) => +str);
 
 					if (!property || !('columns' in config.layout)) return;
-					if (
-						!(
-							+config.layout.columns.sm === columnCount ||
-							+config.layout.columns.md === columnCount ||
-							+config.layout.columns.lg === columnCount
-						)
-					) {
+					if (!(
+						+config.layout.columns.sm === columnCount ||
+						+config.layout.columns.md === columnCount ||
+						+config.layout.columns.lg === columnCount
+					)) {
 						return;
 					}
 

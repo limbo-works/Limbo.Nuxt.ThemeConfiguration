@@ -1,7 +1,12 @@
+import type {
+	ThemeConfiguration,
+	ThemeSubset,
+} from './theme-configuration.types';
+
 export default function getThemeConfigurationSubset(
-	obj: Record<string, any> | undefined,
-	subset: string | string[] | RegExp | Record<string, any> | undefined
-): Record<string, any> | undefined {
+	obj: ThemeConfiguration | undefined,
+	subset: ThemeSubset | undefined
+): ThemeConfiguration | undefined {
 	if (!obj || !subset || typeof obj === 'string') return undefined;
 
 	if (typeof subset === 'string') {
@@ -11,29 +16,29 @@ export default function getThemeConfigurationSubset(
 	}
 
 	if (Array.isArray(subset)) {
-		let result: Record<string, any> | undefined;
+		let result: ThemeConfiguration | undefined;
 		for (const key of subset) {
 			if (obj[key] !== undefined) {
 				if (!result) result = {};
-				result[key] = obj[key];
+				result[key] = obj[key]!;
 			}
 		}
 		return result;
 	}
 
 	if (subset instanceof RegExp) {
-		let result: Record<string, any> | undefined;
+		let result: ThemeConfiguration | undefined;
 		for (const key in obj) {
 			if (subset.test(key)) {
 				if (!result) result = {};
-				result[key] = obj[key];
+				result[key] = obj[key]!;
 			}
 		}
 		return result;
 	}
 
 	if (typeof subset === 'object') {
-		let result: Record<string, any> | undefined;
+		let result: ThemeConfiguration | undefined;
 		for (const key in subset) {
 			if (!subset[key]) continue;
 
@@ -42,27 +47,34 @@ export default function getThemeConfigurationSubset(
 				const regex = new RegExp(regexMatch[1], regexMatch[2]);
 				for (const objKey in obj) {
 					if (regex.test(objKey)) {
+						const subsetValue = subset[key];
 						const value =
-							typeof subset[key] === 'boolean'
+							typeof subsetValue === 'boolean'
 								? obj[objKey]
 								: getThemeConfigurationSubset(
-										obj[objKey],
-										subset[key]
+										obj[objKey] as ThemeConfiguration,
+										subsetValue
 									);
 						if (value !== undefined) {
 							if (!result) result = {};
-							result[objKey] = value;
+							result[objKey] =
+								value as ThemeConfiguration[keyof ThemeConfiguration];
 						}
 					}
 				}
 			} else if (obj[key] !== undefined) {
+				const subsetValue = subset[key];
 				const value =
-					typeof subset[key] === 'boolean'
+					typeof subsetValue === 'boolean'
 						? obj[key]
-						: getThemeConfigurationSubset(obj[key], subset[key]);
+						: getThemeConfigurationSubset(
+								(obj[key] as ThemeConfiguration) || undefined,
+								subsetValue
+							);
 				if (value !== undefined) {
 					if (!result) result = {};
-					result[key] = value;
+					result[key] =
+						value as ThemeConfiguration[keyof ThemeConfiguration];
 				}
 			}
 		}

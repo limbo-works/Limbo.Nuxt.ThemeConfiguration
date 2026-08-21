@@ -6,9 +6,23 @@ import {
 	deepmerge,
 } from '~/assets/js/helpers';
 
+type ThemeLike = Record<string, unknown>;
+type ThemeOption = string | ThemeLike;
+type ThemeClassRuleSection = {
+	config: ThemeLike;
+	rules: RuleSection[];
+};
+type RuleSection = {
+	rules?: string[];
+	smToMdScreenRules?: string[];
+	mdScreenRules?: string[];
+	mdToLgScreenRules?: string[];
+	lgScreenRules?: string[];
+};
+
 export function useThemeConfiguration(options?: {
-	config?: string | Record<string, any>;
-	media?: Record<string, string | Record<string, any>>;
+	config?: ThemeOption;
+	media?: Record<string, ThemeOption>;
 	useThemeClasses?: boolean | string[];
 	mergeThemeClassesWithBaseConfig?: boolean;
 	cssLayer?: string;
@@ -23,7 +37,8 @@ export function useThemeConfiguration(options?: {
 			config: rawOptions.config,
 			media: rawOptions.media,
 			useThemeClasses: rawOptions.useThemeClasses,
-			mergeThemeClassesWithBaseConfig: rawOptions.mergeThemeClassesWithBaseConfig ?? false,
+			mergeThemeClassesWithBaseConfig:
+				rawOptions.mergeThemeClassesWithBaseConfig ?? false,
 			cssLayer: rawOptions.cssLayer,
 		};
 	});
@@ -31,14 +46,14 @@ export function useThemeConfiguration(options?: {
 	const availableConfigs = getThemeConfigurations();
 	const defaultConfig = availableConfigs.default || {};
 
-	function resolveConfig(config) {
+	function resolveConfig(config: ThemeOption | undefined): ThemeLike {
 		if (typeof config === 'string') {
-			return availableConfigs[config] || {};
+			return (availableConfigs[config] as ThemeLike) || {};
 		}
 		return config || {};
 	}
 
-	function shouldIncludeThemeClass(key) {
+	function shouldIncludeThemeClass(key: string) {
 		const o = opts.value;
 		if (o.config === key) return false;
 		if (!o.config && key === 'default') return false;
@@ -93,7 +108,7 @@ export function useThemeConfiguration(options?: {
 	);
 	const themeClassRuleSections = computed(() => {
 		const o = opts.value;
-		const sections = {};
+		const sections: Record<string, ThemeClassRuleSection> = {};
 		if (!o.useThemeClasses) return sections;
 
 		for (const [key, value] of Object.entries(availableConfigs)) {
@@ -139,7 +154,7 @@ export function useThemeConfiguration(options?: {
 	/* Compose media configs */
 	const media = computed(() => {
 		const o = opts.value;
-		const mediaEntries = [];
+		const mediaEntries: Array<{ query: string; cssText: string }> = [];
 		for (const [key, config] of Object.entries(o.media || {})) {
 			const resolvedConfig = resolveConfig(config);
 			const rules = [makeCssText(undefined, resolvedConfig)];
@@ -194,10 +209,10 @@ export function useThemeConfiguration(options?: {
 
 	useHead(headStyles);
 
-	function extractColorRules(object, prefix) {
+	function extractColorRules(object: ThemeLike | undefined, prefix?: string) {
 		object = cloneDeep(typeof object === 'object' ? object : {});
 
-		const rules = [];
+		const rules: string[] = [];
 		Object.entries(object).forEach(([key, value]) => {
 			if (!compConfig.value.minify && !rules.length) {
 				rules.push(`/* colors ${prefix ? `- ${prefix} ` : ''}*/`);
@@ -223,7 +238,7 @@ export function useThemeConfiguration(options?: {
 		};
 	}
 
-	function extractLayoutRules(object) {
+	function extractLayoutRules(object: ThemeLike | undefined) {
 		object = cloneDeep(typeof object === 'object' ? object : {});
 		const useBreakpointSpecificRules =
 			!compConfig.value.disableBreakpointSpecificCustomProperties;
@@ -256,7 +271,10 @@ export function useThemeConfiguration(options?: {
 			};
 
 			// Small helpers to not rewrite a lot of long code
-			const generateBaseRule = (sizeDesignation, columnCount) => {
+			const generateBaseRule = (
+				sizeDesignation: 'sm' | 'md' | 'lg',
+				columnCount: number
+			) => {
 				return `--theme-layout-column--${sizeDesignation}: ${
 					Math.round(
 						((viewport[sizeDesignation] -
@@ -267,7 +285,7 @@ export function useThemeConfiguration(options?: {
 					) / 1000
 				}px;`;
 			};
-			const generateResponsiveRule = (columnCount) => {
+			const generateResponsiveRule = (columnCount: number) => {
 				const { viewportWidth = '100dvw' } = compConfig.value;
 
 				const fallbackMargin = useBreakpointSpecificRules
@@ -328,7 +346,7 @@ export function useThemeConfiguration(options?: {
 		return { rules, mdScreenRules, lgScreenRules };
 	}
 
-	function extractFontRules(object) {
+	function extractFontRules(object: ThemeLike | undefined) {
 		const useBreakpointSpecificRules =
 			!compConfig.value.disableBreakpointSpecificCustomProperties;
 		object = typeof object === 'object' ? object : {};
@@ -343,11 +361,12 @@ export function useThemeConfiguration(options?: {
 
 		// Extract rules
 		const { baseFontSize } = compConfig.value;
-		const returnObject = {
+		const returnObject: Required<RuleSection> = {
 			rules: [],
 			smToMdScreenRules: [],
 			mdScreenRules: [],
 			mdToLgScreenRules: [],
+			lgScreenRules: [],
 		};
 
 		// Extract font sizes as rem
@@ -500,7 +519,7 @@ export function useThemeConfiguration(options?: {
 		return returnObject;
 	}
 
-	function normalizeFontFamily(value) {
+	function normalizeFontFamily(value: string) {
 		if (value.startsWith('"') || value.startsWith("'")) {
 			return value;
 		}
@@ -511,10 +530,10 @@ export function useThemeConfiguration(options?: {
 	}
 
 	function extractRules(
-		prefix,
-		object,
+		prefix: string,
+		object: ThemeLike | undefined,
 		unit = 'px',
-		transformation = (value) => Number(value)
+		transformation: (value: unknown) => number = (value) => Number(value)
 	) {
 		object = typeof object === 'object' ? object : {};
 		const useBreakpointSpecificRules =
@@ -524,7 +543,7 @@ export function useThemeConfiguration(options?: {
 		const lgScreenRules = [];
 
 		for (const name in object) {
-			const subObject = object[name];
+			const subObject = object[name] as Record<string, number>;
 
 			// First the general rules
 			if (useBreakpointSpecificRules) {
@@ -548,7 +567,7 @@ export function useThemeConfiguration(options?: {
 				const { sm, md, lg } = subObject;
 
 				// This one is for smaller screens
-				const f1 = (x) => {
+				const f1 = (x: number) => {
 					const m = (md - sm) / (mdViewport - smViewport);
 					const b = sm - m * smViewport;
 					return Math.round((m * x + b) * 1000) / 1000;
@@ -564,8 +583,8 @@ export function useThemeConfiguration(options?: {
 					const max = Math.max(sm, md);
 					const mid = md;
 
-					let cssMin = `${transformation(min)}${unit}`;
-					let cssMax = `${transformation(
+					const cssMin = `${transformation(min)}${unit}`;
+					const cssMax = `${transformation(
 						max + (unit === 'rem' ? mid : 0)
 					)}${unit} - ${unit === 'rem' ? mid : 0}px`;
 
@@ -594,7 +613,7 @@ export function useThemeConfiguration(options?: {
 							)}: ${transformation(lg)}${unit};`
 						);
 					} else {
-						const f2 = (x) => {
+						const f2 = (x: number) => {
 							const m = (lg - md) / (lgViewport - mdViewport);
 							const b = md - m * mdViewport;
 							return Math.round((m * x + b) * 1000) / 1000;
@@ -604,10 +623,10 @@ export function useThemeConfiguration(options?: {
 						const max = Math.max(md, lg);
 						const mid = md;
 
-						let cssMin = `${transformation(
+						const cssMin = `${transformation(
 							min + (unit === 'rem' ? mid : 0)
 						)}${unit} - ${unit === 'rem' ? mid : 0}px`;
-						let cssMax = `${transformation(max)}${unit}`;
+						const cssMax = `${transformation(max)}${unit}`;
 
 						mdScreenRules.push(
 							`--theme-${sanitizeKey(prefix)}-${sanitizeKey(
@@ -678,18 +697,18 @@ export function useThemeConfiguration(options?: {
 	}
 
 	function makeCssText(
-		selector,
-		config = compConfig.value,
-		cachedSections = undefined
+		selector?: string,
+		config: ThemeLike = compConfig.value as ThemeLike,
+		cachedSections?: RuleSection[]
 	) {
 		if (!selector) {
 			const selectors = [':root'];
-			if (options.useThemeClasses) {
+			if (opts.value.useThemeClasses) {
 				selectors.push('.u-theme');
 
-				if (typeof opts.config === 'string') {
-					selectors.push(`.u-theme-${opts.config}`);
-				} else if (!opts.config) {
+				if (typeof opts.value.config === 'string') {
+					selectors.push(`.u-theme-${opts.value.config}`);
+				} else if (!opts.value.config) {
 					selectors.push('.u-theme-default');
 				}
 			}
@@ -715,9 +734,9 @@ export function useThemeConfiguration(options?: {
 			extractRules('borderRadius', config?.borderRadius),
 		];
 
-		const collectRules = (key) =>
+		const collectRules = (key: keyof RuleSection): string[] =>
 			rules
-				.reduce((arr, obj) => {
+				.reduce<string[]>((arr, obj) => {
 					arr.push(...(obj[key] || []));
 					return arr;
 				}, [])
@@ -832,8 +851,10 @@ export function useThemeConfiguration(options?: {
 		}
 
 		// Wrap in a CSS layer
-		const layer = opts.cssLayer ? [`@layer ${opts.cssLayer} {`] : [];
-		const layerEnd = opts.cssLayer ? ['}'] : [];
+		const layer = opts.value.cssLayer
+			? [`@layer ${opts.value.cssLayer} {`]
+			: [];
+		const layerEnd = opts.value.cssLayer ? ['}'] : [];
 
 		if (compConfig.value.minify) {
 			return [
@@ -859,7 +880,7 @@ export function useThemeConfiguration(options?: {
 		].join('\n');
 	}
 
-	function createRuleSections(config) {
+	function createRuleSections(config: ThemeLike): RuleSection[] {
 		if (config === compConfig.value) {
 			return [
 				colorRules.value,
@@ -889,9 +910,12 @@ export function useThemeConfiguration(options?: {
 		];
 	}
 
-	function findAltRuleKeys(key, config = compConfig.value) {
+	function findAltRuleKeys(
+		key: string,
+		config: ThemeLike = compConfig.value as ThemeLike
+	): Array<{ configKey: string; prefix: string }> {
 		const partial = key.charAt(0).toUpperCase() + key.slice(1);
-		const matches = [];
+		const matches: Array<{ configKey: string; prefix: string }> = [];
 
 		for (const configKey of Object.keys(config || {})) {
 			if (configKey.endsWith(partial)) {
@@ -904,11 +928,17 @@ export function useThemeConfiguration(options?: {
 		return matches;
 	}
 
-	function deepMergeExisting(target, source) {
+	function deepMergeExisting(
+		target: ThemeLike,
+		source: ThemeLike
+	): ThemeLike {
 		for (const key in source) {
 			if (key in target) {
 				if (typeof target[key] === 'object') {
-					deepMergeExisting(target[key], source[key]);
+					deepMergeExisting(
+						target[key] as ThemeLike,
+						source[key] as ThemeLike
+					);
 				} else {
 					target[key] = source[key];
 				}

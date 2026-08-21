@@ -9,7 +9,7 @@
 		"generate": "nuxi generate .playground",
 		"preview": "nuxi preview .playground",
 		"prettier": "prettier \"**/*.{js,ts,vue,md,yml,css,scss,json}\"",
-		"eslint": "eslint \"**/*.{js,vue}\"",
+		"eslint": "eslint \"**/*.{js,ts,vue}\"",
 		"typecheck": "nuxi prepare && nuxi typecheck",
 		"lint": "yarn prettier --check . && yarn eslint --quiet .",
 		"lint:fix": "yarn prettier --write . && yarn eslint --fix --quiet .",
@@ -19,6 +19,8 @@
 		"@limbo-works/lint-configs": "^2.0.3",
 		"@limbo-works/nuxt-core": "^6.0.5",
 		"@unocss/nuxt": "^66.6.7",
-		"nuxt": "^4.4.2"
+		"nuxt": "^4.4.2",
+		"typescript": "5.9.2",
+		"vue-tsc": "^3.3.11"
 	}
 }

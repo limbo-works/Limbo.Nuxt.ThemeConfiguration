@@ -10,10 +10,11 @@ export { observedData as config };
 
 <script setup lang="ts">
 import { useThemeConfiguration } from '~/composables/useThemeConfiguration';
+import type { ThemeConfiguration } from '~/utils/theme-configuration.types';
 
 const props = defineProps<{
-	config?: string | Record<string, any>;
-	media?: Record<string, string | Record<string, any>>;
+	config?: string | ThemeConfiguration;
+	media?: Record<string, string | ThemeConfiguration>;
 	useThemeClasses?: boolean | string[];
 	mergeThemeClassesWithBaseConfig?: boolean;
 	cssLayer?: string;

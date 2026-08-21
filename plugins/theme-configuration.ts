@@ -1,6 +1,6 @@
-// @ts-nocheck
 import type {
 	ThemeConfiguration,
+	ThemeLoaderResult,
 	ThemeLoaders,
 	ThemeSystem,
 } from '~/utils/theme-configuration.types';
@@ -13,7 +13,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
 		let isDestroyed = false;
 
 		const themeSystem = new Proxy(themeCache, {
-			get(target, prop) {
+			get(target, prop: string | symbol) {
 				if (isDestroyed) {
 					console.warn('Theme system has been destroyed');
 					return undefined;
@@ -21,25 +21,27 @@ export default defineNuxtPlugin(async (nuxtApp) => {
 
 				// Handle helper methods
 				if (prop === '$loadTheme') {
-					return async (themeName) => {
+					return async (themeName: string) => {
 						if (isDestroyed) return undefined;
 						if (target[themeName]) return target[themeName];
 
 						const loader = themeLoaders[themeName];
 						if (typeof loader === 'function') {
 							try {
-								const config = await loader();
+								const config =
+									(await loader()) as ThemeLoaderResult;
 								const themeConfig = config?.default || config;
 								if (
 									themeConfig &&
 									typeof themeConfig === 'object'
 								) {
-									target[themeName] = themeConfig;
+									target[themeName] =
+										themeConfig as ThemeConfiguration;
 									return themeConfig;
 								}
-							} catch (error) {
+							} catch (error: unknown) {
 								console.warn(
-									`Failed to load theme configuration "${themeName}": ${error?.message || String(error)}`
+									`Failed to load theme configuration "${themeName}": ${(error as Error)?.message || String(error)}`
 								);
 							}
 						}
@@ -48,17 +50,17 @@ export default defineNuxtPlugin(async (nuxtApp) => {
 				}
 
 				if (prop === '$loadThemeSync')
-					return (themeName) =>
+					return (themeName: string) =>
 						isDestroyed ? undefined : target[themeName];
 				if (prop === '$getAvailableThemes')
 					return () => (isDestroyed ? [] : Object.keys(themeLoaders));
 				if (prop === '$isThemeLoaded')
-					return (themeName) =>
+					return (themeName: string) =>
 						isDestroyed ? false : Boolean(target[themeName]);
 
 				// Cleanup methods
 				if (prop === '$clearTheme') {
-					return (themeName) => {
+					return (themeName: string) => {
 						if (target[themeName]) {
 							delete target[themeName];
 							return true;
@@ -104,7 +106,9 @@ export default defineNuxtPlugin(async (nuxtApp) => {
 					return undefined;
 				}
 
-				return isDestroyed ? undefined : target[prop];
+				return isDestroyed || typeof prop !== 'string'
+					? undefined
+					: target[prop];
 			},
 		}) as ThemeSystem;
 
@@ -115,28 +119,26 @@ export default defineNuxtPlugin(async (nuxtApp) => {
 			)
 		);
 
-		// Add cleanup on app unmount/destroy
-		nuxtApp.hook('app:beforeUnmount', () => {
-			themeSystem?.$destroy?.();
-		});
-
 		// Also handle browser page unload for cleanup
-		if (process.client) {
+		if (import.meta.client) {
 			const cleanup = () => themeSystem?.$destroy?.();
 			window.addEventListener('beforeunload', cleanup);
 			window.addEventListener('pagehide', cleanup);
 		}
 
 		nuxtApp.provide('themeConfigurations', themeSystem);
-	} catch (error) {
+	} catch (error: unknown) {
 		console.warn(
-			`Failed to initialize theme configurations: ${error?.message || String(error)}`
+			`Failed to initialize theme configurations: ${(error as Error)?.message || String(error)}`
 		);
 		nuxtApp.provide('themeConfigurations', {
 			$loadTheme: async () => undefined,
 			$loadThemeSync: () => undefined,
 			$getAvailableThemes: () => [],
 			$isThemeLoaded: () => false,
+			$clearTheme: () => false,
+			$clearAllThemes: () => 0,
+			$destroy: () => true,
 		});
 	}
 });

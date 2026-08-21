@@ -1,7 +1,7 @@
 import type { ThemeLoaders } from './theme-configuration.types';
 
 export default async function getThemeConfigurationsAsync() {
-	const configGlobs = {
+	const localConfigGlobs = {
 		...import.meta.glob('~/assets/js/theme-configuration.*.js'),
 		...import.meta.glob('~/assets/js/theme-configuration.*.cjs'),
 		...import.meta.glob('~/assets/js/theme-configuration.*.mjs'),
@@ -9,11 +9,14 @@ export default async function getThemeConfigurationsAsync() {
 		...import.meta.glob('~/assets/js/theme-configuration.*.cts'),
 		...import.meta.glob('~/assets/js/theme-configuration.*.mts'),
 	};
-	const extracted = extractThemeConfigurationsFromAppConfig(useAppConfig());
-
-	if (Object.keys(extracted).length > 0) {
-		Object.assign(configGlobs, extracted, configGlobs); // Local first, always
-	}
+	const extracted = extractThemeConfigurationsFromAppConfig(
+		useAppConfig(),
+		localConfigGlobs as ThemeLoaders
+	);
+	const configGlobs =
+		Object.keys(extracted).length > 0
+			? { ...extracted, ...localConfigGlobs }
+			: localConfigGlobs;
 
 	const themeLoaders: ThemeLoaders = {};
 	for (const key in configGlobs) {

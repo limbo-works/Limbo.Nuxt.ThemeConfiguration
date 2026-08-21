@@ -1,11 +1,12 @@
 import type {
 	ThemeConfiguration,
+	ThemeSubset,
 	ThemeSystem,
 } from './theme-configuration.types';
 
 export default async function getThemeConfigurationAsync(
 	theme: string | ThemeConfiguration,
-	subset?: string | string[] | RegExp | Record<string, any>
+	subset?: ThemeSubset
 ) {
 	const { $themeConfigurations = {} } = useNuxtApp();
 	const typedThemeConfigurations = $themeConfigurations as ThemeSystem;
@@ -14,8 +15,7 @@ export default async function getThemeConfigurationAsync(
 	if (typeof theme === 'string') {
 		config =
 			(typedThemeConfigurations[theme] as
-				| ThemeConfiguration
-				| undefined) ||
+				ThemeConfiguration | undefined) ||
 			(await typedThemeConfigurations.$loadTheme?.(theme));
 		if (!config) {
 			const availableThemes =

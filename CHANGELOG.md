@@ -2,45 +2,39 @@
 
 ## [4.3.5](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v4.3.4...theme-configuration-v4.3.5) (2026-08-12)
 
-
 ### Bug Fixes
 
-* added some security around destroying ([cec3bb3](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/cec3bb3f9ee78a06de9a8953ce761123e7a5641c))
+- added some security around destroying ([cec3bb3](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/cec3bb3f9ee78a06de9a8953ce761123e7a5641c))
 
 ## [4.3.4](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v4.3.3...theme-configuration-v4.3.4) (2026-07-21)
 
-
 ### Bug Fixes
 
-* node version in release please ([37eb23a](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/37eb23a84e3c1ae266a3fb7eb2df89aaec3dc21e))
+- node version in release please ([37eb23a](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/37eb23a84e3c1ae266a3fb7eb2df89aaec3dc21e))
 
 ## [4.3.3](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v4.3.2...theme-configuration-v4.3.3) (2026-07-21)
 
-
 ### Bug Fixes
 
-* updated to side-by-site-imports ([272eaf9](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/272eaf98358584379f50cf26247962e75e333feb))
+- updated to side-by-site-imports ([272eaf9](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/272eaf98358584379f50cf26247962e75e333feb))
 
 ## [4.3.2](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v4.3.1...theme-configuration-v4.3.2) (2026-05-28)
 
-
 ### Bug Fixes
 
-* made dynamic again ([0f0f2ed](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/0f0f2ed8434fd69c0a3c5fcf60176371150530b0))
+- made dynamic again ([0f0f2ed](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/0f0f2ed8434fd69c0a3c5fcf60176371150530b0))
 
 ## [4.3.1](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v4.3.0...theme-configuration-v4.3.1) (2026-05-20)
 
-
 ### Bug Fixes
 
-* preset issue ([36db086](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/36db0867f5ed6624831be5468a29cd765a7c9ce7))
+- preset issue ([36db086](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/36db0867f5ed6624831be5468a29cd765a7c9ce7))
 
 ## [4.3.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v4.2.1...theme-configuration-v4.3.0) (2026-05-20)
 
-
 ### Features
 
-* changed to use TypeScript ([158bf72](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/158bf72f6d5e1f95fa9467237834350933c9c894))
+- changed to use TypeScript ([158bf72](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/158bf72f6d5e1f95fa9467237834350933c9c894))
 
 ## [4.2.1](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v4.2.0...theme-configuration-v4.2.1) (2026-05-20)
 

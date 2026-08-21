@@ -32,6 +32,7 @@ The transition to a Nuxt 3-specific implementation marked a significant evolutio
 - **Tailwind CSS Integration**: Seamlessly integrated with Tailwind CSS for utility-first styling
 
 The system maintained focus on core design tokens established in earlier versions:
+
 - Color palettes and semantic color naming
 - Typography scales and font family management
 - Spacing and layout systems
@@ -42,45 +43,55 @@ The system maintained focus on core design tokens established in earlier version
 The formal Nuxt 3 package and versioning began with the 2.0 release series, building upon the earlier implementations and establishing key architectural decisions for the modern framework integration:
 
 ### Version 2.1.0 (January 30, 2024)
+
 - **Utility Functions**: Introduction of `getThemeConfigurations()` and related helper functions
 - **Print Configuration Support**: Recognition that different media contexts require different design approaches
 - **Release Automation**: Implementation of automated release processes for better version management
 
 ### Version 2.2.0 (January 31, 2024)
+
 - **Media Query Configurations**: Ability to define different configurations for different media contexts
 - This was a crucial step toward responsive design token management
 
 ## The Maturation Phase (2024)
 
 ### Version 2.3.0 (March 7, 2024)
+
 - **Font Family Handling**: Improved support for custom fonts and special characters
 - **Query System Refinements**: Better handling of complex media queries
 
 ### Version 2.4.0 (March 28, 2024)
+
 - **Enhanced Utility Functions**: Introduction of `getThemeConfiguration()` with advanced subset selection
 - **Flexible Configuration Access**: Support for string, array, object, and regex-based configuration subsetting
 
 ### Version 2.5.0 (June 4, 2024)
+
 - **Rounding Capabilities**: Added sophisticated rounding controls for precise design implementation
 - This reflected the growing attention to pixel-perfect design implementation
 
 ## The Professional Polish (2024-2025)
 
 ### Version 2.5.1 (September 5, 2024)
+
 - **Font Family Quotation**: Automatic handling of special characters in font family names
 - **Bug Fixes**: Refinements to component naming and stability
 
 ### Version 2.6.0 (September 23, 2024)
+
 - **Modern Dependencies**: Upgrade to latest tooling and dependencies
 - **Code Quality**: Comprehensive linting and code standardization
 
 ### Version 2.7.0 (May 7, 2025)
+
 - **Performance Optimization**: Migration to `useHead` for better style injection
 
 ### Version 2.7.1 (May 14, 2025)
+
 - **Dynamic Style Management**: Improved handling of dynamic style updates
 
 ### Version 2.7.2 (May 21, 2025)
+
 - **Configuration Key Management**: Enhanced tracking of configuration changes
 
 ## Integration with Design Tokens and Figma
@@ -90,6 +101,7 @@ One of the most significant developments in the Theme Configuration system has b
 ### The Design Token Revolution
 
 Modern design teams work extensively in Figma, creating detailed design systems with:
+
 - Semantic color tokens (primary, secondary, surface, etc.)
 - Typography scales with responsive sizing
 - Spacing systems and layout grids
@@ -119,6 +131,7 @@ Today, a typical project workflow looks like:
 Building upon years of development and refinement across multiple project types and frameworks, the Theme Configuration system has evolved into a comprehensive design system that handles:
 
 ### Core Features
+
 - **Dynamic Theming**: Runtime theme switching and customization
 - **Responsive Design**: Breakpoint-specific configurations
 - **Media Context Awareness**: Different themes for print, screen, and other media
@@ -126,6 +139,7 @@ Building upon years of development and refinement across multiple project types 
 - **Utility Generation**: Automatic Tailwind CSS utility creation
 
 ### Advanced Capabilities
+
 - **Font Style Management**: Complete typography system with weights, styles, and transforms
 - **Color System**: Sophisticated color management with opacity support
 - **Layout Systems**: Grid systems, spacing, and container management
@@ -133,6 +147,7 @@ Building upon years of development and refinement across multiple project types 
 - **Development Tools**: Comprehensive utility functions for theme access and manipulation
 
 ### Architecture Benefits
+
 - **Type Safety**: Structured configuration prevents errors
 - **Performance**: Optimized CSS generation and injection
 - **Maintainability**: Centralized theme management
@@ -146,6 +161,7 @@ The Theme Configuration system represents more than just a technical solution—
 By creating a seamless bridge between design tools like Figma and development frameworks, it builds upon a foundation of lessons learned from multiple project types and framework implementations.
 
 The system continues to evolve, with ongoing improvements in:
+
 - Integration with new design tools and workflows
 - Performance optimizations for large-scale applications
 - Enhanced developer experience and debugging tools
