@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.5.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v4.4.0...theme-configuration-v4.5.0) (2026-10-13)
+
+
+### Features
+
+* added the possibility to add a selector in useThemeConfiguration options ([c961038](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/c961038a5f46d1ff49cacd9e4f72ef3ce3f215a2))
+
 ## [4.4.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v4.3.5...theme-configuration-v4.4.0) (2026-08-21)
 
 
