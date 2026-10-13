@@ -12,6 +12,7 @@ defineProps({ label: { type: String, required: true } });
 
 useThemeConfiguration({
 	selector: '.class-theme-demo',
+	partial: true,
 	config: {
 		backgroundColors: {
 			primary: [190, 60, 90],

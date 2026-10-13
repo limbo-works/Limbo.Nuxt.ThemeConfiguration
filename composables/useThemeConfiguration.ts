@@ -38,6 +38,7 @@ type ThemeConfigurationOptions = {
 	mergeThemeClassesWithBaseConfig?: boolean;
 	cssLayer?: string;
 	selector?: string;
+	partial?: boolean;
 };
 
 export function useThemeConfiguration(
@@ -55,9 +56,11 @@ export function useThemeConfiguration(
 			media: rawOptions.media,
 			useThemeClasses: rawOptions.useThemeClasses,
 			mergeThemeClassesWithBaseConfig:
-				rawOptions.mergeThemeClassesWithBaseConfig ?? false,
+				rawOptions.mergeThemeClassesWithBaseConfig ??
+				(rawOptions.partial === undefined ? false : !rawOptions.partial),
 			cssLayer: rawOptions.cssLayer,
 			selector: rawOptions.selector,
+			partial: rawOptions.partial ?? false,
 		};
 	});
 
@@ -121,8 +124,11 @@ export function useThemeConfiguration(
 			extractRules(configKey, compConfig.value[configKey])
 		)
 	);
+	// A partial theme emits only what the given config defines; base settings still come from compConfig
 	const cachedRuleSections = computed(() =>
-		createRuleSections(compConfig.value)
+		opts.value.partial
+			? createRuleSections(resolveConfig(opts.value.config), true)
+			: createRuleSections(compConfig.value)
 	);
 	const themeClassRuleSections = computed(() => {
 		const o = opts.value;
@@ -133,7 +139,7 @@ export function useThemeConfiguration(
 			if (!shouldIncludeThemeClass(key)) continue;
 
 			const config =
-				(o.mergeThemeClassesWithBaseConfig ?? false)
+				o.mergeThemeClassesWithBaseConfig
 					? deepMergeExisting(cloneDeep(compConfig.value), value)
 					: value;
 			sections[key] = {
@@ -174,7 +180,12 @@ export function useThemeConfiguration(
 		if (!o.selector) return buildCssText();
 
 		// Instances sharing a selector and config build the CSS only once
-		const key = JSON.stringify([o.selector, o.config, o.cssLayer]);
+		const key = JSON.stringify([
+			o.selector,
+			o.config,
+			o.cssLayer,
+			o.partial,
+		]);
 		if (!selectorCssCache.has(key)) {
 			selectorCssCache.set(key, buildCssText());
 		}
@@ -915,7 +926,28 @@ export function useThemeConfiguration(
 		].join('\n');
 	}
 
-	function createRuleSections(config: ThemeLike): RuleSection[] {
+	function createRuleSections(
+		config: ThemeLike,
+		partial = false
+	): RuleSection[] {
+		if (partial) {
+			return [
+				extractColorRules(config?.colors),
+				...findAltRuleKeys('colors', config).map(
+					({ configKey, prefix }) =>
+						extractColorRules(config[configKey], prefix)
+				),
+				...(config?.layout ? [extractLayoutRules(config.layout)] : []),
+				extractFontRules(config?.fontSize),
+				extractFontRules(config?.fontStyles),
+				extractRules('spacing', config?.spacing),
+				...findAltRuleKeys('spacing', config).map(({ configKey }) =>
+					extractRules(configKey, config[configKey])
+				),
+				extractRules('borderRadius', config?.borderRadius),
+			];
+		}
+
 		if (config === compConfig.value) {
 			return [
 				colorRules.value,
