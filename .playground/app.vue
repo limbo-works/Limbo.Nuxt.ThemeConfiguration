@@ -296,6 +296,25 @@
 				</div>
 			</div>
 		</section>
+
+		<!-- Section: Component-scoped theme -->
+		<section
+			class="section section--tinted px-layout-margin py-layout-gutter"
+		>
+			<h2 class="section__title text-h4 text-onSurface">
+				Component-scoped Theme
+			</h2>
+			<p class="section__intro text-body2 text-onSurfaceVariant">
+				<code>useThemeConfiguration</code> with the
+				<code>selector</code> option scopes a theme to a class. Both
+				instances below share one style tag.
+			</p>
+
+			<div class="scope-demo">
+				<ClassThemeDemo label="Instance 1" />
+				<ClassThemeDemo label="Instance 2" />
+			</div>
+		</section>
 	</div>
 </template>
 

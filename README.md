@@ -5,6 +5,7 @@ Theme Configuration is a Nuxt layer/package for generating responsive theme CSS 
 It includes:
 
 - The global `ThemeConfiguration` component that injects runtime theme CSS.
+- The `useThemeConfiguration` composable, which can also scope a theme to a selector.
 - Auto-loaded theme configs from files and/or `app.config`.
 - Sync and async utility functions for reading theme configs.
 - UnoCSS helper functions for generating theme tokens and rules.
@@ -121,6 +122,38 @@ export default defineAppConfig({
 ### Exposed
 
 - `config`: observed/active computed config object.
+
+## Scoping a theme to a class
+
+`useThemeConfiguration` is what the `ThemeConfiguration` component uses internally. It takes the same options as the component's props, plus `selector`. Called with a `selector` from any component, it emits the theme's CSS variables on that selector instead of `:root`, so the matching element and its descendants use the overridden theme.
+
+```vue
+<script setup lang="ts">
+useThemeConfiguration({
+	selector: '.promo-theme',
+	config: {
+		backgroundColors: { surface: [75, 67, 190] },
+	},
+});
+</script>
+
+<template>
+	<section class="promo-theme bg-surface">...</section>
+</template>
+```
+
+Options:
+
+- `selector`: any CSS selector (for example `.promo-theme`).
+- `config`: theme name or theme object. Merged over the `default` theme, so partial overrides are fine.
+- `cssLayer`: wraps the output in `@layer <name> { ... }`.
+
+Notes:
+
+- The full merged theme is emitted for the selector, not just the overridden keys.
+- The generated CSS is built once per selector and config, so using the component many times is cheap and emits a single style tag.
+- Different configs under the same selector conflict; the last one registered wins.
+- Class names containing special characters must be escaped in `selector`.
 
 ## Generated CSS Behavior
 

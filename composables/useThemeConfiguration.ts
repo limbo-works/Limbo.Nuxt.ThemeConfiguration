@@ -20,14 +20,31 @@ type RuleSection = {
 	lgScreenRules?: string[];
 };
 
-export function useThemeConfiguration(options?: {
+// Keyed by app instance so SSR requests never share CSS
+const selectorCssCaches = new WeakMap<object, Map<string, string>>();
+
+function getSelectorCssCache() {
+	const nuxtApp = useNuxtApp();
+	if (!selectorCssCaches.has(nuxtApp)) {
+		selectorCssCaches.set(nuxtApp, new Map());
+	}
+	return selectorCssCaches.get(nuxtApp);
+}
+
+type ThemeConfigurationOptions = {
 	config?: ThemeOption;
 	media?: Record<string, ThemeOption>;
 	useThemeClasses?: boolean | string[];
 	mergeThemeClassesWithBaseConfig?: boolean;
 	cssLayer?: string;
-}) {
+	selector?: string;
+};
+
+export function useThemeConfiguration(
+	options?: ThemeConfigurationOptions | Ref<ThemeConfigurationOptions>
+) {
 	const iterationCounter = useState(() => 0);
+	const selectorCssCache = getSelectorCssCache();
 
 	// Make options reactive if possible
 	const opts = computed(() => {
@@ -40,6 +57,7 @@ export function useThemeConfiguration(options?: {
 			mergeThemeClassesWithBaseConfig:
 				rawOptions.mergeThemeClassesWithBaseConfig ?? false,
 			cssLayer: rawOptions.cssLayer,
+			selector: rawOptions.selector,
 		};
 	});
 
@@ -128,7 +146,7 @@ export function useThemeConfiguration(options?: {
 	});
 
 	/* Compile css text */
-	const cssText = computed(() => {
+	function buildCssText() {
 		const o = opts.value;
 		const rules = [
 			makeCssText(undefined, compConfig.value, cachedRuleSections.value),
@@ -149,6 +167,18 @@ export function useThemeConfiguration(options?: {
 		}
 
 		return rules.join('\n');
+	}
+
+	const cssText = computed(() => {
+		const o = opts.value;
+		if (!o.selector) return buildCssText();
+
+		// Instances sharing a selector and config build the CSS only once
+		const key = JSON.stringify([o.selector, o.config, o.cssLayer]);
+		if (!selectorCssCache.has(key)) {
+			selectorCssCache.set(key, buildCssText());
+		}
+		return selectorCssCache.get(key);
 	});
 
 	/* Compose media configs */
@@ -187,7 +217,10 @@ export function useThemeConfiguration(options?: {
 
 	const headStyles = computed(() => {
 		const iteration = iterationCounter.value;
-		const baseId = `theme-configuration-${iteration}`;
+		const scope = opts.value.selector
+			? `${sanitizeKey(opts.value.selector)}-`
+			: '';
+		const baseId = `theme-configuration-${scope}${iteration}`;
 		return {
 			style: [
 				cssText.value && {
@@ -701,6 +734,8 @@ export function useThemeConfiguration(options?: {
 		config: ThemeLike = compConfig.value as ThemeLike,
 		cachedSections?: RuleSection[]
 	) {
+		selector ||= opts.value.selector;
+
 		if (!selector) {
 			const selectors = [':root'];
 			if (opts.value.useThemeClasses) {
