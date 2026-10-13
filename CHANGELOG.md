@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.5.1](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v4.5.0...theme-configuration-v4.5.1) (2026-10-13)
+
+
+### Bug Fixes
+
+* a partial boolean is also needed ([1e4c010](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/1e4c0100b99f26909e8f20f1ab7ad6eebd518c18))
+
 ## [4.5.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v4.4.0...theme-configuration-v4.5.0) (2026-10-13)
 
 
