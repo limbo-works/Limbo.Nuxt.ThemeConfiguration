@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.6.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v4.5.1...theme-configuration-v4.6.0) (2026-10-19)
+
+
+### Features
+
+* added option for custom ID on style tags ([09908f9](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/09908f9028387975cb440e0731f5b1b2a3e4121c))
+
 ## [4.5.1](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v4.5.0...theme-configuration-v4.5.1) (2026-10-13)
 
 
