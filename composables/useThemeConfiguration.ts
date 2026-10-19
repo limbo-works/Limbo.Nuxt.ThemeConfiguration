@@ -39,6 +39,7 @@ type ThemeConfigurationOptions = {
 	cssLayer?: string;
 	selector?: string;
 	partial?: boolean;
+	styleTagId?: string;
 };
 
 export function useThemeConfiguration(
@@ -61,6 +62,7 @@ export function useThemeConfiguration(
 			cssLayer: rawOptions.cssLayer,
 			selector: rawOptions.selector,
 			partial: rawOptions.partial ?? false,
+			styleTagId: rawOptions.styleTagId,
 		};
 	});
 
@@ -231,7 +233,7 @@ export function useThemeConfiguration(
 		const scope = opts.value.selector
 			? `${sanitizeKey(opts.value.selector)}-`
 			: '';
-		const baseId = `theme-configuration-${scope}${iteration}`;
+		const baseId = opts.value.styleTagId ? [opts.value.styleTagId, iteration].filter(Boolean).join('-') : `theme-configuration-${scope}${iteration}`;
 		return {
 			style: [
 				cssText.value && {

@@ -10,6 +10,7 @@
 <script setup>
 defineProps({ label: { type: String, required: true } });
 
+const styleTagId = useId();
 useThemeConfiguration({
 	selector: '.class-theme-demo',
 	partial: true,
@@ -18,6 +19,7 @@ useThemeConfiguration({
 			primary: [190, 60, 90],
 		},
 	},
+	styleTagId,
 });
 </script>
 
