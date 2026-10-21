@@ -1018,5 +1018,10 @@ export function useThemeConfiguration(
 		return target;
 	}
 
-	return { compConfig };
+	// A partial theme exposes only the given config; defaults stay internal for base settings
+	const exposedConfig = computed(() =>
+		opts.value.partial ? resolveConfig(opts.value.config) : compConfig.value
+	);
+
+	return { compConfig: exposedConfig };
 }
