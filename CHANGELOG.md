@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.6.1](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v4.6.0...theme-configuration-v4.6.1) (2026-10-21)
+
+
+### Bug Fixes
+
+* **composables:** if partial, only expose the partial config ([fbbdb1a](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/commit/fbbdb1af34c187fd7f443ae5fbeab06b288117a1))
+
 ## [4.6.0](https://github.com/limbo-works/Limbo.Nuxt.ThemeConfiguration/compare/theme-configuration-v4.5.1...theme-configuration-v4.6.0) (2026-10-19)
 
 
