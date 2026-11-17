@@ -9,9 +9,13 @@
 	unless they are added to this file too. Only the values of the keys
 	are overwritten.
 */
-export default {
-	// Testing only - set to false when done testing
-	minify: false, // Can be turned to false for a more readable output in the style tag
+import { defineThemeConfig } from '../../../src/runtime/shared/normalize-theme-configuration.ts';
+
+export default defineThemeConfig({
+	options: {
+		// Testing only - set to false when done testing
+		minify: false, // Can be turned to false for a more readable output in the style tag
+	},
 
 	// Rules
 	colors: {
@@ -39,9 +43,9 @@ export default {
 
 	layout: {
 		margin: {
-			sm: 0,
-			md: 0,
-			lg: 0,
+			375: 0,
+			1440: 0,
+			1920: 0,
 		},
 	},
-};
+});

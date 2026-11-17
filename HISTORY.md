@@ -1,10 +1,10 @@
 # History of Theme Configuration
 
-The Theme Configuration system represents a significant evolution in how Limbo Works approaches design consistency and theming across projects. What started as a need for consistent styling has grown into a comprehensive design system that bridges the gap between design tools and development workflows.
+Theme Configuration centralizes design tokens and turns them into responsive CSS variables and utility-friendly values. This page summarizes its evolution; [CHANGELOG.md](./CHANGELOG.md) records released versions and individual changes.
 
 ## The Beginning: A Need for Consistency (Pre-2023)
 
-The concept of "Theme Configuration" at Limbo Works has its roots much earlier than the current Nuxt 3 implementation. In the early days of web development at Limbo Works, maintaining consistent themes across multiple projects was a constant challenge. Each project would have its own approach to colors, typography, spacing, and responsive design, leading to:
+The concept of "Theme Configuration" at Limbo Works predates the Nuxt package. Projects used different approaches to colors, typography, spacing, and responsive design, leading to:
 
 - Duplicated CSS code across projects
 - Inconsistent design implementations
@@ -15,13 +15,13 @@ The initial concept of "Theme Configuration" emerged from the need to centralize
 
 ## Early Implementations (Pre-Nuxt Era)
 
-Before the current Nuxt 3 implementation, theme configuration concepts were already being used in Limbo Works projects:
+Before the Nuxt implementation, theme configuration concepts were already being used in Limbo Works projects:
 
 - **Umbraco Projects**: Early versions of theme configuration concepts were implemented in Umbraco-based websites, including projects like the Odsherred Kommune Website (Umbraco 9), where the foundational ideas of centralized theming and design consistency were first explored
 - **Standalone Components**: Theme configuration was developed as standalone components and utilities that could be integrated into various project types
 - **Framework-Agnostic Approach**: The initial implementations focused on creating reusable theming solutions that weren't tied to specific frameworks
 
-These early implementations established the core principles that would later evolve into the sophisticated Nuxt 3 system we have today.
+These early implementations established principles later used by the Nuxt package. The repository changelog does not document these earlier projects.
 
 ## Transition to Modern Framework Integration (2023)
 
@@ -29,7 +29,7 @@ The transition to a Nuxt 3-specific implementation marked a significant evolutio
 
 - **Nuxt 3+ Integration**: Built specifically for the Nuxt 3 ecosystem, taking advantage of its composables and component architecture
 - **CSS Custom Properties**: Enhanced use of CSS variables for dynamic theming and runtime customization
-- **Tailwind CSS Integration**: Seamlessly integrated with Tailwind CSS for utility-first styling
+- **Tailwind CSS Integration**: Earlier implementations supported Tailwind CSS for utility-first styling. This support is removed in the upcoming v5 release.
 
 The system maintained focus on core design tokens established in earlier versions:
 
@@ -94,77 +94,39 @@ The formal Nuxt 3 package and versioning began with the 2.0 release series, buil
 
 - **Configuration Key Management**: Enhanced tracking of configuration changes
 
-## Integration with Design Tokens and Figma
+### Later v2 releases (October–November 2025)
 
-One of the most significant developments in the Theme Configuration system has been its integration with design tokens exported from Figma. This integration represents a complete paradigm shift in the design-to-development workflow:
+The 2.7.3 and 2.7.4 releases addressed cleanup and Nuxt configuration, while 2.8 added utility functions and subsequent fixes.
 
-### The Design Token Revolution
+## v3: Theme Classes and Additional Sources (2025–2026)
 
-Modern design teams work extensively in Figma, creating detailed design systems with:
+- **v3.0.0 (November 2025)** changed listed RGB colors from comma-separated to space-separated values for newer UnoCSS compatibility. The release changelog also records theme-class generation and earlier theme-access capabilities.
+- **v3.1.0 (December 2025)** added configuration for additional theme sources, with local files taking precedence.
+- **v3.2–3.3 (January–February 2026)** focused on efficiency and dynamic style handling.
+- **v3.4–3.6 (February–March 2026)** added an option to omit breakpoint-specific custom properties, direct theme extraction, and font-size limits.
 
-- Semantic color tokens (primary, secondary, surface, etc.)
-- Typography scales with responsive sizing
-- Spacing systems and layout grids
-- Component-specific styling rules
+## v4: Nuxt 4 and Scoped Themes (2026)
 
-### Bridging Design and Development
+- **v4.0.0 (March 2026)** upgraded to Nuxt 4, moved helper files to `assets/js`, and exposed theme generation through a composable.
+- **v4.1 (May 2026)** expanded `text-min-*` and `text-max-*` utilities.
+- **v4.2–4.4 (May–August 2026)** included performance work, fixes, and stronger TypeScript usage.
+- **v4.5–4.6 (October 2026)** added selector-based scoping and custom style-tag IDs, with fixes for partial configuration exposure.
 
-The Theme Configuration system now serves as the bridge between Figma design tokens and production code:
+See [CHANGELOG.md](./CHANGELOG.md) for all releases, dates, and fixes.
 
-1. **Token Export**: Design tokens are exported from Figma using specialized plugins
-2. **Configuration Translation**: These tokens are transformed into Theme Configuration format
-3. **Automated Integration**: The system automatically generates CSS variables and Tailwind utilities
-4. **Component Integration**: Vue components can consume these tokens through the `ThemeConfiguration` component
+## Upcoming v5: Nuxt Module and New Theme Format
 
-### The Modern Workflow
+The v5 work described in [README.md](./README.md) is not yet a released version:
 
-Today, a typical project workflow looks like:
+- The Nuxt layer becomes a module, with shared settings in `nuxt.config.themeConfiguration`.
+- Theme settings move under `options`, and responsive values use numeric viewport widths with configurable named breaks.
+- Tailwind support, separate horizontal/vertical spacing, and the `background` section are removed. Grid counts move from configuration to individual utilities such as `w-4/12col`.
+- Section rule plugins can extend or replace built-in generation. UnoCSS integration uses the selected source theme, `default` unless `sources.unoTheme` is configured.
+- Theme discovery supports configured folders, files, globs, and build-time transformers. Runtime switching, scoped themes, theme classes, media overrides, and SSR remain supported.
+- Native container queries support named and numeric thresholds. Their thresholds are build-time values; dynamic `@X/Ycol:` queries are not provided.
 
-1. **Design Phase**: Designers create and maintain design tokens in Figma
-2. **Token Export**: Design tokens are exported and converted to Theme Configuration format
-3. **Development Integration**: Developers use the `ThemeConfiguration` component to apply themes
-4. **Automatic Generation**: CSS variables and utility classes are automatically generated
-5. **Responsive Implementation**: Media-specific configurations ensure proper responsive behavior
+See the [v4-to-v5 migration guide](./README.md#migration-from-v4-to-v5) for breaking changes and upgrade steps.
 
-## Current State: A Complete Design System
+## Design Token Workflow
 
-Building upon years of development and refinement across multiple project types and frameworks, the Theme Configuration system has evolved into a comprehensive design system that handles:
-
-### Core Features
-
-- **Dynamic Theming**: Runtime theme switching and customization
-- **Responsive Design**: Breakpoint-specific configurations
-- **Media Context Awareness**: Different themes for print, screen, and other media
-- **Component Integration**: Seamless Vue component integration
-- **Utility Generation**: Automatic Tailwind CSS utility creation
-
-### Advanced Capabilities
-
-- **Font Style Management**: Complete typography system with weights, styles, and transforms
-- **Color System**: Sophisticated color management with opacity support
-- **Layout Systems**: Grid systems, spacing, and container management
-- **Print Optimization**: Specialized configurations for print media
-- **Development Tools**: Comprehensive utility functions for theme access and manipulation
-
-### Architecture Benefits
-
-- **Type Safety**: Structured configuration prevents errors
-- **Performance**: Optimized CSS generation and injection
-- **Maintainability**: Centralized theme management
-- **Scalability**: Easy addition of new projects and themes
-- **Consistency**: Guaranteed design consistency across projects
-
-## Looking Forward
-
-The Theme Configuration system represents more than just a technical solution—it embodies years of evolution and a philosophy of design-development collaboration. Starting from early experiments in Umbraco projects and evolving through standalone implementations to its current sophisticated Nuxt 3 form, it has fundamentally changed how Limbo Works approaches project development.
-
-By creating a seamless bridge between design tools like Figma and development frameworks, it builds upon a foundation of lessons learned from multiple project types and framework implementations.
-
-The system continues to evolve, with ongoing improvements in:
-
-- Integration with new design tools and workflows
-- Performance optimizations for large-scale applications
-- Enhanced developer experience and debugging tools
-- Expanded support for emerging CSS features and design patterns
-
-What began as a simple need for consistent theming across early projects has grown into a sophisticated design system that exemplifies modern web development best practices, proving that the right abstractions, refined over time and across multiple implementations, can transform entire workflows and improve both design quality and development efficiency.
+Projects can export tokens from design tools such as Figma and transform them into the theme format. In v5, a project can configure a build-time transformer for one or multiple source files; the package does not automatically interpret TokenTransformer or Figma export formats. The resulting themes are bundled for SSR and client use, and runtime theme changes update existing CSS variables.

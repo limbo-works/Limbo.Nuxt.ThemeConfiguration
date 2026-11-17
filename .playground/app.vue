@@ -1,34 +1,55 @@
 <template>
 	<div>
 		<ThemeConfiguration
-			ref="themeConfiguration"
+			:config="selectedTheme"
 			use-theme-classes
 			:media="{ print: 'print' }"
 		/>
 
-		<!-- Hero -->
-		<header class="hero bg-primary px-layout-margin py-layout-gutter">
-			<p class="hero__overline text-caption text-onSurfacePrimaryMedium">
-				Limbo.Nuxt.ThemeConfiguration
-			</p>
-			<h1 class="hero__title text-h2 text-onSurfacePrimary">
-				Theme Configuration Playground
-			</h1>
-			<p class="hero__sub text-body2 text-onSurfacePrimaryMedium">
-				Responsive typography &middot; CSS variable theming &middot;
-				Min/max constraints
-			</p>
+		<header class="hero">
+			<div class="hero__content">
+				<p class="hero__overline">Limbo / developer playground</p>
+				<h1 class="hero__title">Theme Configuration</h1>
+				<p class="hero__sub">
+					Explore generated utilities, responsive tokens and live
+					theme overrides. Resize the viewport or use the controls to
+					see changes.
+				</p>
+				<div class="hero__controls">
+					<label for="theme-select">Global theme</label>
+					<select id="theme-select" v-model="selectedTheme">
+						<option value="default">Default</option>
+						<option value="citiDefault">Citi default</option>
+						<option value="print">Print</option>
+						<option value="tokenBundle">
+							Transformed token bundle
+						</option>
+					</select>
+					<span>Theme values update without a page reload.</span>
+				</div>
+				<nav class="hero__nav" aria-label="Playground sections">
+					<a href="#verification">Live checks</a>
+					<a href="#typography">Typography</a>
+					<a href="#colors">Colors</a>
+					<a href="#layout">Layout</a>
+					<a href="#scopes">Scopes</a>
+				</nav>
+			</div>
 		</header>
 
-		<!-- Section: Typography -->
-		<section class="section px-layout-margin py-layout-gutter">
+		<ThemeVerification />
+
+		<section
+			id="typography"
+			class="section px-layout-margin py-layout-gutter"
+		>
 			<h2 class="section__title text-h4 text-onSurface">
 				Typography Scale
 			</h2>
 			<p class="section__intro text-body2 text-onSurfaceVariant">
-				All sizes are fluid, scaling between
-				<code>smViewport</code> (375px) and
-				<code>lgViewport</code> (1920px).
+				Resize the viewport to see each utility interpolate between its
+				configured sizes. Labels show default-theme endpoints at 375px
+				and 1920px.
 			</p>
 
 			<div class="type-stack">
@@ -38,7 +59,7 @@
 						>{{ size.label }}</span
 					>
 					<p
-						:class="`text-${size.key} text-onSurface`"
+						:class="[size.utility, 'text-onSurface']"
 						class="type-row__sample"
 					>
 						{{ size.sample }}
@@ -108,11 +129,11 @@
 		</section>
 
 		<!-- Section: Colors -->
-		<section class="section px-layout-margin py-layout-gutter">
+		<section id="colors" class="section px-layout-margin py-layout-gutter">
 			<h2 class="section__title text-h4 text-onSurface">Color System</h2>
 			<p class="section__intro text-body2 text-onSurfaceVariant">
-				Background and text colors defined in the theme config,
-				available as UnoCSS utilities.
+				Background colors defined in the theme config, available as
+				UnoCSS utilities. Labels use a fixed backing for readability.
 			</p>
 
 			<div class="color-groups">
@@ -227,6 +248,7 @@
 
 		<!-- Section: Layout spacing -->
 		<section
+			id="layout"
 			class="section section--tinted px-layout-margin py-layout-gutter"
 		>
 			<h2 class="section__title text-h4 text-onSurface">
@@ -262,36 +284,30 @@
 		</section>
 
 		<!-- Section: Theme scope -->
-		<section class="section px-layout-margin py-layout-gutter">
+		<section id="scopes" class="section px-layout-margin py-layout-gutter">
 			<h2 class="section__title text-h4 text-onSurface">Theme Scope</h2>
 			<p class="section__intro text-body2 text-onSurfaceVariant">
-				Use <code>bg-scope-*</code> to scope CSS variable overrides to a
-				subtree.
+				The same <code>text-contrast</code> utility resolves to
+				different colors inside each background scope.
 			</p>
 
 			<div class="scope-demo">
-				<div class="scope-demo__pane bg-primary bg-scope-primary">
-					<p class="text-h4 text-onSurfacePrimary scope-demo__label">
-						bg-scope-primary
+				<div class="scope-demo__pane bg-testPanel bg-scope-testPanel">
+					<p class="text-h4 text-contrast scope-demo__label">
+						bg-scope-testPanel
 					</p>
-					<p
-						class="text-body2 text-onSurfacePrimaryMedium scope-demo__body"
-					>
-						Text colors shift to ensure contrast against the primary
-						background.
+					<p class="text-body2 text-contrast scope-demo__body">
+						Uses the contrast color configured for testPanel.
 					</p>
 				</div>
-				<div class="scope-demo__pane bg-fishStick bg-scope-fishStick">
-					<p
-						class="text-h4 text-onSurfaceFishStick scope-demo__label"
-					>
-						bg-scope-fishStick
+				<div
+					class="scope-demo__pane bg-testPanelAlt bg-scope-testPanelAlt"
+				>
+					<p class="text-h4 text-contrast scope-demo__label">
+						bg-scope-testPanelAlt
 					</p>
-					<p
-						class="text-body2 text-onSurfaceFishStick scope-demo__body"
-					>
-						Text colors shift to ensure contrast against the
-						fishStick background.
+					<p class="text-body2 text-contrast scope-demo__body">
+						The same utility now uses testPanelAlt's contrast color.
 					</p>
 				</div>
 			</div>
@@ -307,7 +323,7 @@
 			<p class="section__intro text-body2 text-onSurfaceVariant">
 				<code>useThemeConfiguration</code> with the
 				<code>selector</code> option scopes a theme to a class. Both
-				instances below share one style tag.
+				instances below receive the same scoped CSS.
 			</p>
 
 			<div class="scope-demo">
@@ -315,38 +331,71 @@
 				<ClassThemeDemo label="Instance 2" />
 			</div>
 		</section>
+		<section class="section px-layout-margin py-layout-gutter">
+			<h2 class="section__title text-h4 text-onSurface">
+				Pluggable rules and named breaks
+			</h2>
+			<p
+				data-testid="dynamic-breaks"
+				class="text-body2 p-demo duration-theme-fast"
+				style="transition-property: padding"
+			>
+				Four named breaks produce three spacing ramps. Project motion
+				plugin supplies both CSS variables and UnoCSS utilities.
+			</p>
+		</section>
 	</div>
 </template>
 
 <script setup>
-const themeConfiguration = ref(null);
+const selectedTheme = ref('default');
 
 const fontSizes = [
-	{ key: 'h1', label: 'h1 — 30→64px', sample: 'The quick brown fox' },
-	{ key: 'h2', label: 'h2 — 25→48px', sample: 'The quick brown fox' },
-	{ key: 'h3', label: 'h3 — 18→32px', sample: 'The quick brown fox jumps' },
+	{
+		key: 'h1',
+		utility: 'text-h1',
+		label: 'h1 — 30→64px',
+		sample: 'The quick brown fox',
+	},
+	{
+		key: 'h2',
+		utility: 'text-h2',
+		label: 'h2 — 25→48px',
+		sample: 'The quick brown fox',
+	},
+	{
+		key: 'h3',
+		utility: 'text-h3',
+		label: 'h3 — 18→32px',
+		sample: 'The quick brown fox jumps',
+	},
 	{
 		key: 'h4',
+		utility: 'text-h4',
 		label: 'h4 — 16→24px',
 		sample: 'The quick brown fox jumps over',
 	},
 	{
 		key: 'body1',
+		utility: 'text-body1',
 		label: 'body1 — 16→24px',
 		sample: 'The quick brown fox jumps over the lazy dog',
 	},
 	{
 		key: 'body2',
+		utility: 'text-body2',
 		label: 'body2 — 14→20px',
 		sample: 'The quick brown fox jumps over the lazy dog',
 	},
 	{
 		key: 'caption',
+		utility: 'text-caption',
 		label: 'caption — 12→14px',
 		sample: 'The quick brown fox jumps over the lazy dog',
 	},
 	{
 		key: 'overline',
+		utility: 'text-overline',
 		label: 'overline — 10→12px',
 		sample: 'THE QUICK BROWN FOX',
 	},
@@ -354,41 +403,97 @@ const fontSizes = [
 </script>
 
 <style scoped>
-/* ─── Base ────────────────────────────────────────────── */
 * {
 	box-sizing: border-box;
 }
 
-/* ─── Hero ────────────────────────────────────────────── */
 .hero {
-	display: flex;
-	flex-direction: column;
-	gap: 0.5rem;
+	padding: clamp(2.5rem, 6vw, 5rem) clamp(1.25rem, 6vw, 6rem);
+	color: #f8f8ff;
+	background: linear-gradient(125deg, #191744, #35317d 65%, #56479a);
+	font-family: ui-sans-serif, system-ui, sans-serif;
+}
+.hero__content {
+	max-width: 90rem;
+	margin: auto;
 }
 .hero__overline {
-	margin: 0;
+	margin: 0 0 1rem;
+	color: #c3bbff;
+	font-size: 0.75rem;
+	font-weight: 700;
 	text-transform: uppercase;
-	letter-spacing: 0.08em;
+	letter-spacing: 0.12em;
 }
 .hero__title {
 	margin: 0;
+	font-size: clamp(2.2rem, 5vw, 4.5rem);
+	line-height: 1.05;
+	letter-spacing: -0.035em;
 }
 .hero__sub {
-	margin: 0;
+	max-width: 42rem;
+	margin: 1rem 0 0;
+	color: #dddaf5;
+	font-size: 1rem;
+	line-height: 1.6;
+}
+.hero__controls {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 0.75rem;
+	margin-top: 1.75rem;
+	font-size: 0.875rem;
+}
+.hero__controls label {
+	font-weight: 700;
+}
+.hero__controls select {
+	padding: 0.6rem 2rem 0.6rem 0.75rem;
+	border: 1px solid #bbb5ec;
+	border-radius: 0.4rem;
+	color: #191744;
+	background: white;
+	font: inherit;
+}
+.hero__controls span {
+	color: #dddaf5;
+}
+.hero__nav {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+	margin-top: 1.75rem;
+}
+.hero__nav a {
+	padding: 0.45rem 0.75rem;
+	border: 1px solid #7770b5;
+	border-radius: 999px;
+	color: white;
+	font-size: 0.8rem;
+	text-decoration: none;
+}
+.hero__nav a:hover,
+.hero__nav a:focus-visible {
+	background: #514a9b;
 }
 
-/* ─── Section ─────────────────────────────────────────── */
 .section {
+	padding-top: clamp(2rem, 4vw, 4rem);
+	padding-bottom: clamp(2rem, 4vw, 4rem);
 	border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 .section--tinted {
 	background: rgba(0, 0, 0, 0.025);
 }
 .section__title {
-	margin: 0 0 0.375rem;
+	margin: 0 0 0.5rem;
 }
 .section__intro {
+	max-width: 54rem;
 	margin: 0 0 1.75rem;
+	line-height: 1.6;
 }
 
 code {
@@ -490,6 +595,12 @@ code {
 	min-width: 7rem;
 	min-height: 4rem;
 }
+.swatch span {
+	padding: 0.15rem 0.4rem;
+	border-radius: 0.25rem;
+	color: white;
+	background: rgba(0, 0, 0, 0.75);
+}
 .swatch--light {
 	border: 1px solid rgba(0, 0, 0, 0.1);
 }
@@ -531,5 +642,14 @@ code {
 }
 .scope-demo__body {
 	margin: 0;
+}
+@media (max-width: 600px) {
+	.type-row {
+		flex-direction: column;
+		gap: 0.4rem;
+	}
+	.type-row__sample {
+		max-width: 100%;
+	}
 }
 </style>
