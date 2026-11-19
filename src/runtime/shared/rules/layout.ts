@@ -8,13 +8,11 @@ import { numericValue } from '../responsive';
 import { defineThemeRule, emptyCss } from '../rule-helpers/types';
 import type { ThemeUnoOutput } from '../adapters/uno.types';
 
+const supportedDimensions = new Set(['margin', 'gutter']);
+
 function layoutDimensions(value: Record<string, unknown>) {
-	if ('columns' in value || 'columnCount' in value)
-		throw new Error(
-			'themeConfiguration: column counts are no longer configured in layout; use classes such as w-1/3col.'
-		);
 	return Object.fromEntries(
-		Object.entries(value).filter(([key]) => key !== 'max')
+		Object.entries(value).filter(([key]) => supportedDimensions.has(key))
 	);
 }
 

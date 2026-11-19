@@ -657,29 +657,41 @@ test('column utilities need no configured count and retain fractional spans with
 	);
 });
 
-test('invalid plugin registrations and removed layout column settings fail explicitly', () => {
+test('invalid plugin registrations fail explicitly', () => {
 	for (const rule of [null, {}, { css: 'not-a-function' }]) {
 		assert.throws(
 			() => resolveRules({ project: rule }),
 			/rule "project".*plugin/
 		);
 	}
-	for (const layout of [
-		{ columns: 12 },
-		{ columns: { 320: 8, 1600: 12 } },
-		{ columnCount: 12 },
-	]) {
-		for (const compile of [generateThemeCss, makeUnoTheme]) {
-			assert.throws(
-				() =>
-					compile({
-						options: { namedBreaks: breaks },
-						layout,
-					}),
-				/column counts are no longer configured in layout/
-			);
-		}
-	}
+});
+
+test('unknown and legacy layout settings are ignored', () => {
+	const config = {
+		options: { namedBreaks: breaks },
+		layout: {
+			margin: 16,
+			gutter: 8,
+			max: 1400,
+			columns: 12,
+			columnCount: 12,
+			viewport: { sm: 320, md: 960 },
+			breakpoints: [320, 960],
+			customLegacySetting: true,
+		},
+	};
+	for (const compile of [generateThemeCss, makeUnoTheme])
+		assert.doesNotThrow(() => compile(config));
+
+	const css = generateThemeCss(config);
+	assert.match(css, /--theme-layout-margin: 16px/);
+	assert.match(css, /--theme-layout-gutter: 8px/);
+	assert.match(css, /--theme-layout-max: 1400px/);
+	assert.doesNotMatch(
+		css,
+		/--theme-layout-(columns|columnCount|breakpoints)/
+	);
+	assert.doesNotMatch(css, /customLegacySetting/);
 });
 
 test('standalone UnoCSS autocomplete suggests layout, backgrounds, negative spacing, and text limits', async () => {
