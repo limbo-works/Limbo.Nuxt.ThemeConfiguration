@@ -50,37 +50,64 @@ export function mergeThemeConfigs(
 	existingOnly = false
 ): ThemeConfiguration {
 	const options = { ...base.options, ...override.options };
+	const baseNamedBreaks = resolveThemeOptions(
+		base.options,
+		defaults
+	).namedBreaks;
+	const namedBreaks = resolveThemeOptions(options, defaults).namedBreaks;
 	const widths = (breaks: Record<string, number>) =>
 		Object.values(breaks)
 			.sort((a, b) => a - b)
 			.join(',');
 	const replaceEndpoints =
 		!!override.options?.namedBreaks &&
-		widths(override.options.namedBreaks) !==
-			widths(resolveThemeOptions(base.options, defaults).namedBreaks);
+		widths(override.options.namedBreaks) !== widths(baseNamedBreaks);
 	return {
-		...mergeRecords(base, override, replaceEndpoints, existingOnly),
+		...mergeRecords(
+			base,
+			override,
+			replaceEndpoints,
+			existingOnly,
+			namedBreaks,
+			baseNamedBreaks
+		),
 		options: defaults ? resolveThemeOptions(options, defaults) : options,
 	};
 }
 
-function isEndpointMap(value: Record<string, unknown>): boolean {
+function isEndpointMap(
+	value: Record<string, unknown>,
+	namedBreaks: Record<string, number>,
+	depth: number
+): boolean {
 	const keys = Object.keys(value);
-	return keys.length > 0 && keys.every((key) => /^\d+(?:\.\d+)?$/.test(key));
+	return (
+		depth >= 2 &&
+		keys.length > 0 &&
+		keys.every(
+			(key) =>
+				/^\d+(?:\.\d+)?$/.test(key) || Object.hasOwn(namedBreaks, key)
+		)
+	);
 }
 
 function mergeRecords(
 	base: Record<string, unknown>,
 	override: Record<string, unknown>,
 	replaceEndpoints: boolean,
-	existingOnly: boolean
+	existingOnly: boolean,
+	namedBreaks: Record<string, number>,
+	baseNamedBreaks: Record<string, number>
 ): Record<string, unknown> {
 	return mergeOverrides(
 		cloneDeep(base),
 		base,
 		override,
 		replaceEndpoints,
-		existingOnly
+		existingOnly,
+		namedBreaks,
+		baseNamedBreaks,
+		0
 	);
 }
 
@@ -89,16 +116,74 @@ function mergeOverrides(
 	base: Record<string, unknown>,
 	override: Record<string, unknown>,
 	replaceEndpoints: boolean,
-	existingOnly: boolean
+	existingOnly: boolean,
+	namedBreaks: Record<string, number>,
+	baseNamedBreaks: Record<string, number>,
+	depth: number
 ): Record<string, unknown> {
 	for (const [key, value] of Object.entries(override)) {
 		if (existingOnly && !(key in base)) continue;
 		const current = base[key];
 		if (Object.is(current, value) && Object.hasOwn(result, key)) continue;
+		const endpointMap =
+			isRecord(value) && isEndpointMap(value, namedBreaks, depth + 1);
+		if (
+			endpointMap &&
+			isRecord(current) &&
+			isEndpointMap(current, baseNamedBreaks, depth + 1) &&
+			!replaceEndpoints
+		) {
+			const merged: Record<string, unknown> = {};
+			const inheritedWidths = new Set<string>();
+			for (const [endpoint, entry] of Object.entries(current)) {
+				const width = String(baseNamedBreaks[endpoint] ?? endpoint);
+				if (inheritedWidths.has(width))
+					throw new Error(
+						`themeConfiguration: duplicate token breakpoint "${endpoint}" for width ${width}.`
+					);
+				inheritedWidths.add(width);
+				const key =
+					Object.hasOwn(baseNamedBreaks, endpoint) &&
+					namedBreaks[endpoint] !== baseNamedBreaks[endpoint]
+						? width
+						: endpoint;
+				merged[key] = cloneDeep(entry);
+			}
+			const seen = new Set<string>();
+			for (const [endpoint, entry] of Object.entries(value)) {
+				const width = String(namedBreaks[endpoint] ?? endpoint);
+				if (seen.has(width))
+					throw new Error(
+						`themeConfiguration: duplicate token breakpoint "${endpoint}" for width ${width}.`
+					);
+				seen.add(width);
+				let inheritedValue: unknown;
+				for (const inherited of Object.keys(merged)) {
+					if (String(namedBreaks[inherited] ?? inherited) === width) {
+						inheritedValue = merged[inherited];
+						delete merged[inherited];
+					}
+				}
+				if (isRecord(inheritedValue) && isRecord(entry)) {
+					merged[endpoint] = mergeOverrides(
+						cloneDeep(inheritedValue),
+						inheritedValue,
+						entry,
+						replaceEndpoints,
+						false,
+						namedBreaks,
+						baseNamedBreaks,
+						depth + 2
+					);
+				} else merged[endpoint] = cloneDeep(entry);
+			}
+			result[key] = merged;
+			continue;
+		}
 		if (
 			isRecord(current) &&
 			isRecord(value) &&
-			!(replaceEndpoints && isEndpointMap(value))
+			!(replaceEndpoints && endpointMap)
 		) {
 			const target = result[key];
 			const plain =
@@ -111,7 +196,10 @@ function mergeOverrides(
 				current,
 				value,
 				replaceEndpoints,
-				existingOnly && !isEndpointMap(value)
+				existingOnly && !endpointMap,
+				namedBreaks,
+				baseNamedBreaks,
+				depth + 1
 			);
 		} else {
 			result[key] = cloneDeep(value);
@@ -120,13 +208,26 @@ function mergeOverrides(
 	return result;
 }
 
-function scopedOverrides(source: unknown, effective: unknown): unknown {
+function scopedOverrides(
+	source: unknown,
+	effective: unknown,
+	namedBreaks: Record<string, number>,
+	depth: number
+): unknown {
 	if (!isRecord(source) || !isRecord(effective)) return source;
 	const keys = Object.keys(source);
 	// A breakpoint map is one token: retain its unmodified endpoints, not unrelated tokens.
-	if (isEndpointMap(source)) return effective;
+	if (isEndpointMap(source, namedBreaks, depth)) return effective;
 	return Object.fromEntries(
-		keys.map((key) => [key, scopedOverrides(source[key], effective[key])])
+		keys.map((key) => [
+			key,
+			scopedOverrides(
+				source[key],
+				effective[key],
+				namedBreaks,
+				depth + 1
+			),
+		])
 	);
 }
 
@@ -137,7 +238,7 @@ export function generateThemeCss(
 	config = normalizeThemeConfiguration(config);
 	const registry = resolveRules(settings.rules);
 	const context = createRuleContext(
-		mergeThemeConfigs(settings.baseConfig ?? {}, config),
+		mergeThemeConfigs(settings.baseConfig ?? {}, config, settings.defaults),
 		'',
 		settings.defaults,
 		registry
@@ -147,7 +248,12 @@ export function generateThemeCss(
 		...Object.keys(registry),
 		...Object.keys(config),
 	])) {
-		const value = scopedOverrides(config[key], context.config[key]);
+		const value = scopedOverrides(
+			config[key],
+			context.config[key],
+			context.options.namedBreaks,
+			1
+		);
 		if (key === 'options' || value === undefined) continue;
 		const plugin = ruleFor(key, registry);
 		if (plugin === undefined)

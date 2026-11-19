@@ -20,22 +20,34 @@ export function tokenPoints(
 		throw new Error(
 			'themeConfiguration: expected responsive token object.'
 		);
-	const allowed = new Set(breaks.map(({ width }) => String(width)));
-	for (const key of Object.keys(value)) {
-		if (!allowed.has(key)) {
+	const byKey = new Map(
+		breaks.flatMap((point) => [
+			[point.name, point] as const,
+			[String(point.width), point] as const,
+		])
+	);
+	const entries = new Map<number, string | number>();
+	for (const [key, entry] of Object.entries(value)) {
+		const point = byKey.get(key);
+		if (!point) {
 			throw new Error(
-				`themeConfiguration: token breakpoint "${key}" is not a configured numeric namedBreaks width.`
+				`themeConfiguration: token breakpoint "${key}" is not a configured namedBreaks name or width.`
 			);
 		}
-	}
-	return breaks.flatMap((point) => {
-		const entry = value[point.width];
-		if (entry === undefined) return [];
+		if (entries.has(point.width))
+			throw new Error(
+				`themeConfiguration: duplicate token breakpoint "${key}" for width ${point.width}.`
+			);
 		if (typeof entry !== 'string' && typeof entry !== 'number') {
 			throw new Error(
 				`themeConfiguration: invalid token value at ${point.width}.`
 			);
 		}
+		entries.set(point.width, entry);
+	}
+	return breaks.flatMap((point) => {
+		const entry = entries.get(point.width);
+		if (entry === undefined) return [];
 		return [{ ...point, value: entry }];
 	});
 }

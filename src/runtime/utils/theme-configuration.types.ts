@@ -3,7 +3,7 @@ import type { ThemeRulePlugin } from '../shared/rule-helpers/types';
 export type ThemeScalar = string | number | boolean | null;
 export type ThemeBreakpointName = string;
 export type ThemeBreakpoints = Record<ThemeBreakpointName, number>;
-export type ThemeResponsive<T> = T | Partial<Record<number, T>>;
+export type ThemeResponsive<T> = T | Partial<Record<string | number, T>>;
 export type ThemeColor =
 	string | number[] | { value: string | number[]; isListedRgb?: boolean };
 export type ThemeDimensions = Record<string, ThemeResponsive<number>>;
@@ -24,7 +24,7 @@ export type ThemeTypography = Record<
 	| Partial<Record<ThemeTypographyProperty, ThemeResponsive<string | number>>>
 	| Partial<
 			Record<
-				number,
+				string | number,
 				Partial<Record<ThemeTypographyProperty, string | number>>
 			>
 	  >

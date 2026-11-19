@@ -289,6 +289,114 @@ test('typography supports property-first, breakpoint-first, shorthand, and midpo
 	assert.deepEqual(config, original);
 });
 
+test('named endpoints work across responsive sections and match numeric endpoints', () => {
+	const options = { namedBreaks: { sm: 375, md: 768, lg: 1920 } };
+	const named = {
+		options,
+		layout: { margin: { sm: 8, lg: 24 } },
+		spacing: { sm: { sm: 4, md: 8, lg: 16 } },
+		borderRadius: { md: { sm: 2, lg: 8 } },
+		fontSize: {
+			title: {
+				sm: { fontSize: 24, fontWeight: 400 },
+				lg: { fontSize: 48, fontWeight: 700 },
+			},
+			body: {
+				fontSize: { sm: 16, lg: 20 },
+				lineHeight: { sm: 1.2, lg: 1.5 },
+			},
+		},
+	};
+	const numeric = {
+		options,
+		layout: { margin: { 375: 8, 1920: 24 } },
+		spacing: { sm: { 375: 4, 768: 8, 1920: 16 } },
+		borderRadius: { md: { 375: 2, 1920: 8 } },
+		fontSize: {
+			title: {
+				375: { fontSize: 24, fontWeight: 400 },
+				1920: { fontSize: 48, fontWeight: 700 },
+			},
+			body: {
+				fontSize: { 375: 16, 1920: 20 },
+				lineHeight: { 375: 1.2, 1920: 1.5 },
+			},
+		},
+	};
+	assert.equal(generateThemeCss(named), generateThemeCss(numeric));
+	assert.throws(
+		() =>
+			generateThemeCss({ options, spacing: { gap: { sm: 8, 375: 9 } } }),
+		/duplicate token breakpoint/
+	);
+});
+
+test('named and numeric endpoint aliases merge across partial and existing-only themes', () => {
+	const defaults = { namedBreaks: { sm: 375, md: 768, lg: 1920 } };
+	const base = {
+		spacing: { sm: { sm: 4, md: 8, lg: 16 }, other: { sm: 2 } },
+		fontSize: {
+			title: {
+				sm: { fontSize: 16 },
+				lg: { fontSize: 32, fontWeight: 700 },
+			},
+		},
+	};
+	const override = {
+		spacing: { sm: { 768: 12 }, newToken: { sm: 1 } },
+		fontSize: { title: { 1920: { fontSize: 40 } } },
+	};
+	for (const existingOnly of [false, true]) {
+		const merged = mergeThemeConfigs(
+			base,
+			override,
+			defaults,
+			existingOnly
+		);
+		assert.deepEqual(merged.spacing.sm, { sm: 4, 768: 12, lg: 16 });
+		assert.equal('newToken' in merged.spacing, !existingOnly);
+		const css = generateThemeCss(override, { baseConfig: base, defaults });
+		assert.match(css, /--theme-spacing-sm--sm: 4px/);
+		assert.match(css, /--theme-spacing-sm--md: 12px/);
+		assert.match(css, /--theme-fontSize-title--sm: 1rem/);
+		assert.match(css, /--theme-fontSize-title--lg: 2.5rem/);
+		assert.match(css, /--theme-fontWeight-title--lg: 700/);
+		assert.doesNotMatch(css, /--theme-spacing-other/);
+	}
+	assert.throws(
+		() =>
+			mergeThemeConfigs(
+				base,
+				{ spacing: { sm: { sm: 8, 375: 9 } } },
+				defaults
+			),
+		/duplicate token breakpoint/
+	);
+	const renamed = mergeThemeConfigs(
+		{
+			options: { namedBreaks: { small: 375, large: 1920 } },
+			spacing: { gap: { small: 4, large: 16 } },
+		},
+		{
+			options: { namedBreaks: { compact: 375, wide: 1920 } },
+			spacing: { gap: { wide: 24 } },
+		}
+	);
+	const renamedCss = generateThemeCss(renamed);
+	assert.match(renamedCss, /--theme-spacing-gap--compact: 4px/);
+	assert.match(renamedCss, /--theme-spacing-gap--wide: 24px/);
+	const changed = mergeThemeConfigs(
+		base,
+		{
+			options: { namedBreaks: { sm: 400, lg: 1200 } },
+			spacing: { sm: { sm: 10, lg: 20 } },
+		},
+		defaults,
+		true
+	);
+	assert.deepEqual(changed.spacing.sm, { sm: 10, lg: 20 });
+});
+
 test('break maps replace defaults, theme options win, and invalid or legacy input fails explicitly', () => {
 	const options = resolveThemeOptions(
 		{ namedBreaks: { only: 600 }, minify: false },
@@ -319,7 +427,7 @@ test('break maps replace defaults, theme options win, and invalid or legacy inpu
 	);
 	assert.throws(
 		() => generateThemeCss(theme({ bad: { sm: 8 } })),
-		/numeric namedBreaks width/
+		/namedBreaks name or width/
 	);
 	assert.throws(
 		() => generateThemeCss(theme({ bad: { 320: Infinity } })),
@@ -394,7 +502,7 @@ test('breakpoint precedence reaches emitted CSS and rejects incompatible inherit
 				{ ...inherited, options: override.options },
 				{ defaults }
 			),
-		/not a configured numeric namedBreaks width/
+		/not a configured namedBreaks name or width/
 	);
 	assert.throws(
 		() => generateThemeCss({ options: { namedBreaks: {} } }, { defaults }),
@@ -416,7 +524,7 @@ test('breakpoint precedence reaches emitted CSS and rejects incompatible inherit
 	);
 	assert.throws(
 		() => generateThemeCss(merged),
-		/not a configured numeric namedBreaks width/
+		/not a configured namedBreaks name or width/
 	);
 });
 
