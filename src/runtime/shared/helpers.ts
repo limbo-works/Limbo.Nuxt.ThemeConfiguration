@@ -3,6 +3,7 @@ export {
 	restructureFontSizeObject,
 	cloneDeep,
 	deepmerge,
+	numericBreakpointWidth,
 	typographyProperties,
 };
 
@@ -10,6 +11,12 @@ type GenericRecord = Record<string, unknown>;
 
 function sanitizeKey(key: string | number) {
 	return String(key).replace(/[^a-zA-Z0-9]/g, '-');
+}
+
+function numericBreakpointWidth(key: string): number | undefined {
+	if (!/^\d+(?:\.\d+)?(?:e[+-]?\d+)?$/i.test(key)) return undefined;
+	const width = Number(key);
+	return Number.isFinite(width) ? width : undefined;
 }
 
 const typographyProperties = [

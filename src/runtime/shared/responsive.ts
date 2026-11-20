@@ -1,4 +1,4 @@
-import { sanitizeKey } from './helpers';
+import { numericBreakpointWidth, sanitizeKey } from './helpers';
 import { isRecord } from './normalize-theme-configuration';
 import { emptyCss } from './rule-helpers/types';
 import type {
@@ -26,12 +26,20 @@ export function tokenPoints(
 			[String(point.width), point] as const,
 		])
 	);
-	const entries = new Map<number, string | number>();
+	const entries = new Map<number, ThemePoint>();
 	for (const [key, entry] of Object.entries(value)) {
-		const point = byKey.get(key);
+		const numericWidth = numericBreakpointWidth(key);
+		const point =
+			byKey.get(key) ??
+			(numericWidth === undefined
+				? undefined
+				: (byKey.get(String(numericWidth)) ?? {
+						name: String(numericWidth).replace('e+', 'e'),
+						width: numericWidth,
+					}));
 		if (!point) {
 			throw new Error(
-				`themeConfiguration: token breakpoint "${key}" is not a configured namedBreaks name or width.`
+				`themeConfiguration: token breakpoint "${key}" must be a configured namedBreaks name or a nonnegative finite numeric width.`
 			);
 		}
 		if (entries.has(point.width))
@@ -43,13 +51,9 @@ export function tokenPoints(
 				`themeConfiguration: invalid token value at ${point.width}.`
 			);
 		}
-		entries.set(point.width, entry);
+		entries.set(point.width, { ...point, value: entry });
 	}
-	return breaks.flatMap((point) => {
-		const entry = entries.get(point.width);
-		if (entry === undefined) return [];
-		return [{ ...point, value: entry }];
-	});
+	return [...entries.values()].sort((a, b) => a.width - b.width);
 }
 
 export function numericValue(value: unknown): number {
@@ -138,7 +142,7 @@ export function generateResponsiveRules(
 			for (const point of points) {
 				emit(
 					output.base,
-					`${property}--${point.name}`,
+					`${property}--${sanitizeKey(point.name)}`,
 					formatted(point.value)
 				);
 			}

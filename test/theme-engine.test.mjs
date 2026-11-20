@@ -331,6 +331,88 @@ test('named endpoints work across responsive sections and match numeric endpoint
 	);
 });
 
+test('independent numeric endpoints work with named endpoints across responsive sections', () => {
+	const options = { namedBreaks: { sm: 375, md: 768, lg: 1920 } };
+	const css = generateThemeCss({
+		options,
+		layout: { margin: { sm: 8, 1440: 24 } },
+		spacing: { gap: { 0: 4, md: 8, 1440: 16, 1920: 24 } },
+		borderRadius: { card: { 375: 2, 1440.5: 8 } },
+		fontSize: {
+			title: {
+				sm: { fontSize: 24, fontWeight: 400 },
+				1440: { fontSize: 48, fontWeight: 700 },
+			},
+			body: {
+				fontSize: { 375: 16, 1440: 20 },
+				lineHeight: { 375: 1.2, 1440: 1.5 },
+			},
+		},
+	});
+	assert.match(css, /--theme-layout-margin--1440: 24px/);
+	assert.match(css, /--theme-spacing-gap--0: 4px/);
+	assert.match(css, /--theme-spacing-gap--md: 8px/);
+	assert.match(css, /--theme-spacing-gap--1440: 16px/);
+	assert.match(css, /--theme-spacing-gap--lg: 24px/);
+	assert.match(css, /--theme-borderRadius-card--1440-5: 8px/);
+	assert.match(css, /--theme-fontSize-title--1440: 3rem/);
+	assert.match(css, /--theme-fontSize-body--1440: 1.25rem/);
+	assert.match(css, /min-width: 90em/);
+	const title = css
+		.split('\n')
+		.find((line) => line.includes('--theme-fontSize-title:'));
+	assert.ok(Math.abs(clampAt(title, 1440) - 48) < 0.001);
+	for (const key of ['-1', 'Infinity', '1e999', 'unknown']) {
+		assert.throws(
+			() => generateThemeCss({ options, spacing: { gap: { [key]: 8 } } }),
+			/configured namedBreaks name or a nonnegative finite numeric width/
+		);
+	}
+	assert.throws(
+		() =>
+			generateThemeCss({
+				options,
+				spacing: { gap: { 1440: 8, '1440.0': 9 } },
+			}),
+		/duplicate token breakpoint/
+	);
+	assert.throws(
+		() =>
+			generateThemeCss({
+				options,
+				spacing: { gap: { md: 8, '768.0': 9 } },
+			}),
+		/duplicate token breakpoint/
+	);
+	const scientific = generateThemeCss({
+		options,
+		spacing: { tiny: { '1e-7': 4 }, huge: { '1e+21': 8 } },
+	});
+	assert.match(scientific, /--theme-spacing-tiny--1e-7: 4px/);
+	assert.match(scientific, /--theme-spacing-huge--1e21: 8px/);
+});
+
+test('independent numeric endpoints merge and survive breakpoint map changes', () => {
+	const base = {
+		options: { namedBreaks: { sm: 375, lg: 1920 } },
+		spacing: { gap: { sm: 8, 1440: 16, lg: 24 } },
+	};
+	const override = { spacing: { gap: { '1440.0': 20 } } };
+	const css = generateThemeCss(override, { baseConfig: base });
+	assert.match(css, /--theme-spacing-gap--sm: 8px/);
+	assert.match(css, /--theme-spacing-gap--1440: 20px/);
+	assert.match(css, /--theme-spacing-gap--lg: 24px/);
+	const changed = generateThemeCss(
+		{
+			options: { namedBreaks: { phone: 400, desktop: 1200 } },
+			spacing: { gap: { 375: 8, 1440: 24 } },
+		},
+		{ baseConfig: base }
+	);
+	assert.match(changed, /--theme-spacing-gap--375: 8px/);
+	assert.match(changed, /--theme-spacing-gap--1440: 24px/);
+});
+
 test('named and numeric endpoint aliases merge across partial and existing-only themes', () => {
 	const defaults = { namedBreaks: { sm: 375, md: 768, lg: 1920 } };
 	const base = {
@@ -427,7 +509,7 @@ test('break maps replace defaults, theme options win, and invalid or legacy inpu
 	);
 	assert.throws(
 		() => generateThemeCss(theme({ bad: { sm: 8 } })),
-		/namedBreaks name or width/
+		/configured namedBreaks name or a nonnegative finite numeric width/
 	);
 	assert.throws(
 		() => generateThemeCss(theme({ bad: { 320: Infinity } })),
@@ -481,7 +563,7 @@ test('media queries retain em thresholds derived from baseFontSize', () => {
 	assert.match(css, /min-width: 24em/);
 });
 
-test('breakpoint precedence reaches emitted CSS and rejects incompatible inherited tokens', () => {
+test('breakpoint precedence reaches emitted CSS and preserves independent numeric tokens', () => {
 	const defaults = { namedBreaks: { compact: 360, wide: 1280 } };
 	const inherited = { spacing: { gap: { 360: 8, 1280: 24 } } };
 	const inheritedCss = generateThemeCss(inherited, { defaults });
@@ -496,13 +578,12 @@ test('breakpoint precedence reaches emitted CSS and rejects incompatible inherit
 	const overriddenCss = generateThemeCss(override, { defaults });
 	assert.match(overriddenCss, /--theme-spacing-gap--phone: 12px/);
 	assert.doesNotMatch(overriddenCss, /--compact|--wide/);
-	assert.throws(
-		() =>
-			generateThemeCss(
-				{ ...inherited, options: override.options },
-				{ defaults }
-			),
-		/not a configured namedBreaks name or width/
+	assert.match(
+		generateThemeCss(
+			{ ...inherited, options: override.options },
+			{ defaults }
+		),
+		/--theme-spacing-gap--360: 8px/
 	);
 	assert.throws(
 		() => generateThemeCss({ options: { namedBreaks: {} } }, { defaults }),
@@ -522,9 +603,17 @@ test('breakpoint precedence reaches emitted CSS and rejects incompatible inherit
 		override,
 		defaults
 	);
+	assert.match(
+		generateThemeCss(merged),
+		/--theme-spacing-untouched--360: 4px/
+	);
 	assert.throws(
-		() => generateThemeCss(merged),
-		/not a configured namedBreaks name or width/
+		() =>
+			generateThemeCss({
+				options: override.options,
+				spacing: { gap: { compact: 8 } },
+			}),
+		/configured namedBreaks name/
 	);
 });
 

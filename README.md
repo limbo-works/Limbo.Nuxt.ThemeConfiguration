@@ -430,7 +430,7 @@ Module-only settings do **not** go inside theme files:
 
 Rounding preserves an unrounded declaration as fallback, then emits a CSS `round()` declaration inside `@supports`. It applies to dimension/font-size output, not step-based typography. Custom plugin CSS is rounded only if the plugin uses the shared responsive helper in fluid mode.
 
-Options live under `options`. Token breakpoint keys can be configured names or their numeric widths. Names also determine CSS property suffixes.
+Options live under `options`. Token breakpoint keys can be configured names or nonnegative finite numeric widths, including widths not listed in `namedBreaks`.
 
 ```ts
 import { defineThemeConfig } from '@limbo-works/theme-configuration/config';
@@ -441,8 +441,8 @@ export default defineThemeConfig({
 	},
 	spacing: {
 		page: { phone: 16, tablet: 24, desktop: 48, wide: 64 },
-		// Missing intermediate breaks: one ramp from 360 to 1920.
-		compact: { 360: 8, 1920: 24 },
+		// Numeric widths need not appear in namedBreaks.
+		compact: { 360: 8, 1280: 16, 1920: 24 },
 		fixed: 12,
 	},
 });
@@ -450,16 +450,17 @@ export default defineThemeConfig({
 
 - Each adjacent pair of **supplied token endpoints** creates one fluid segment. Four endpoints produce three segments; two produce one.
 - Named and numeric keys can be mixed, but specifying both for the same width in one token is an error.
+- Endpoint suffixes use the configured name when its width matches, otherwise the numeric width (for example `--1440` or `--1440-5` for 1440.5).
 - Values clamp below the first and above the last supplied endpoint. One endpoint, or a scalar, produces a constant.
 - Increasing, decreasing, and constant segments are supported.
 - Dimension endpoints are finite numbers, not CSS strings such as `'16px'`. Spacing, radii, and layout dimensions use pixels; font-size endpoints are converted to `rem`. Zero is valid.
 - Font sizes use fluid `rem` values. Other typography properties retain midpoint switches between their supplied endpoints.
 - A step switches to the right-hand value at the exact midpoint. Sparse step tokens use the midpoint of their supplied endpoints, not every intervening named break.
-- Media thresholds retain font-relative behavior: each configured width (or midpoint) is divided by `baseFontSize` and emitted in `em`. For example, 640 with `baseFontSize: 20` becomes `32em`, which matches 512 CSS pixels when the browser's initial font size is 16px. `baseFontSize` also controls font-token conversion to `rem`.
+- Media thresholds retain font-relative behavior: each endpoint width (or midpoint) is divided by `baseFontSize` and emitted in `em`. For example, 640 with `baseFontSize: 20` becomes `32em`, which matches 512 CSS pixels when the browser's initial font size is 16px. `baseFontSize` also controls font-token conversion to `rem`.
 - Responsive width queries are not restricted to `screen`; they can match print too. `namedBreaks` controls theme calculations, not UnoCSS's `sm:`/`md:` variants. Configure UnoCSS breakpoints separately when those should match.
 - Layout column widths support arbitrary break names; each utility specifies its own column count.
 - Partial themes merge supplied endpoint overrides into base tokens, then emit only the selected tokens. Base settings and unsupplied endpoints remain available.
-- Empty, duplicate-width, or invalid break maps and unconfigured token names or widths throw descriptive errors.
+- Empty, duplicate-width, or invalid break maps, unconfigured token names, and invalid numeric widths throw descriptive errors.
 
 ### Breakpoint inheritance
 
@@ -468,7 +469,7 @@ Effective break map precedence is: active theme's explicit `options.namedBreaks`
 - If Nuxt defines `{ compact: 360, wide: 1280 }` and a theme defines `{ phone: 400, desktop: 1200 }`, that theme uses only 400 and 1200. Names and widths from the Nuxt map are not added.
 - If a theme omits `namedBreaks`, it inherits the applicable base/default settings. If no theme or module defines breaks, built-in `{ sm: 375, md: 1440, lg: 1920 }` applies.
 - Explicit `namedBreaks: {}` is invalid; it does not mean "inherit" or "disable responsiveness".
-- Token endpoint keys must match the effective names or widths. Named keys resolve to their effective widths; numeric keys are not rescaled. Supplied endpoint maps replace inherited endpoints when widths change, but untouched inherited tokens with unconfigured names or widths still throw and must be updated.
+- Named endpoint keys must match the effective names. Numeric keys specify widths directly and are not rescaled or restricted to the named map. Supplied endpoint maps replace inherited endpoints when the named width set changes; untouched inherited tokens with unconfigured names still throw and must be updated.
 
 Built-in sections are enabled by default: `colors`, `backgroundColors`, `textColors`, `borderColors`, `layout`, `spacing`, `borderRadius`, `fontSize`, `fontStyles`, individual typography property groups, and `containers`. Additional `*Colors` groups retain automatic color handling.
 
@@ -1021,7 +1022,7 @@ export default defineThemeConfig({
 - **Variables are missing:** registering the module or UnoCSS helpers alone does not emit runtime variable definitions. Mount `<ThemeConfiguration>` or call `useThemeConfiguration` in the relevant Vue setup scope. Without Nuxt, supply CSS definitions separately.
 - **A utility is missing:** add its token name to the selected UnoCSS theme (`default` unless `sources.unoTheme` is set) and restart development/build. A runtime or API-provided theme can change values, not the compiled utility inventory. For dynamically constructed class strings, configure UnoCSS extraction/safelisting as required.
 - **CSS works but editor suggestions are missing:** ensure the editor can load the same UnoCSS config/preset. Use manual helper registration with `uno: false` if the editor does not run Nuxt hooks.
-- **A breakpoint error appears after changing options:** every token endpoint must belong to the effective break map, including inherited tokens. Rename/replace endpoint keys rather than expecting automatic conversion.
+- **A breakpoint error appears after changing options:** named endpoints, including inherited tokens, must belong to the effective break map. Rename/replace invalid names or use numeric widths.
 - **Two scoped themes interfere:** use distinct selectors and `styleTagId` values, check CSS layer/cascade order, and avoid emitting unscoped theme classes from a component intended to be isolated.
 - **A cleared theme is unavailable synchronously:** reload it with `getThemeConfigurationAsync` or `$loadTheme`. Clearing the cache does not reset styles already registered by a component.
 
@@ -1080,7 +1081,7 @@ export default defineThemeConfig({
 
 Responsive endpoint keys in `layout`, `spacing`, `fontSize`/`fontStyles`, individual typography groups, and `borderRadius` can use configured names or numeric widths, including breakpoint-first typography objects. Do **not** rename token names such as `spacing.md`. To keep existing CSS suffixes (`--sm`, `--md`, `--lg`), retain those names in `namedBreaks`.
 
-Shared options can instead move into `nuxt.config.ts` under `themeConfiguration`. A theme's explicit options override module settings. Custom break maps do not merge with defaults. When a theme changes the breakpoint width set, its supplied responsive maps replace old endpoints rather than merging incompatible widths. Update inherited tokens whose names or numeric widths are no longer configured.
+Shared options can instead move into `nuxt.config.ts` under `themeConfiguration`. A theme's explicit options override module settings. Custom break maps do not merge with defaults. When a theme changes the breakpoint width set, its supplied responsive maps replace old endpoints rather than merging incompatible widths. Update inherited tokens whose names are no longer configured; numeric widths remain valid.
 
 ### 3. Consolidate spacing and remove obsolete integrations
 

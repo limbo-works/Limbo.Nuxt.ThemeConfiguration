@@ -3,7 +3,7 @@ import {
 	normalizeThemeConfiguration,
 	resolveThemeOptions,
 } from './normalize-theme-configuration';
-import { cloneDeep } from './helpers';
+import { cloneDeep, numericBreakpointWidth } from './helpers';
 import { generateResponsiveRules } from './responsive';
 import { mergeCss } from './rule-helpers/types';
 import { resolveRules, ruleFor } from './rule-helpers/registry';
@@ -86,7 +86,8 @@ function isEndpointMap(
 		keys.length > 0 &&
 		keys.every(
 			(key) =>
-				/^\d+(?:\.\d+)?$/.test(key) || Object.hasOwn(namedBreaks, key)
+				numericBreakpointWidth(key) !== undefined ||
+				Object.hasOwn(namedBreaks, key)
 		)
 	);
 }
@@ -136,7 +137,11 @@ function mergeOverrides(
 			const merged: Record<string, unknown> = {};
 			const inheritedWidths = new Set<string>();
 			for (const [endpoint, entry] of Object.entries(current)) {
-				const width = String(baseNamedBreaks[endpoint] ?? endpoint);
+				const width = String(
+					baseNamedBreaks[endpoint] ??
+						numericBreakpointWidth(endpoint) ??
+						endpoint
+				);
 				if (inheritedWidths.has(width))
 					throw new Error(
 						`themeConfiguration: duplicate token breakpoint "${endpoint}" for width ${width}.`
@@ -151,7 +156,11 @@ function mergeOverrides(
 			}
 			const seen = new Set<string>();
 			for (const [endpoint, entry] of Object.entries(value)) {
-				const width = String(namedBreaks[endpoint] ?? endpoint);
+				const width = String(
+					namedBreaks[endpoint] ??
+						numericBreakpointWidth(endpoint) ??
+						endpoint
+				);
 				if (seen.has(width))
 					throw new Error(
 						`themeConfiguration: duplicate token breakpoint "${endpoint}" for width ${width}.`
@@ -159,7 +168,13 @@ function mergeOverrides(
 				seen.add(width);
 				let inheritedValue: unknown;
 				for (const inherited of Object.keys(merged)) {
-					if (String(namedBreaks[inherited] ?? inherited) === width) {
+					if (
+						String(
+							namedBreaks[inherited] ??
+								numericBreakpointWidth(inherited) ??
+								inherited
+						) === width
+					) {
 						inheritedValue = merged[inherited];
 						delete merged[inherited];
 					}
