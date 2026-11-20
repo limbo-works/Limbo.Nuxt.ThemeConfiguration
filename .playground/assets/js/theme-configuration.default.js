@@ -9,43 +9,53 @@
 	unless they are added to this file too. Only the values of the keys
 	are overwritten.
 */
-export default {
-	// Testing only - set to false when done testing
-	minify: false, // Can be turned to false for a more readable output in the style tag
-	round: '1px', // Round to nearest pixel
-	disableBreakpointSpecificCustomProperties: false, // Enable this setting to disable breakpoint-specific custom properties
+import { defineThemeConfig } from '../../../src/runtime/shared/normalize-theme-configuration.ts';
+import verificationTheme from './verification-theme';
 
-	// Setup
-	baseFontSize: 16, // For rem conversion
+export default defineThemeConfig({
+	options: {
+		// Testing only - set to false when done testing
+		minify: false, // Can be turned to false for a more readable output in the style tag
+		round: '1px', // Round to nearest pixel
+		disableBreakpointSpecificCustomProperties: false, // Enable this setting to disable breakpoint-specific custom properties
 
-	smViewport: 375, // Lowest value clamp
-	mdViewport: 1440, // Midpoint (used for both low-clamp and high-clamp)
-	lgViewport: 1920, // Highest value clamp
+		// Breakpoint names used in the config below, mapped to their viewport widths
+		namedBreaks: {
+			sm: 375, // Lowest value clamp
+			tablet: 768,
+			md: 1440,
+			lg: 1920, // Highest value clamp
+		},
 
-	viewportWidth: undefined, // Default to "100dvw", what to base scalings on. A string inserted in the CSS, e.g. "100dvw" or "var(--my-width, 100vw)".
+		viewportWidth: undefined, // Default to "100dvw", what to base scalings on. A string inserted in the CSS, e.g. "100dvw" or "var(--my-width, 100vw)".
+
+		// Setup
+		baseFontSize: 16, // For rem conversion
+	},
+
+	spacing: {
+		...verificationTheme.spacing,
+		demo: { 375: 8, 768: 20, 1440: 36, 1920: 48 },
+	},
+	testDisabled: { unused: 99 },
+	motion: {
+		fast: 120,
+	},
 
 	layout: {
 		margin: {
-			sm: 16,
-			md: 96,
-			lg: 124,
+			375: 16,
+			1440: 96,
+			1920: 124,
 		},
 
 		gutter: {
-			sm: 16,
-			md: 24,
-			lg: 32,
+			375: 16,
+			1440: 24,
+			1920: 32,
 		},
 
-		// These rules will be turned into `X/Ycol` rules, which can then be used like `w-3/12col`.
-		// There should always be at least one column, both on sm, md and lg.
-		columns: {
-			sm: 8,
-			md: 12,
-			lg: 12,
-		},
-
-		// The max value that the design can be scaled to (single value, not sm-md-lg).
+		// The max value that the design can be scaled to (single value).
 		// The max will impact columns max scaling as well.
 		// undefined equals no max.
 		max: undefined,
@@ -111,6 +121,7 @@ export default {
 	},
 
 	backgroundColors: {
+		...verificationTheme.backgroundColors,
 		surface: [255, 255, 255],
 		surfaceVariant: [240, 240, 240],
 		surfaceInverse: [33, 33, 33],
@@ -141,7 +152,9 @@ export default {
 
 		fishStick: [255, 255, 255],
 	},
+
 	textColors: {
+		...verificationTheme.textColors,
 		onSurface: [33, 33, 33],
 		onSurfaceInverse: [255, 255, 255],
 		onSurfaceVariant: [97, 97, 97],
@@ -166,7 +179,9 @@ export default {
 		onInfoSubtle: [2, 136, 209],
 		onInfoMedium: [3, 155, 229],
 	},
+
 	borderColors: {
+		...verificationTheme.borderColors,
 		onPrimarySubtle: [96, 89, 179],
 		onPrimaryMedium: [104, 98, 183],
 		onPrimaryStrong: [117, 114, 188],
@@ -212,258 +227,186 @@ export default {
 	},
 
 	containers: {
+		...verificationTheme.containers,
 		fish: '1000px',
-	},
-
-	horizontalSpacing: {
-		'xs/h': {
-			sm: 8,
-			md: 8,
-			lg: 12,
-		},
-		'sm/h': {
-			sm: 16,
-			md: 16,
-			lg: 20,
-		},
-		'md/h': {
-			sm: 24,
-			md: 24,
-			lg: 32,
-		},
-		'lg/h': {
-			sm: 28,
-			md: 32,
-			lg: 44,
-		},
-		'xl/h': {
-			sm: 32,
-			md: 48,
-			lg: 64,
-		},
-		'2xl/h': {
-			sm: 48,
-			md: 64,
-			lg: 88,
-		},
-		'3xl/h': {
-			sm: 64,
-			md: 96,
-			lg: 128,
-		},
-	},
-
-	verticalSpacing: {
-		'xs/v': {
-			sm: 8,
-			md: 8,
-			lg: 12,
-		},
-		'sm/v': {
-			sm: 16,
-			md: 16,
-			lg: 20,
-		},
-		'md/v': {
-			sm: 24,
-			md: 24,
-			lg: 32,
-		},
-		'lg/v': {
-			sm: 28,
-			md: 32,
-			lg: 44,
-		},
-		'xl/v': {
-			sm: 32,
-			md: 48,
-			lg: 64,
-		},
-		'2xl/v': {
-			sm: 48,
-			md: 64,
-			lg: 88,
-		},
-		'3xl/v': {
-			sm: 64,
-			md: 96,
-			lg: 128,
-		},
 	},
 
 	// fontSize (and lineHeight and letterSpacing) is a special setup, as special rules are generated
 	fontSize: {
+		...verificationTheme.fontSize,
 		h1: {
 			fontSize: {
-				sm: 30,
-				md: 48,
-				lg: 64,
+				375: 30,
+				1440: 48,
+				1920: 64,
 			},
 			lineHeight: {
-				sm: 1.2,
-				md: 1.2,
-				lg: 1.2,
+				375: 1.2,
+				1440: 1.2,
+				1920: 1.2,
 			},
 			letterSpacing: {
-				sm: 0,
-				md: 0.1,
-				lg: 0,
+				375: 0,
+				1440: 0.1,
+				1920: 0,
 			},
 		},
 		h2: {
 			fontSize: {
-				sm: 25,
-				md: 36,
-				lg: 48,
+				375: 25,
+				1440: 36,
+				1920: 48,
 			},
 			lineHeight: {
-				sm: 1.2,
-				md: 1.2,
-				lg: 1.2,
+				375: 1.2,
+				1440: 1.2,
+				1920: 1.2,
 			},
 			letterSpacing: {
-				sm: 0.025,
-				md: 0.05,
-				lg: 0,
+				375: 0.025,
+				1440: 0.05,
+				1920: 0,
 			},
 		},
 		h3: {
 			fontSize: {
-				sm: 18,
-				md: 24,
-				lg: 32,
+				375: 18,
+				1440: 24,
+				1920: 32,
 			},
 			lineHeight: {
-				sm: 1.4,
-				md: 1.2,
-				lg: 1.2,
+				375: 1.4,
+				1440: 1.2,
+				1920: 1.2,
 			},
 			letterSpacing: {
-				sm: 0,
-				md: 0.05,
-				lg: 0.05,
+				375: 0,
+				1440: 0.05,
+				1920: 0.05,
 			},
 		},
 		h4: {
 			fontSize: {
-				sm: 16,
-				md: 20,
-				lg: 24,
+				375: 16,
+				1440: 20,
+				1920: 24,
 			},
 			lineHeight: {
-				sm: 1.4,
-				md: 1.4,
-				lg: 1.4,
+				375: 1.4,
+				1440: 1.4,
+				1920: 1.4,
 			},
 			letterSpacing: {
-				sm: 0.01,
-				md: 0.01,
-				lg: 0.01,
+				375: 0.01,
+				1440: 0.01,
+				1920: 0.01,
 			},
 		},
 		h5: {
 			fontSize: {
-				sm: 16,
-				md: 20,
-				lg: 24,
+				375: 16,
+				1440: 20,
+				1920: 24,
 			},
 			lineHeight: {
-				sm: 1.4,
-				md: 1.4,
-				lg: 1.4,
+				375: 1.4,
+				1440: 1.4,
+				1920: 1.4,
 			},
 			letterSpacing: {
-				sm: 0.01,
-				md: 0.01,
-				lg: 0.01,
+				375: 0.01,
+				1440: 0.01,
+				1920: 0.01,
 			},
 		},
 		body1: {
 			fontSize: {
-				sm: 16,
-				md: 20,
-				lg: 24,
+				375: 16,
+				1440: 20,
+				1920: 24,
 			},
 			lineHeight: {
-				sm: 1.4,
-				md: 1.4,
-				lg: 1.4,
+				375: 1.4,
+				1440: 1.4,
+				1920: 1.4,
 			},
 			letterSpacing: {
-				sm: 0.02,
-				md: 0.02,
-				lg: 0.025,
+				375: 0.02,
+				1440: 0.02,
+				1920: 0.025,
 			},
 		},
 		body2: {
 			fontSize: {
-				sm: 14,
-				md: 16,
-				lg: 20,
+				375: 14,
+				1440: 16,
+				1920: 20,
 			},
 			lineHeight: {
-				sm: 1.4,
-				md: 1.4,
-				lg: 1.4,
+				375: 1.4,
+				1440: 1.4,
+				1920: 1.4,
 			},
 			letterSpacing: {
-				sm: 0.02,
-				md: 0.02,
-				lg: 0.025,
+				375: 0.02,
+				1440: 0.02,
+				1920: 0.025,
 			},
 		},
 		button: {
 			fontSize: {
-				sm: 16,
-				md: 16,
-				lg: 20,
+				375: 16,
+				1440: 16,
+				1920: 20,
 			},
 			lineHeight: {
-				sm: 1.4,
-				md: 1.4,
-				lg: 1.4,
+				375: 1.4,
+				1440: 1.4,
+				1920: 1.4,
 			},
 			letterSpacing: {
-				sm: 0.025,
-				md: 0.025,
-				lg: 0.025,
+				375: 0.025,
+				1440: 0.025,
+				1920: 0.025,
 			},
 		},
 		caption: {
 			fontSize: {
-				sm: 12,
-				md: 12,
-				lg: 14,
+				375: 12,
+				1440: 12,
+				1920: 14,
 			},
 			lineHeight: {
-				sm: 1.2,
-				md: 1.2,
-				lg: 1.2,
+				375: 1.2,
+				1440: 1.2,
+				1920: 1.2,
 			},
 			letterSpacing: {
-				sm: 0.025,
-				md: 0.025,
-				lg: 0.05,
+				375: 0.025,
+				1440: 0.025,
+				1920: 0.05,
 			},
 		},
 		overline: {
 			fontSize: {
-				sm: 10,
-				md: 10,
-				lg: 12,
+				375: 10,
+				1440: 10,
+				1920: 12,
 			},
 			lineHeight: {
-				sm: 1.2,
-				md: 1.2,
-				lg: 1.2,
+				375: 1.2,
+				1440: 1.2,
+				1920: 1.2,
 			},
 			letterSpacing: {
-				sm: 0.5,
-				md: 0.5,
-				lg: 0,
+				375: 0.5,
+				1440: 0.5,
+				1920: 0,
 			},
 		},
 	},
 
-	borderRadius: {/* to be added */},
-};
+	borderRadius: {
+		...verificationTheme.borderRadius,
+	},
+});

@@ -3,6 +3,7 @@ node_modules
 .nuxt
 nuxt.d.ts
 .output
+.vitest/
 .env
 package-lock.json
 framework

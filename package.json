@@ -2,25 +2,88 @@
 	"name": "@limbo-works/theme-configuration",
 	"type": "module",
 	"version": "4.6.1",
-	"main": "./nuxt.config.ts",
+	"main": "./dist/module.mjs",
+	"exports": {
+		".": {
+			"types": "./dist/types.d.mts",
+			"import": "./dist/module.mjs"
+		},
+		"./config": {
+			"types": "./dist/runtime/shared/normalize-theme-configuration.d.ts",
+			"import": "./dist/runtime/shared/normalize-theme-configuration.js"
+		},
+		"./rules": {
+			"types": "./dist/runtime/shared/rules/index.d.ts",
+			"import": "./dist/runtime/shared/rules/index.js"
+		},
+		"./uno": {
+			"types": "./dist/runtime/shared/helpers.uno.d.ts",
+			"import": "./dist/runtime/shared/helpers.uno.js"
+		},
+		"./types": {
+			"types": "./dist/runtime/utils/theme-configuration.types.d.ts"
+		}
+	},
+	"files": [
+		"dist"
+	],
 	"scripts": {
-		"dev": "nuxi prepare & nuxi dev .playground",
+		"prepare": "nuxi prepare .playground && nuxt-module-build build",
+		"dev": "nuxi dev .playground",
 		"build": "nuxi build .playground",
 		"generate": "nuxi generate .playground",
 		"preview": "nuxi preview .playground",
 		"prettier": "prettier \"**/*.{js,ts,vue,md,yml,css,scss,json}\"",
 		"eslint": "eslint \"**/*.{js,ts,vue}\"",
-		"typecheck": "nuxi prepare && nuxi typecheck",
+		"typecheck": "nuxi prepare .playground && vue-tsc --noEmit -p tsconfig.json",
 		"lint": "yarn prettier --check . && yarn eslint --quiet .",
 		"lint:fix": "yarn prettier --write . && yarn eslint --fix --quiet .",
-		"test": "exit 0"
+		"test": "vitest run",
+		"test:unit": "vitest run --project unit",
+		"bench": "vitest bench --run --project 'unit (bench)' --reporter verbose",
+		"test:playground": "vitest run --project 'playground-*'",
+		"test:playground:install": "playwright install chromium firefox webkit"
 	},
 	"devDependencies": {
 		"@limbo-works/lint-configs": "^2.0.3",
 		"@limbo-works/nuxt-core": "^6.0.5",
+		"@nuxt/module-builder": "^1.0.4",
+		"@typescript-eslint/parser": "^8.73.0",
+		"@types/node": "^22.15.0",
+		"@unhead/vue": "^3.3.2",
+		"@unocss/autocomplete": "66.8.1",
+		"@unocss/core": "66.8.1",
 		"@unocss/nuxt": "^66.6.7",
+		"@unocss/preset-mini": "66.8.1",
+		"@vitejs/plugin-vue": "^6.0.8",
+		"@vitest/browser-playwright": "^5.1.0",
+		"magic-string": "^0.30.21",
 		"nuxt": "^4.4.2",
+		"playwright": "^1.65.1",
 		"typescript": "5.9.2",
+		"vite": "^8.0.0",
+		"vitest": "^5.1.0",
+		"vue": "^3.5.41",
 		"vue-tsc": "^3.3.11"
+	},
+	"dependencies": {
+		"@nuxt/kit": "^4.6.4",
+		"jiti": "^2.6.1"
+	},
+	"peerDependencies": {
+		"@unocss/nuxt": "^66.6.7",
+		"@unocss/preset-mini": "^66.6.7",
+		"unocss": "^66.6.7"
+	},
+	"peerDependenciesMeta": {
+		"@unocss/nuxt": {
+			"optional": true
+		},
+		"@unocss/preset-mini": {
+			"optional": true
+		},
+		"unocss": {
+			"optional": true
+		}
 	}
 }

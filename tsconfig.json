@@ -1,3 +1,17 @@
 {
-	"extends": "./.nuxt/tsconfig.json"
+	"extends": "./.playground/.nuxt/tsconfig.json",
+	"files": [".playground/.nuxt/nuxt.d.ts"],
+	"include": [
+		"src/**/*",
+		".playground/app.vue",
+		".playground/components/**/*",
+		".playground/rules/**/*",
+		"test/**/*.ts"
+	],
+	"exclude": [
+		"node_modules",
+		"dist",
+		".playground/node_modules",
+		".playground/.output"
+	]
 }

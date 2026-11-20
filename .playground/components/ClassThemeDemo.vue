@@ -1,7 +1,7 @@
 <template>
 	<div class="class-theme-demo bg-primary px-layout-margin py-layout-gutter">
 		<p class="text-h4 text-onSurfacePrimary">{{ label }}</p>
-		<p class="text-body2 text-onSurfacePrimaryMedium">
+		<p class="text-body2 text-onSurfacePrimary">
 			Primary color is overridden by <code>.class-theme-demo</code>.
 		</p>
 	</div>
